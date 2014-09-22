@@ -9,12 +9,10 @@ function Editor(targetCircuit)
         if (self.circuit.empty(x, y)) 
         {
             self.circuit.addDC(x, y, .5);
-            circuit.decorate();
             redraw();
         } else 
         {
             self.circuit.kill(x, y);
-            circuit.decorate();
             redraw();
         }
     }
