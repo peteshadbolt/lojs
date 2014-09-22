@@ -11,6 +11,7 @@ function bindMouse() {
     gc.addEventListener("mouseup", mouseUp);
     gc.addEventListener("mousewheel", mouseScroll, false);
     gc.addEventListener('DOMMouseScroll', mouseScroll, false);
+    gc.addEventListener('dblclick', mouseDblClick, false);
 }
 
 function fixMouse(evt) {
@@ -32,8 +33,7 @@ function mouseMove(evt) {
     fixMouse(evt);
     if (mouse.button){
         requestAnimationFrame(redraw);
-        camera.x+=mouse.dx;
-        camera.y+=mouse.dy;
+        camera.translate(mouse.dx, mouse.dy);
     }
 }
 
@@ -43,8 +43,16 @@ function mouseUp(evt) {
 }
 
 function mouseScroll(evt){
-    var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
-    delta = delta > 0 ? .05 : -.05;
-    camera.z+=delta;
+    var delta = -evt.detail;
+    camera.zoom(delta*.05);
     requestAnimationFrame(redraw);
 }
+
+function mouseDblClick(evt) {
+    fixMouse(evt);
+    var pos = camera.fromScreen(mouse.x, mouse.y);
+    var ax=Math.floor(pos.x/gridSize);
+    var ay=Math.floor(pos.y/gridSize);
+    editor.hit(ax, ay);
+}
+

@@ -1,24 +1,42 @@
-function draw_grid() {
-    var gs=40*camera.z;
-    var ox = camera.x % gs;
-    var oy = camera.y % gs;
-    var nx = Math.ceil(gc.width/gs);
-    var ny = Math.ceil(gc.height/gs);
+/*
+   pete.shadbolt@gmail.com
+   Draws the grid where bits and pieces of the circuit live
+*/
 
-    gd.strokeStyle= '#dddddd';
-    gd.strokeWidth=1;
-    gd.beginPath();
-    
-    for (var i=0; i<nx; i++) { 
-        gd.moveTo(Math.floor(i*gs+ox), 0); 
-        gd.lineTo(Math.floor(i*gs+ox), gc.height); 
+function drawGrid(ctx) {
+    // Figure out the boundaries
+    var topLeft = camera.fromScreen(0,0);
+    var bottomRight = camera.fromScreen(ctx.canvas.width, ctx.canvas.height);
+    var nx = Math.ceil((bottomRight.x - topLeft.x)/gridSize);
+    var ny = Math.ceil((bottomRight.y - topLeft.y)/gridSize);
+    var ox = Math.floor(topLeft.x/gridSize);
+    var oy = Math.floor(topLeft.y/gridSize);
+
+    // Drawing the grid
+    ctx.strokeStyle= '#aaaaaa';
+    ctx.beginPath();
+    for (var i=ox; i<ox+nx; i++) { 
+        ctx.moveTo(Math.floor(i*gridSize), topLeft.y); 
+        ctx.lineTo(Math.floor(i*gridSize), bottomRight.y); 
     }
-
-    for (var i=0; i<ny; i++) {
-        gd.moveTo(0, Math.floor(i*gs+oy)); 
-        gd.lineTo(gc.width, Math.floor(i*gs+oy)); 
+    for (var i=oy; i<oy+ny; i++) {
+        ctx.moveTo(topLeft.x, Math.floor(i*gridSize)); 
+        ctx.lineTo(bottomRight.x, Math.floor(i*gridSize)); 
     }
+    ctx.stroke();
 
-    gd.stroke();
+    // 0, 0 Lines
+    ctx.strokeStyle= '#ff4444';
+    ctx.beginPath();
+    if (topLeft.x<0 && bottomRight.x<<0) {
+        ctx.moveTo(0, topLeft.y); 
+        ctx.lineTo(0, bottomRight.y); 
+    }
+    if (topLeft.y<0 && bottomRight.y<<0) {
+        ctx.moveTo(topLeft.x, 0); 
+        ctx.lineTo(bottomRight.x, 0); 
+    }
+    ctx.stroke();
+
 }
 
