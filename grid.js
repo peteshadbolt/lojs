@@ -7,8 +7,8 @@ function drawGrid(ctx) {
     // Figure out the boundaries
     var topLeft = camera.fromScreen(0,0);
     var bottomRight = camera.fromScreen(ctx.canvas.width, ctx.canvas.height);
-    var nx = Math.ceil((bottomRight.x - topLeft.x)/gridSize);
-    var ny = Math.ceil((bottomRight.y - topLeft.y)/gridSize);
+    var nx = Math.ceil((bottomRight.x - topLeft.x)/gridSize)+1;
+    var ny = Math.ceil((bottomRight.y - topLeft.y)/gridSize)+1;
     var ox = Math.floor(topLeft.x/gridSize);
     var oy = Math.floor(topLeft.y/gridSize);
 
@@ -23,6 +23,16 @@ function drawGrid(ctx) {
         ctx.moveTo(topLeft.x, Math.floor(i*gridSize)); 
         ctx.lineTo(bottomRight.x, Math.floor(i*gridSize)); 
     }
+    ctx.stroke();
+
+    // Box around the mouse
+    ctx.strokeStyle= '#ff0000';
+    ctx.beginPath();
+    ctx.moveTo(mouse.ax*gridSize, mouse.ay*gridSize); 
+    ctx.lineTo(mouse.ax*gridSize, mouse.ay*gridSize+gridSize); 
+    ctx.lineTo(mouse.ax*gridSize+gridSize, mouse.ay*gridSize+gridSize); 
+    ctx.lineTo(mouse.ax*gridSize+gridSize, mouse.ay*gridSize); 
+    ctx.lineTo(mouse.ax*gridSize, mouse.ay*gridSize); 
     ctx.stroke();
 
     // 0, 0 Lines

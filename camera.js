@@ -2,7 +2,7 @@ function Camera()
 {
     var self=this;
     self.x=30; self.y=30;
-    self.z=.1; self.tz=.5;
+    self.z=.5; self.tz=.5;
 
     self.translate = function (dx, dy) {
         self.x+=dx; self.y+=dy;

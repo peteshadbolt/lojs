@@ -6,9 +6,8 @@
     <style> 
         html, body { margin: 0; padding: 5px; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
         canvas { border: 1px solid black; display:block}
-        #menu { position: absolute; top:20px; right:20px; background: #333333; color:white;
-               padding: 5px; border-radius:4px;
-               box-shadow: 0px 0px 5px black; }
+        #menu { position: absolute; top:20px; right:20px; background:  rgba(0,0,0,.7); color:white;
+               padding: 5px; border-radius:4px; }
         #menu ul {list-style: none; padding: 0px; margin: 0px;}
         #menu a {color: #ccccff;}
         #menu li {padding: 2px;}
@@ -28,12 +27,12 @@
 <canvas id=canvas> </canvas> 
 <div id=menu> 
     <ul>
-    <li> Hold shift to move camera 
+    <li> Click + drag to move camera
+    <li> Scroll to zoom
     <li> Click to add/erase
-    <li> <a href="#" onclick="javascript:editor.addBS();">BS</a>
-    <a href="#">DC</a>
-    <a href="#">PS</a>
-    <li> Scroll to change parameters
+    <li> <a href="#" onclick="javascript:editor.addBS();">DC (X)</a>
+    <a href="#">PS (P)</a>
+    <a href="#">DET (D)</a>
     </ul>
 </div>
 <div id=options>
