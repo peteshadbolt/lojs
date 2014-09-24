@@ -13,7 +13,7 @@ function drawGrid(ctx) {
     var oy = Math.floor(topLeft.y/gridSize);
 
     // Drawing the grid
-    ctx.strokeStyle= '#aaaaaa';
+    ctx.strokeStyle= '#cccccc';
     ctx.beginPath();
     for (var i=ox; i<ox+nx; i++) { 
         ctx.moveTo(Math.floor(i*gridSize), topLeft.y); 
@@ -23,16 +23,6 @@ function drawGrid(ctx) {
         ctx.moveTo(topLeft.x, Math.floor(i*gridSize)); 
         ctx.lineTo(bottomRight.x, Math.floor(i*gridSize)); 
     }
-    ctx.stroke();
-
-    // Box around the mouse
-    ctx.strokeStyle= '#ff0000';
-    ctx.beginPath();
-    ctx.moveTo(mouse.ax*gridSize, mouse.ay*gridSize); 
-    ctx.lineTo(mouse.ax*gridSize, mouse.ay*gridSize+gridSize); 
-    ctx.lineTo(mouse.ax*gridSize+gridSize, mouse.ay*gridSize+gridSize); 
-    ctx.lineTo(mouse.ax*gridSize+gridSize, mouse.ay*gridSize); 
-    ctx.lineTo(mouse.ax*gridSize, mouse.ay*gridSize); 
     ctx.stroke();
 
     // 0, 0 Lines

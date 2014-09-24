@@ -6,8 +6,7 @@
     <style> 
         html, body { margin: 0; padding: 5px; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
         canvas { border: 1px solid black; display:block}
-        #menu { position: absolute; top:20px; right:20px; background:  rgba(0,0,0,.7); color:white;
-               padding: 5px; border-radius:4px; }
+        #menu { position: absolute; top:20px; right:20px; background:  rgba(0,0,0,.7); color:white; padding: 5px; border-radius:4px; }
         #menu ul {list-style: none; padding: 0px; margin: 0px;}
         #menu a {color: #ccccff;}
         #menu li {padding: 2px;}
@@ -30,19 +29,21 @@
     <li> Click + drag to move camera
     <li> Scroll to zoom
     <li> Click to add/erase
-    <li> <a href="#" onclick="javascript:editor.addBS();">DC (X)</a>
-    <a href="#">PS (P)</a>
-    <a href="#">DET (D)</a>
+    <li> <a href="#" onclick="javascript:editor.setMode('dc');">DC (X)</a>
+    <a href="#" onclick="javascript:editor.setMode('ps');">PS (P)</a>
+    <li><a href="#" onclick="javascript:editor.setMode('source');">SOURCE (S)</a>
+    <a href="#" onclick="javascript:editor.setMode('det');">DET (D)</a>
+    <li> <a href="#" onclick="javascript:editor.setMode(DC);">Clear</a>
     </ul>
 </div>
-<div id=options>
-    <a href="#">Save</a> |
-    <a href="#">Load</a> |
-    <a href="#">Download data</a> |
-    <a href="#">Download circuit</a> |
-    <a href="#">About</a> |
+<!--<div id=options>-->
+    <!--<a href="#">Save</a> |-->
+    <!--<a href="#">Load</a> |-->
+    <!--<a href="#">Download data</a> |-->
+    <!--<a href="#">Download circuit</a> |-->
+    <!--<a href="#">About</a> |-->
     <span class="modest">Made by <a href="http://peteshadbolt.co.uk">Pete Shadbolt</a></span>
-</div>
+<!--</div>-->
 </body>
 </html>
 

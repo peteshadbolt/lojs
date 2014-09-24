@@ -5,16 +5,29 @@
 
 function Circuit() {
     // Holds a description of the complete circuit
-    this.components=[]
-    this.topLeft={"x":undefined, "y":undefined}
-    this.bottomRight={"x":undefined, "y":undefined}
+    this.components=[];
+    this.connectors=[];
+    this.topLeft={"x":undefined, "y":undefined}; this.bottomRight={"x":undefined, "y":undefined};
 
     // Draw the circuit
     this.draw = function (ctx) {
         ctx.strokeStyle="#000000";
-        for (var i=0; i<this.components.length; i++)
-        {
-            this.components[i].draw(ctx);
+        for (var i=0; i<this.components.length; i++) {
+            this.components[i].draw(ctx); }
+        for (var i=0; i<this.connectors.length; i++) {
+            this.connectors[i].draw(ctx); }
+
+        // Box around circuit
+        if (this.topLeft.x){
+            startDrawing(ctx, 0, 0);
+            ctx.strokeStyle= '#0000ff';
+            ctx.beginPath();
+            ctx.moveTo(this.topLeft.x-1.5, this.topLeft.y-.5); 
+            ctx.lineTo(this.bottomRight.x+2.5, this.topLeft.y-.5); 
+            ctx.lineTo(this.bottomRight.x+2.5, this.bottomRight.y+1.5); 
+            ctx.lineTo(this.topLeft.x-1.5, this.bottomRight.y+1.5); 
+            ctx.lineTo(this.topLeft.x-1.5, this.topLeft.y-.5); 
+            stopDrawing(ctx);
         }
     }
 
@@ -36,106 +49,132 @@ function Circuit() {
         }
         if (tokill!=undefined){
             this.components.splice(tokill,1)
-            //this.decorate();
+            this.decorate();
         };
     }
 
     // Is position (x,y) empty?
     this.empty = function (x, y) { return this.find(x, y)==undefined; }
 
-    // Add a BS at position (x,y)
-    this.addBS = function (x, y, ratio) {
-        this.components.push(new Beamsplitter(x, y, ratio));
-        this.decorate(x, y);
-    }
-
-    // Add a directional coupler at position (x,y)
-    this.addDC = function (x, y, ratio) {
-        this.components.push(new Coupler(x, y, ratio));
-        this.decorate(x, y);
-    }
-
     // Add horizontal lines to make clear the connections between components
+    // Also work out the input and output ports
     this.decorate = function (x, y) {
-        // Find the components to the left and right of the new element
-        var left=undefined;
-        var right=undefined;
+        // Remove all connectors
+        this.connectors.splice(0, this.connectors.length);
+
+        // Get the bounds
+        this.topLeft={"x":undefined, "y":undefined}; this.bottomRight={"x":undefined, "y":undefined};
         for (var i=0; i<this.components.length; i++) {
-            c=this.components[i];
-            if (c.y!=y) {continue;};
-            if (c.x<x-1 && (left==undefined || c.x>left.x)){ left=c }
+            var c = this.components[i];
+            if (c.x<this.topLeft.x || this.topLeft.x==undefined) {this.topLeft.x=c.x};
+            if (c.y<this.topLeft.y || this.topLeft.y==undefined) {this.topLeft.y=c.y};
+            if (c.x>this.bottomRight.x || this.bottomRight.x==undefined) {this.bottomRight.x=c.x};
+            if (c.y>this.bottomRight.y || this.bottomRight.y==undefined) {this.bottomRight.y=c.y};
         }
-        
-        if (left!=undefined){
-            for (var i=left.x+1; i<x; i++){
-                this.components.push(new Connector(i, y));
+
+        // Fill the gaps
+        for (var cx=this.topLeft.x-1; cx<=this.bottomRight.x+1; cx++) {
+            for (var cy=this.topLeft.y; cy<=this.bottomRight.y+1; cy++) {
+                if (this.empty(cx, cy) && this.empty(cx, cy-1))
+                {
+                    this.connectors.push(new Connector(cx, cy));
+                }
             }
         }
     }
-
 }
 
 
 function Beamsplitter(x, y, ratio) {
     this.x = x; this.y = y;
-    this.ratio = ratio;
+    this.ratio = ratio ? ratio : 0.5;
     this.draw = drawBS;
 }
 
 function Coupler(x, y, ratio) {
     this.x = x; this.y = y;
-    this.ratio = ratio;
+    this.ratio = ratio ? ratio : 0.5;
     this.draw = drawCoupler;
 }
 
 function Phaseshifter(x, y, phase) {
     this.x = x; this.y = y;
-    this.phase = phase;
+    this.phase = phase ? phase : 0;
     this.draw = drawPS;
 }
 
-// TODO Get all this boilerplate into a function
-
-function Connector(x, y) {
-    this.x = x; this.y = y;
-    this.draw = function(ctx) {
-        var x=this.x, y=this.y
+// Useful boilerplatey things
+function startDrawing(ctx, x, y) {
         ctx.save();
         ctx.scale(gridSize,gridSize);
         ctx.lineWidth=(1/camera.z)/gridSize;
         ctx.translate(x,y);
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(1, 0); 
+}
+
+function stopDrawing(ctx) {
         ctx.stroke();
         ctx.restore();
+}
+
+function Connector(x, y) {
+    this.x = x; this.y = y;
+    this.draw = function(ctx) {
+        startDrawing(ctx, this.x, this.y);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(1, 0); 
+        stopDrawing(ctx);
     }
 }
 
-function drawBS(ctx) {
-    var x=this.x, y=this.y
-    ctx.save();
-    ctx.scale(gridSize,gridSize);
-    ctx.lineWidth=(1/camera.z)/gridSize;
-    ctx.translate(x,y);
+function Source(x, y) {
+    this.x = x; this.y = y;
+    this.draw = function(ctx) {
+        startDrawing(ctx, this.x, this.y);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(1, 0); 
+        stopDrawing(ctx);
+    }
+}
+
+function Detector(x, y) {
+    this.x = x; this.y = y;
+    this.draw = function(ctx) {
+        startDrawing(ctx, this.x, this.y);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(1, 0); 
+        stopDrawing(ctx);
+    }
+}
+
+function drawPS(ctx) {
+    startDrawing(ctx, this.x, this.y);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(1, 0); 
+    ctx.moveTo(0, 1);
+    ctx.lineTo(1, 1); 
+    ctx.stroke();
     ctx.beginPath();
+    ctx.arc(.5, 1, .1, 0, 2*Math.PI, false);
+    ctx.fillStyle = 'orange';
+    ctx.fill();
+    stopDrawing(ctx);
+}
+
+function drawBS(ctx) {
+    startDrawing(ctx, this.x, this.y);
     ctx.moveTo(0, 0);
     ctx.lineTo(1,1); 
     ctx.moveTo(0, 1);
     ctx.lineTo(1,0); 
     ctx.moveTo(.25,.5); 
     ctx.lineTo(.75,.5); 
-    ctx.stroke();
-    ctx.restore();
+    stopDrawing(ctx);
 }
 
 function drawCoupler(ctx) {
-    var x=this.x, y=this.y, gap=.03;
-    ctx.save();
-    ctx.scale(gridSize,gridSize);
-    ctx.lineWidth=(1/camera.z)/gridSize;
-    ctx.translate(x,y);
-    ctx.beginPath();
+    gap=0.03;
+    startDrawing(ctx, this.x, this.y);
     ctx.moveTo(0, 0);
     ctx.lineTo(0.1, 0);
     ctx.bezierCurveTo(.25, 0, .25, .5-gap, .4,  .5-gap); 
@@ -150,7 +189,6 @@ function drawCoupler(ctx) {
     ctx.bezierCurveTo(.75, .5+gap, .75, 1, .9,   1); 
     ctx.lineTo(1, 1);
 
-    ctx.stroke();
-    ctx.restore();
+    stopDrawing(ctx);
 }
 

@@ -27,13 +27,9 @@ function redraw() {
     gd.translate(camera.x, camera.y);
     gd.scale(camera.z, camera.z);
 
-    // Draw the grid
+    // Draw the grid, circuit, editor
     drawGrid(gd);
-
-    // Draw the circuit
     circuit.draw(gd);
-
-    // Draw the editor stuff
     editor.draw(gd);
 
     // Back to screen-space
@@ -61,6 +57,7 @@ function main() {
 
     // Create an editor
     editor=new Editor(circuit);
+    editor.bindKeys();
 
     // Fit to window and redraw
     resize();
