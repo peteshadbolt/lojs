@@ -5,122 +5,145 @@
 
 function Circuit() {
     // Holds a description of the complete circuit
-    this.components=[];
-    this.connectors=[];
-    this.topLeft={"x":undefined, "y":undefined}; this.bottomRight={"x":undefined, "y":undefined};
+    var self=this;
+    self.components=[];
+    self.connectors=[];
+    self.topLeft={"x":undefined, "y":undefined}; self.bottomRight={"x":undefined, "y":undefined};
 
     // Draw the circuit
-    this.draw = function (ctx) {
+    self.draw = function (ctx) {
         ctx.strokeStyle="#000000";
-        for (var i=0; i<this.components.length; i++) {
-            this.components[i].draw(ctx); }
-        for (var i=0; i<this.connectors.length; i++) {
-            this.connectors[i].draw(ctx); }
+        for (var i=0; i<self.components.length; i++) {
+            self.components[i].draw(ctx); }
+        for (var i=0; i<self.connectors.length; i++) {
+            self.connectors[i].draw(ctx); }
 
         // Box around circuit
-        if (this.topLeft.x){
+        if (self.topLeft.x){
             startDrawing(ctx, 0, 0);
             ctx.strokeStyle= '#ccccff';
             ctx.beginPath();
-            ctx.moveTo(this.topLeft.x-1.5, this.topLeft.y-.5); 
-            ctx.lineTo(this.bottomRight.x+2.5, this.topLeft.y-.5); 
-            ctx.lineTo(this.bottomRight.x+2.5, this.bottomRight.y+1.5); 
-            ctx.lineTo(this.topLeft.x-1.5, this.bottomRight.y+1.5); 
-            ctx.lineTo(this.topLeft.x-1.5, this.topLeft.y-.5); 
+            ctx.moveTo(self.topLeft.x-1.5, self.topLeft.y-.5); 
+            ctx.lineTo(self.bottomRight.x+2.5, self.topLeft.y-.5); 
+            ctx.lineTo(self.bottomRight.x+2.5, self.bottomRight.y+1.5); 
+            ctx.lineTo(self.topLeft.x-1.5, self.bottomRight.y+1.5); 
+            ctx.lineTo(self.topLeft.x-1.5, self.topLeft.y-.5); 
             stopDrawing(ctx);
         }
     }
 
     // Find at position (x,y);
-    this.find = function (x, y) {
-        for (var i=0; i<this.components.length; i++) {
-            var c = this.components[i];
+    self.find = function (x, y) {
+        for (var i=0; i<self.components.length; i++) {
+            var c = self.components[i];
             if (c.x==x && c.y==y) {return c};
         }
         return undefined;
     }
 
     // Delete at position (x,y);
-    this.kill = function (x, y) {
+    self.kill = function (x, y) {
         var tokill=undefined;
-        for (var i=0; i<this.components.length; i++) {
-            var c = this.components[i];
+        for (var i=0; i<self.components.length; i++) {
+            var c = self.components[i];
             if (c.x==x && c.y==y) {tokill=i; break;};
         }
         if (tokill!=undefined){
-            this.components.splice(tokill,1)
-            this.decorate();
+            self.components.splice(tokill,1)
+            self.decorate();
         };
     }
 
     // Is position (x,y) empty?
-    this.empty = function (x, y) { return this.find(x, y)==undefined; }
+    self.empty = function (x, y) { return self.find(x, y)==undefined; }
 
     // Add horizontal lines to make clear the connections between components
     // Also work out the input and output ports
-    this.decorate = function (x, y) {
+    self.decorate = function (x, y) {
         // Remove all connectors
-        this.connectors.splice(0, this.connectors.length);
+        self.connectors.splice(0, self.connectors.length);
 
         // Get the bounds
-        this.topLeft={"x":undefined, "y":undefined}; this.bottomRight={"x":undefined, "y":undefined};
-        for (var i=0; i<this.components.length; i++) {
-            var c = this.components[i];
-            if (c.x<this.topLeft.x || this.topLeft.x==undefined) {this.topLeft.x=c.x};
-            if (c.y<this.topLeft.y || this.topLeft.y==undefined) {this.topLeft.y=c.y};
-            if (c.x>this.bottomRight.x || this.bottomRight.x==undefined) {this.bottomRight.x=c.x};
-            if (c.y>this.bottomRight.y || this.bottomRight.y==undefined) {this.bottomRight.y=c.y};
+        self.topLeft={"x":undefined, "y":undefined}; self.bottomRight={"x":undefined, "y":undefined};
+        for (var i=0; i<self.components.length; i++) {
+            var c = self.components[i];
+            if (c.x<self.topLeft.x || self.topLeft.x==undefined) {self.topLeft.x=c.x};
+            if (c.y<self.topLeft.y || self.topLeft.y==undefined) {self.topLeft.y=c.y};
+            if (c.x>self.bottomRight.x || self.bottomRight.x==undefined) {self.bottomRight.x=c.x};
+            if (c.y>self.bottomRight.y || self.bottomRight.y==undefined) {self.bottomRight.y=c.y};
         }
 
         // Fill the gaps
-        for (var cx=this.topLeft.x-1; cx<=this.bottomRight.x+1; cx++) {
-            for (var cy=this.topLeft.y; cy<=this.bottomRight.y+1; cy++) {
-                if (this.empty(cx, cy) && this.empty(cx, cy-1))
+        for (var cx=self.topLeft.x-1; cx<=self.bottomRight.x+1; cx++) {
+            for (var cy=self.topLeft.y; cy<=self.bottomRight.y+1; cy++) {
+                if (self.empty(cx, cy) && self.empty(cx, cy-1))
                 {
-                    this.connectors.push(new Connector(cx, cy));
+                    self.connectors.push(new Connector(cx, cy));
                 }
             }
         }
     }
-}
 
-
-function Beamsplitter(x, y, ratio) {
-    this.x = x; this.y = y;
-    this.ratio = ratio ? ratio : 0.5;
-    this.draw = drawBS;
-}
-
-function Coupler(x, y, ratio) {
-    this.x = x; this.y = y;
-    this.ratio = ratio ? ratio : 0.5;
-    this.draw = drawCoupler;
-}
-
-function Phaseshifter(x, y, phase) {
-    this.x = x; this.y = y;
-    this.phase = phase ? phase : 0;
-    this.draw = drawPS;
+    // Generate a plain-text JSON representation of the circuit. 
+    // Used for saving and sending to the simulator
+    self.toJSON = function () {
+        var json={"components":[]};
+        for (var i=0; i<self.components.length; i++) {
+            var c = self.components[i];
+            json.components.push(c.toJSON());
+        }
+        return JSON.stringify(json);
+    }   
 }
 
 // Useful boilerplatey things
 function startDrawing(ctx, x, y) {
-        ctx.save();
-        ctx.scale(gridSize,gridSize);
-        ctx.lineWidth=(1/camera.z)/gridSize;
-        ctx.translate(x,y);
-        ctx.beginPath();
+    ctx.save();
+    ctx.scale(gridSize,gridSize);
+    ctx.lineWidth=(1/camera.z)/gridSize;
+    ctx.translate(x,y);
+    ctx.beginPath();
 }
 
+// Finish drawing and go back to screen space
 function stopDrawing(ctx) {
-        ctx.stroke();
-        ctx.restore();
+    ctx.stroke();
+    ctx.restore();
+}
+
+// Circuit components
+function Beamsplitter(x, y, ratio) {
+    var self=this;
+    self.x = x; self.y = y;
+    self.ratio = ratio ? ratio : 0.5;
+    self.draw = drawBS;
+}
+
+function Coupler(x, y, ratio) {
+    var self=this;
+    self.x = x; self.y = y;
+    self.ratio = ratio ? ratio : 0.5;
+    self.draw = drawCoupler;
+    self.toJSON = function () {
+        return {"type": "coupler", "x": self.x, "y": self.y, "ratio": self.ratio};
+    }
+}
+
+function Phaseshifter(x, y, phase) {
+    var self=this;
+    self.x = x; self.y = y;
+    self.phase = phase ? phase : 0;
+    self.draw = drawPS;
+    self.toJSON = function () {
+        return {"type": "phaseshifter", "x": self.x, "y": self.y, "phase": self.phase};
+    }
 }
 
 function Connector(x, y) {
-    this.x = x; this.y = y;
-    this.draw = function(ctx) {
-        startDrawing(ctx, this.x, this.y);
+    var self=this;
+    self.x = x; self.y = y;
+    self.draw = function(ctx) {
+        startDrawing(ctx, self.x, self.y);
         ctx.moveTo(0, 0);
         ctx.lineTo(1, 0); 
         stopDrawing(ctx);
@@ -128,9 +151,10 @@ function Connector(x, y) {
 }
 
 function SPS(x, y) {
-    this.x = x; this.y = y;
-    this.draw = function(ctx) {
-        startDrawing(ctx, this.x, this.y);
+    var self=this;
+    self.x = x; self.y = y;
+    self.draw = function(ctx) {
+        startDrawing(ctx, self.x, self.y);
         ctx.moveTo(0, 0);
         ctx.lineTo(1, 0); 
         ctx.stroke();
@@ -143,9 +167,10 @@ function SPS(x, y) {
 }
 
 function Detector(x, y) {
-    this.x = x; this.y = y;
-    this.draw = function(ctx) {
-        startDrawing(ctx, this.x, this.y);
+    var self=this;
+    self.x = x; self.y = y;
+    self.draw = function(ctx) {
+        startDrawing(ctx, self.x, self.y);
         ctx.moveTo(0, 0);
         ctx.lineTo(1, 1); 
         ctx.moveTo(0, 1);
@@ -154,6 +179,8 @@ function Detector(x, y) {
     }
 }
 
+
+// Complicated drawing functions
 function drawPS(ctx) {
     startDrawing(ctx, this.x, this.y);
     ctx.moveTo(0, 0);

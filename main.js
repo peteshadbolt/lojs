@@ -34,7 +34,6 @@ function redraw() {
 
     // Back to screen-space
     gd.restore();
-    console.log('redraw');
 }
 
 function main() {
@@ -52,11 +51,12 @@ function main() {
     // Continuously update the camera
     setInterval(camera.update, 33);
 
-    // Create the circuit 
+    // Create the circuit and a simulator
     circuit = new Circuit();
+    simulator = new Simulator(circuit);
 
     // Create an editor
-    editor=new Editor(circuit);
+    editor=new Editor(circuit, simulator);
     editor.bindKeys();
 
     // Fit to window and redraw

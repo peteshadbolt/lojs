@@ -7,7 +7,7 @@
         html, body { margin: 0; padding: 5px; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
         canvas { border: 1px solid black; display:block}
         #menu { position: absolute; top:20px; right:20px;}
-        .menuchunk {background:  rgba(0,0,0,.7); color:white; padding: 5px; border-radius:4px; margin:5px;}
+        .menuchunk {background:  rgb(0,0,0); color:white; padding: 5px; border-radius:4px; margin:5px;}
         .menuchunk ul {list-style: none; padding: 0px; margin: 0px;}
         .menuchunk a {color: #ccccff;}
         .menuchunk li {padding: 2px;}
@@ -19,6 +19,7 @@
     <script type="text/javascript" src="grid.js"></script>
     <script type="text/javascript" src="circuit.js"></script>
     <script type="text/javascript" src="editor.js"></script>
+    <script type="text/javascript" src="simulator.js"></script>
     <script type="text/javascript" src="main.js"></script>
 </head>
 
@@ -38,11 +39,12 @@
     </div>
     <div class=menuchunk>
         <ul>
+            <li> Mode: <a href="#">Edit</a> / <a href="#">Simulate</a>
             <li> <a href="#" onclick="javascript:editor.setMode(DC);">Clear</a> / 
             <a href="#">Save</a> /
             <a href="#">Load</a> 
-            <li> Download: <a href="#">data</a> / <a href="#">circuit</a> 
-            <li> <a href="#">About</a> (<span class="modest">Made by <a href="http://peteshadbolt.co.uk">Pete Shadbolt</a></span>)
+            <li> Download: <a href="#">Data</a> / <a href="#">Circuit</a> 
+            <li> <a href="#">About</a> <span class="modest">Made by <a href="http://peteshadbolt.co.uk">Pete Shadbolt</a></span>
         </ul>
     </div>
 </div>

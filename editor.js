@@ -1,9 +1,10 @@
-function Editor(targetCircuit)
+function Editor(targetCircuit, targetSimulator)
 {
     var self = this;
 
     self.mode = "dc";
     self.circuit = targetCircuit;
+    self.simulator = targetSimulator;
     self.cursor = new Coupler(0, 0, .5);
     self.nameMap = {"dc": Coupler, "ps": Phaseshifter, "sps": SPS, "det": Detector};
     self.keyMap = {88: "dc", 80: "ps", 83: "sps", 68: "det"};
@@ -27,15 +28,18 @@ function Editor(targetCircuit)
     self.hit = function (x, y) {
         if (self.circuit.empty(x, y)) 
         {
-            var object = new this.nameMap[self.mode](x, y);
-            circuit.components.push(object);
-            circuit.decorate();
-            redraw();
+            if (self.circuit.empty(x, y-1) && self.circuit.empty(x, y+1)){
+                var object = new this.nameMap[self.mode](x, y);
+                circuit.components.push(object);
+                circuit.decorate();
+                redraw();
+            }
         } else 
         {
             self.circuit.kill(x, y);
             redraw();
         }
+        self.simulator.update();
     }
 
     self.draw = function (ctx) {
