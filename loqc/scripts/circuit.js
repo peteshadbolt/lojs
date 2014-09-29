@@ -21,7 +21,7 @@ function Circuit() {
         // Box around circuit
         if (self.topLeft.x){
             startDrawing(ctx, 0, 0);
-            ctx.strokeStyle= '#ccccff';
+            ctx.strokeStyle= '#999999';
             ctx.beginPath();
             ctx.moveTo(self.topLeft.x-1.5, self.topLeft.y-.5); 
             ctx.lineTo(self.bottomRight.x+2.5, self.topLeft.y-.5); 
@@ -56,6 +56,9 @@ function Circuit() {
 
     // Is position (x,y) empty?
     self.empty = function (x, y) { return self.find(x, y)==undefined; }
+
+    // Is position (x,y) allowed?
+    self.allowed = function (x, y) { return self.empty(x, y) && self.empty(x, y-1) && self.empty(x, y+1);}
 
     // Add horizontal lines to make clear the connections between components
     // Also work out the input and output ports
@@ -179,6 +182,19 @@ function Detector(x, y) {
     }
 }
 
+function Deleter(x, y){
+    var self=this;
+    self.x = x; self.y = y;
+    self.draw = function(ctx) {
+        startDrawing(ctx, self.x, self.y);
+        ctx.lineWidth=.2;
+        ctx.moveTo(.2, .2);
+        ctx.lineTo(.8, .8); 
+        ctx.moveTo(.2, .8);
+        ctx.lineTo(.8, .2); 
+        stopDrawing(ctx);
+    }
+}
 
 // Complicated drawing functions
 function drawPS(ctx) {

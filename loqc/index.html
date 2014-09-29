@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>LOQC</title>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/forms.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/css.css">
     <script type="text/javascript" src="/scripts/mouse.js"></script>
     <script type="text/javascript" src="/scripts/camera.js"></script>
@@ -21,10 +20,10 @@
         <ul>
         <li> Camera: drag + scroll 
         <li> Click to add/erase
-        <li> <a href="#" onclick="javascript:editor.setMode('dc');">DC (X)</a> /
-        <a href="#" onclick="javascript:editor.setMode('ps');">PS (P)</a>
-        <li><a href="#" onclick="javascript:editor.setMode('sps');">SPS (S)</a> / 
-        <a href="#" onclick="javascript:editor.setMode('det');">DET (D)</a>
+        <li> <a href="#" onclick="javascript:editor.setMode('dc');">Coupler</a> (X) /
+        <a href="#" onclick="javascript:editor.setMode('ps');">Phase</a> (P)
+        <!--<li><a href="#" onclick="javascript:editor.setMode('sps');">Source</a> (S) / -->
+        <!--<a href="#" onclick="javascript:editor.setMode('det');">Detector</a> (D)-->
         </ul>
     </div>
     <div class=menuchunk>
@@ -38,7 +37,7 @@
         </ul>
     </div>
 </div>
-{{gae_message}}
+<div style="display:none">{{gae_message}}</a>
 
 </body>
 </html>

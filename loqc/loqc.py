@@ -10,10 +10,16 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class MainPage(webapp2.RequestHandler):
     def get(self):
         """ Build the page and send it over """
-        # Template the page and send it back to the user
+        logging.info("Building the main page")
         template = JINJA_ENVIRONMENT.get_template("index.html")
         template_values={"gae_message": "templated by gae"}
         self.response.out.write(template.render(template_values))
+
+    def post(self):
+        request=json.loads(self.request.body)
+        logging.info(request["components"])
+        response=json.dumps({"probabilities":[.5, .5]})
+        self.response.out.write(response)
 
 application = webapp2.WSGIApplication([
     ("/", MainPage),

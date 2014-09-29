@@ -35,6 +35,7 @@ function bindMouse() {
 
 function mouseMove(evt) {
     fixMouse(evt);
+    editor.update();
     if (mouse.pressed){
         camera.translate(mouse.dx, mouse.dy);
         requestAnimationFrame(redraw);
