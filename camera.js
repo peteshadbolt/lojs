@@ -1,7 +1,7 @@
 function Camera()
 {
     var self=this;
-    self.x=30; self.y=30;
+    self.x=0; self.y=0;
     self.z=.5; self.tz=.5;
 
     self.translate = function (dx, dy) {
@@ -13,10 +13,23 @@ function Camera()
         if (self.tz<.1) {self.tz=.1};
         if (self.tz>5) {self.tz=5};
     }
+    
+    self.center = function (canvas) {
+        self.x=canvas.width/2; 
+        self.y=canvas.height/2; 
+        requestAnimationFrame(redraw);
+    }
 
     self.update = function () {
+        // Store the position of the mouse
+        //self.x+=1;
         if (Math.abs(self.z-self.tz)>.01) {
+            var temp1 = self.fromScreen(mouse.x, mouse.y);
             self.z+=(self.tz-self.z)*.4
+            // That position should not change after the zoom
+            var temp2 = self.fromScreen(mouse.x, mouse.y);
+            self.x+=(temp2.x-temp1.x)*self.z;
+            self.y+=(temp2.y-temp1.y)*self.z;
             requestAnimationFrame(redraw);
         }
     }

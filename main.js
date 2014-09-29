@@ -61,6 +61,7 @@ function main() {
 
     // Fit to window and redraw
     resize();
+    camera.center(gc);
 }
 
 

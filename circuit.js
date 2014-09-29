@@ -20,7 +20,7 @@ function Circuit() {
         // Box around circuit
         if (this.topLeft.x){
             startDrawing(ctx, 0, 0);
-            ctx.strokeStyle= '#0000ff';
+            ctx.strokeStyle= '#ccccff';
             ctx.beginPath();
             ctx.moveTo(this.topLeft.x-1.5, this.topLeft.y-.5); 
             ctx.lineTo(this.bottomRight.x+2.5, this.topLeft.y-.5); 
@@ -127,12 +127,17 @@ function Connector(x, y) {
     }
 }
 
-function Source(x, y) {
+function SPS(x, y) {
     this.x = x; this.y = y;
     this.draw = function(ctx) {
         startDrawing(ctx, this.x, this.y);
         ctx.moveTo(0, 0);
         ctx.lineTo(1, 0); 
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
+        ctx.fillStyle = 'red';
+        ctx.fill();
         stopDrawing(ctx);
     }
 }
@@ -142,6 +147,8 @@ function Detector(x, y) {
     this.draw = function(ctx) {
         startDrawing(ctx, this.x, this.y);
         ctx.moveTo(0, 0);
+        ctx.lineTo(1, 1); 
+        ctx.moveTo(0, 1);
         ctx.lineTo(1, 0); 
         stopDrawing(ctx);
     }
@@ -156,7 +163,7 @@ function drawPS(ctx) {
     ctx.stroke();
     ctx.beginPath();
     ctx.arc(.5, 1, .1, 0, 2*Math.PI, false);
-    ctx.fillStyle = 'orange';
+    ctx.fillStyle = 'white';
     ctx.fill();
     stopDrawing(ctx);
 }

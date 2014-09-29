@@ -5,15 +5,17 @@ function Editor(targetCircuit)
     self.mode = "dc";
     self.circuit = targetCircuit;
     self.cursor = new Coupler(0, 0, .5);
-    self.nameMap = {"dc": Coupler, "ps": Phaseshifter, "source": Source, "det": Detector};
-    self.keyMap = {88: "dc", 80: "ps", 83: "source", 68: "det"};
+    self.nameMap = {"dc": Coupler, "ps": Phaseshifter, "sps": SPS, "det": Detector};
+    self.keyMap = {88: "dc", 80: "ps", 83: "sps", 68: "det"};
 
     self.bindKeys = function () {
         window.addEventListener('keydown', self.keyDown, true);
     }
 
     self.keyDown = function (evt) {
-        self.setMode(self.keyMap[evt.keyCode]);
+        if (self.keyMap.hasOwnProperty(evt.keyCode)) {
+            self.setMode(self.keyMap[evt.keyCode]);
+        }
     }
 
     self.setMode = function(modeString) {
@@ -39,7 +41,7 @@ function Editor(targetCircuit)
     self.draw = function (ctx) {
         // The cursor
         self.cursor.x=mouse.ax; self.cursor.y=mouse.ay;
-        ctx.strokeStyle= '#bbbbbb';
+        ctx.strokeStyle= '#dddddd';
         self.cursor.draw(ctx);
 
         // Box around the mouse

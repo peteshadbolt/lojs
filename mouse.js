@@ -7,7 +7,7 @@
 var mouse = { "pressed": false, "wasclick": false,
     "x":0, "y":0, "xo":0, "yo":0, "dx":0, "dy":0, 
     "cx":0, "cy":0, "ax":0, "ay":0, "oax":0, "oay":0,
-    "dcx":0, "dcy":0,}
+    "dcx":0, "dcy":0, "sx":0, "sy":0}
 
 function fixMouse(evt) {
     mouse.xo = mouse.x; mouse.yo=mouse.y;
@@ -58,11 +58,10 @@ function mouseUp(evt) {
 }
 
 function mouseScroll(evt){
-    if (true) {
-        var delta = -evt.detail;
-        camera.zoom(delta*.05);
-        requestAnimationFrame(redraw);
-    }
+    var delta = -evt.detail;
+    fixMouse(evt);
+    camera.zoom(delta*.05);
+    requestAnimationFrame(redraw);
     return false;
 }
 
