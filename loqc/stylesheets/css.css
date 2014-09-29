@@ -1,0 +1,8 @@
+html, body { margin: 0; padding: 5px; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
+canvas { border: 1px solid black; display:block}
+#menu { position: absolute; top:20px; right:20px;}
+.menuchunk {background:  rgb(0,0,0); color:white; padding: 5px; border-radius:4px; margin:5px;}
+.menuchunk ul {list-style: none; padding: 0px; margin: 0px;}
+.menuchunk a {color: #ccccff;}
+.menuchunk li {padding: 2px;}
+.modest {font-size: 8pt; color:gray;}

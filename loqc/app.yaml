@@ -1,0 +1,38 @@
+application: loqc
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /doc
+  static_files: doc/index.html
+  upload: doc/(.*)
+
+- url: /scripts
+  static_dir: scripts
+
+- url: /favicon.ico
+  static_files: images/favicon.ico
+  upload: images/favicon.ico
+
+- url: /apple-touch-icon.png
+  static_files: images/apple-touch-icon.png
+  upload: images/apple-touch-icon.png
+
+- url: /.*
+  script: loqc.application
+
+
+libraries:
+- name: webapp2
+  version: latest
+
+- name: jinja2
+  version: latest
+
+- name: numpy
+  version: latest
