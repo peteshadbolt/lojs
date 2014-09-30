@@ -4,65 +4,62 @@
    TODO: Pretty hacky at the moment!
 */
 
-var mouse = { "pressed": false, "wasClick": false,
-    "x":0, "y":0, "xo":0, "yo":0, "dx":0, "dy":0, 
-    "cx":0, "cy":0, "ax":0, "ay":0, "oax":0, "oay":0,
-    "dcx":0, "dcy":0, "sx":0, "sy":0}
 
-function fixMouse(evt) {
-    mouse.xo = mouse.x; mouse.yo=mouse.y;
-    mouse.x = evt.offsetX || (evt.pageX - canvas.offsetLeft)-7;
-    mouse.y = evt.offsetY || (evt.pageY - canvas.offsetLeft)-7;
-    mouse.dx=mouse.x-mouse.xo; mouse.dy=mouse.y-mouse.yo;
-    var pos = camera.fromScreen(mouse.x, mouse.y);
-    mouse.oax=mouse.ax; mouse.oay=mouse.ay;
-    mouse.ax=Math.floor(pos.x/gridSize);
-    mouse.ay=Math.floor(pos.y/gridSize);
+function Mouse() {
+    var self = this;
+    var pressed = false;
+    var wasClick = false;
+    var screenPos = {"x":0, "y":0};
+    var screenPosOld = {"x":0, "y":0};
+    var screenDelta = {"x":0, "y":0};
+    var worldPos = {"x":0, "y":0};
 
-    // Need to redraw if the target square moved
-    if (mouse.ax!=mouse.oax || mouse.ay!=mouse.oay) { 
+    self.update = function (evt) {
+        self.screenPosOld.x=self.screenPos.x; self.screenPosOld.y=self.screenPos.y;
+        self.screenPos.x = evt.offsetX || (evt.pageX - gc.offsetLeft)-7;
+        self.screenPos.y = evt.offsetY || (evt.pageY - canvas.offsetTop)-7;
+        self.screenDelta.x = self.screenPos.x - self.screenPosOld.x;
+        self.screenDelta.y = self.screenPos.y - self.screenPosOld.y;
+        self.worldPos = camera.fromScreen(self.screenPos);
+    }
+
+    self.bind = function (evt) {
+        gc.addEventListener("mousemove", self.onMove);
+        gc.addEventListener("mousedown", self.onDown);
+        gc.addEventListener("mouseup", self.onUp);
+        gc.addEventListener("mousewheel", self.onScroll, false);
+        gc.addEventListener('DOMMouseScroll', self.onScroll, false);
+    }
+
+    self.onMove = function (evt) {
+        self.update(evt);
+        editor.update();
+        if (self.pressed){
+            camera.translate(mouse.dx, mouse.dy);
+            requestAnimationFrame(redraw);
+            if (Math.abs(self.screenDelta.x)>1 || Math.abs(self.screenDelta.y)>1){self.wasClick=false;}
+        }
+    }
+
+    self.onDown = function (evt) {
+        self.update(evt);
+        self.wasClick=true;
+        self..pressed=true;
+    }
+
+    self.onUp = function (evt) {
+        self.update(evt);
+        self.pressed=false;
+        if (self.wasClick) {editor.click(mouse.ax, mouse.ay);}
+    }
+
+    self.onScroll = function (evt) {
+        self.update(evt);
+        var delta = -evt.detail;
+        camera.zoom(delta*.05);
         requestAnimationFrame(redraw);
+        return false;
     }
 }
 
-function bindMouse() {
-    gc.addEventListener("mousemove", mouseMove);
-    gc.addEventListener("mousedown", mouseDown);
-    gc.addEventListener("mouseup", mouseUp);
-    gc.addEventListener("mousewheel", mouseScroll, false);
-    gc.addEventListener('DOMMouseScroll', mouseScroll, false);
-}
-
-function mouseMove(evt) {
-    fixMouse(evt);
-    editor.update();
-    if (mouse.pressed){
-        camera.translate(mouse.dx, mouse.dy);
-        requestAnimationFrame(redraw);
-        if (Math.abs(mouse.dx)>1 || Math.abs(mouse.dy)>1){ mouse.wasClick=false;}
-    }
-}
-
-function mouseDown(evt) {
-    fixMouse(evt);
-    mouse.wasClick=true;
-    mouse.pressed=true;
-}
-
-function mouseUp(evt) {
-    fixMouse(evt);
-    mouse.pressed=false;
-    if (mouse.wasClick)
-    {
-        editor.hit(mouse.ax, mouse.ay);
-    }
-}
-
-function mouseScroll(evt){
-    var delta = -evt.detail;
-    fixMouse(evt);
-    camera.zoom(delta*.05);
-    requestAnimationFrame(redraw);
-    return false;
-}
 

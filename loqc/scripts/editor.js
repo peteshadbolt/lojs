@@ -6,6 +6,7 @@ function Editor(targetCircuit, targetSimulator)
     self.simulator = targetSimulator;
     self.cursor = new Coupler(0, 0, .5);
     self.keyMap = {88: Coupler, 80: Phaseshifter, 83: SPS, 68: Detector};
+    self.bindKeys();
 
     // Change mode by pressing keys
     self.bindKeys = function () {

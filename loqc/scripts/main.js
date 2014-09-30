@@ -5,9 +5,7 @@
 
 var gc, gd;
 var gridSize=100;
-var camera;
-var circuit;
-var editor;
+var camera, circuit, mouse, editor;
 
 // Run on startup
 window.onload=main;
@@ -41,27 +39,21 @@ function main() {
     gc=document.getElementById('canvas');
     gd=gc.getContext('2d');
 
-    // Create a camera object
+    // Create a camera and a mouse
     camera=new Camera();
+    mouse=new Mouse();
+    mouse.bind(gd);
 
-    // Bind a bunch of events
-    window.onresize=resize;
-    bindMouse(gd);
-
-    // Continuously update the camera
-    setInterval(camera.update, 33);
-
-    // Create the circuit and a simulator
+    // Create the circuit, simulator, and editor
     circuit = new Circuit();
     simulator = new Simulator(circuit);
-
-    // Create an editor
     editor=new Editor(circuit, simulator);
-    editor.bindKeys();
 
-    // Fit to window and redraw
+    // Away we go
+    window.onresize=resize;
     resize();
     camera.center(gc);
+    camera.loop();
 }
 
 

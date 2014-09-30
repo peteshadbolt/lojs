@@ -4,6 +4,10 @@ function Camera()
     self.x=0; self.y=0;
     self.z=.55; self.tz=.55;
 
+    self.loop = function () {
+        setInterval(self.update, 33);
+    }
+
     self.translate = function (dx, dy) {
         self.x+=dx; self.y+=dy;
     }
