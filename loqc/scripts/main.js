@@ -13,8 +13,8 @@ var editor;
 window.onload=main;
 
 function resize() {
-    gc.width  = Math.floor(window.innerWidth-20);
-    gc.height = Math.floor(window.innerHeight-80);
+    gc.width  = Math.floor(window.innerWidth);
+    gc.height = Math.floor(window.innerHeight);
     redraw();
 }
 

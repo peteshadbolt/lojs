@@ -17,12 +17,12 @@ function drawGrid(ctx) {
         ctx.strokeStyle= "#cccccc";
         ctx.beginPath();
         for (var i=ox; i<ox+nx; i++) { 
-            ctx.moveTo(Math.floor((i+.5)*gridSize), topLeft.y); 
-            ctx.lineTo(Math.floor((i+.5)*gridSize), bottomRight.y); 
+            ctx.moveTo(Math.floor(i*gridSize), topLeft.y); 
+            ctx.lineTo(Math.floor(i*gridSize), bottomRight.y); 
         }
         for (var i=oy; i<oy+ny; i++) {
-            ctx.moveTo(topLeft.x, Math.floor((i+.5)*gridSize)); 
-            ctx.lineTo(bottomRight.x, Math.floor((i+.5)*gridSize)); 
+            ctx.moveTo(topLeft.x, Math.floor(i*gridSize)); 
+            ctx.lineTo(bottomRight.x, Math.floor(i*gridSize)); 
         }
         ctx.stroke();
     }
@@ -32,12 +32,12 @@ function drawGrid(ctx) {
     ctx.lineWidth=2/camera.z;
     ctx.beginPath();
     if (topLeft.x<0 && bottomRight.x<<0) {
-        ctx.moveTo(gridSize/2, topLeft.y); 
-        ctx.lineTo(gridSize/2, bottomRight.y); 
+        ctx.moveTo(0, topLeft.y); 
+        ctx.lineTo(0, bottomRight.y); 
     }
     if (topLeft.y<0 && bottomRight.y<<0) {
-        ctx.moveTo(topLeft.x, gridSize/2); 
-        ctx.lineTo(bottomRight.x, gridSize/2); 
+        ctx.moveTo(topLeft.x, 0); 
+        ctx.lineTo(bottomRight.x, 0); 
     }
     ctx.stroke();
     ctx.lineWidth=1;

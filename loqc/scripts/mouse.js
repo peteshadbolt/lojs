@@ -4,7 +4,7 @@
    TODO: Pretty hacky at the moment!
 */
 
-var mouse = { "pressed": false, "wasclick": false,
+var mouse = { "pressed": false, "wasClick": false,
     "x":0, "y":0, "xo":0, "yo":0, "dx":0, "dy":0, 
     "cx":0, "cy":0, "ax":0, "ay":0, "oax":0, "oay":0,
     "dcx":0, "dcy":0, "sx":0, "sy":0}
@@ -39,20 +39,20 @@ function mouseMove(evt) {
     if (mouse.pressed){
         camera.translate(mouse.dx, mouse.dy);
         requestAnimationFrame(redraw);
-        if (Math.abs(mouse.dx)>1 || Math.abs(mouse.dy)>1){ mouse.wasclick=false;}
+        if (Math.abs(mouse.dx)>1 || Math.abs(mouse.dy)>1){ mouse.wasClick=false;}
     }
 }
 
 function mouseDown(evt) {
     fixMouse(evt);
-    mouse.wasclick=true;
+    mouse.wasClick=true;
     mouse.pressed=true;
 }
 
 function mouseUp(evt) {
     fixMouse(evt);
     mouse.pressed=false;
-    if (mouse.wasclick)
+    if (mouse.wasClick)
     {
         editor.hit(mouse.ax, mouse.ay);
     }

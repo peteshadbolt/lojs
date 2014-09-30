@@ -15,7 +15,8 @@ function Simulator(myCircuit) {
             if (xhr.readyState==4 && xhr.status==200) {
                 var responseObj=JSON.parse(xhr.responseText);
                 var probabilities=responseObj.probabilities;
-                console.log(probabilities); }
+                //console.log(probabilities); 
+            }
         }
 
         xhr.open("POST","/",true);

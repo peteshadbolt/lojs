@@ -187,7 +187,7 @@ function Deleter(x, y){
     self.x = x; self.y = y;
     self.draw = function(ctx) {
         startDrawing(ctx, self.x, self.y);
-        ctx.lineWidth=.2;
+        ctx.lineWidth=.1;
         ctx.moveTo(.2, .2);
         ctx.lineTo(.8, .8); 
         ctx.moveTo(.2, .8);
