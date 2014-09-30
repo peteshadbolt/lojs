@@ -52,6 +52,15 @@ function Grid() {
     self.inside = function (worldPos) {
         return {"x":Math.floor(worldPos.x/self.size), "y":Math.floor(worldPos.y/self.size)}
     }
+
+    // Snap using knowledge of an object's width and height
+    self.snap = function (worldPos, dimensions) {
+        var w=dimensions.width;
+        var h=dimensions.height;
+        var temp={"x":worldPos.x+self.size*(1-w)/2, 
+                  "y":worldPos.y+self.size*(1-h)/2};
+        return self.inside(temp);
+    }
 }
 
 function drawGrid(ctx) {

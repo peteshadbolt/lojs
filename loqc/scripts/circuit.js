@@ -63,7 +63,7 @@ function Circuit() {
 
     // Add horizontal lines to make clear the connections between components
     // Also work out the input and output ports
-    self.decorate = function (x, y) {
+    self.decorate = function () {
         // Remove all connectors
         self.connectors.splice(0, self.connectors.length);
 
@@ -100,67 +100,69 @@ function Circuit() {
     }   
 
     self.request = function (component, worldPos) {
-        // It better be on the grid
-        var snappedPosition = grid.inside(worldPos);
-        return new component(snappedPosition.x, snappedPosition.y);
+        var c=new component(0,0);
+        // Make sure that it is on the nearest grid point
+        c.position = grid.snap(worldPos, c.dimensions);
+        return c;
+    }
+
+    self.accept = function (component) {
+        self.components.push(component);
+        self.decorate();
     }
 }
 
 
 //************************************************************
 // Circuit components
-function Beamsplitter(x, y, ratio) {
-    this.x = x; this.y = y;
-    this.ratio = ratio ? ratio : 0.5;
-    this.draw = drawBS;
-}
-
 function Coupler(x, y, ratio) {
-    this.x = x; this.y = y;
+    this.position={"x":x, "y":y};
+    this.dimensions={"width":1, "height":1};
     this.ratio = ratio ? ratio : 0.5;
     this.draw = drawCoupler;
     this.toJSON = function () {
-        return {"type": "coupler", "x": this.x, "y": this.y, "ratio": this.ratio};
+        return {"type": "coupler", "position": this.position, "ratio": this.ratio};
     }
 }
 
 function Phaseshifter(x, y, phase) {
-    this.x = x; this.y = y;
+    this.position={"x":x, "y":y};
+    this.dimensions={"width":1, "height":0};
     this.phase = phase ? phase : 0;
     this.draw = drawPS;
     this.toJSON = function () {
-        return {"type": "phaseshifter", "x": this.x, "y": this.y, "phase": this.phase};
+        return {"type": "phaseshifter", "position": this.position,  "phase": this.phase};
     }
 }
 
 function Connector(x, y) {
-    this.x = x; this.y = y;
+    this.position={"x":x, "y":y};
     this.draw = drawConnector;
 }
 
 function SPS(x, y) {
-    this.x = x; this.y = y;
+    this.position={"x":x, "y":y};
     this.draw = drawSPS;
 }
 
 function Detector(x, y) {
-    this.x = x; this.y = y;
+    this.position={"x":x, "y":y};
     this.draw = drawDetector;
 }
 
-function Deleter(x, y){
-    this.x = x; this.y = y;
-    this.draw = drawDeleter;
-}
+//function Deleter(x, y){
+    //this.x = x; this.y = y;
+    //this.draw = drawDeleter;
+//}
 
 //************************************************************
 // Boilerplate for drawing functions. TODO: optimize this stuff a lot!
-function startDrawing(ctx, x, y) {
+function startDrawing(ctx, position) {
     ctx.save();
     ctx.scale(grid.size, grid.size);
     ctx.lineWidth=(1/camera.z)/grid.size;
     ctx.strokeStyle="black";
-    ctx.translate(x,y);
+    ctx.translate(position.x, position.y);
     ctx.beginPath();
 }
 
@@ -174,14 +176,14 @@ function stopDrawing(ctx) {
 //************************************************************
 // Complicated drawing functions
 function drawConnector(ctx) {
-    startDrawing(ctx, this.x, this.y);
+    startDrawing(ctx, this.position);
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 0); 
     stopDrawing(ctx);
 }
 
 function drawSPS(ctx) {
-    startDrawing(ctx, this.x, this.y);
+    startDrawing(ctx, this.position);
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 0); 
     ctx.stroke();
@@ -193,7 +195,7 @@ function drawSPS(ctx) {
 }
 
 function drawDetector(ctx) {
-    startDrawing(ctx, this.x, this.y);
+    startDrawing(ctx, this.position);
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 1); 
     ctx.moveTo(0, 1);
@@ -202,7 +204,7 @@ function drawDetector(ctx) {
 }
 
 function drawDeleter(ctx) {
-    startDrawing(ctx, this.x, this.y);
+    startDrawing(ctx, this.position);
     ctx.lineWidth=.1;
     ctx.moveTo(.2, .2);
     ctx.lineTo(.8, .8); 
@@ -212,7 +214,7 @@ function drawDeleter(ctx) {
 }
 
 function drawPS(ctx) {
-    startDrawing(ctx, this.x, this.y);
+    startDrawing(ctx, this.position);
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 0); 
     ctx.stroke();
@@ -224,7 +226,7 @@ function drawPS(ctx) {
 }
 
 function drawBS(ctx) {
-    startDrawing(ctx, this.x, this.y);
+    startDrawing(ctx, this.position);
     ctx.moveTo(0, 0); ctx.lineTo(1,1); 
     ctx.moveTo(0, 1); ctx.lineTo(1,0); 
     ctx.moveTo(.25,.5); ctx.lineTo(.75,.5); 
@@ -233,7 +235,7 @@ function drawBS(ctx) {
 
 function drawCoupler(ctx) {
     gap=0.03;
-    startDrawing(ctx, this.x, this.y);
+    startDrawing(ctx, this.position);
     ctx.moveTo(0, 0);
     ctx.lineTo(0.1, 0);
     ctx.bezierCurveTo(.25, 0, .25, .5-gap, .4,  .5-gap); 

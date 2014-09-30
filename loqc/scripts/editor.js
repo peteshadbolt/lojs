@@ -27,7 +27,8 @@ function Editor(targetCircuit, targetSimulator)
     }
 
     self.click = function (x, y) {
-        self.circuit.accept(self.mode, mouse.worldPos);
+        self.circuit.accept(self.cursor);
+        requestAnimationFrame(redraw);
     }
 
     self.draw = function (ctx) {

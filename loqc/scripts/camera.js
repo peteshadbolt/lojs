@@ -40,16 +40,8 @@ function Camera()
         }
     }
 
-    self.toScreen = function(worldPos) {
-        console.log("TOSSCREEN");
-        return {
-            "x": worldPos.x + self.ox + self.x,
-            "y": worldPos.y + self.oy + self.y
-        }
-    }
-
-    // Alias the above functions
-    self.toWorld=self.fromScreen; self.fromWorld=self.toScreen;
+    // Alias the above function
+    self.toWorld=self.fromScreen; 
 
     // Check to see whether we need to do a smooth zoom
     self.loop = function () {

@@ -13,21 +13,16 @@ function Mouse() {
     self.screenPosOld = {"x":0, "y":0};
     self.screenDelta = {"x":0, "y":0};
     self.worldPos = {"x":0, "y":0};
-    self.worldPosOld = {"x":0, "y":0};
-    self.worldDelta = {"x":0, "y":0};
     self.gridPos = {"x":0, "y":0};
 
     self.update = function (evt) {
         self.screenPosOld.x=self.screenPos.x; self.screenPosOld.y=self.screenPos.y;
-        self.worldPosOld.x=self.worldPos.x; self.worldPosOld.y=self.worldPos.y;
         self.screenPos.x = evt.offsetX || (evt.pageX - gc.offsetLeft);
         self.screenPos.y = evt.offsetY || (evt.pageY - canvas.offsetTop);
         self.worldPos = camera.fromScreen(self.screenPos);
         self.gridPos = grid.inside(self.worldPos);
         self.screenDelta.x = self.screenPos.x - self.screenPosOld.x;
         self.screenDelta.y = self.screenPos.y - self.screenPosOld.y;
-        self.worldDelta.x = self.worldPos.x - self.worldPosOld.x;
-        self.worldDelta.y = self.worldPos.y - self.worldPosOld.y;
     }
 
     self.bind = function (evt) {
