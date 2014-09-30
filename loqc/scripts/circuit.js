@@ -99,9 +99,10 @@ function Circuit() {
         return JSON.stringify(json);
     }   
 
-    self.request = function (component, x, y) {
-        console.log("Got a request for a", component, "at position", x, y);
-        return new component(mouse.ax, mouse.ay);
+    self.request = function (component, worldPos) {
+        // It better be on the grid
+        var snappedPosition = grid.inside(worldPos);
+        return new component(snappedPosition.x, snappedPosition.y);
     }
 }
 
@@ -156,8 +157,8 @@ function Deleter(x, y){
 // Boilerplate for drawing functions. TODO: optimize this stuff a lot!
 function startDrawing(ctx, x, y) {
     ctx.save();
-    ctx.scale(gridSize,gridSize);
-    ctx.lineWidth=(1/camera.z)/gridSize;
+    ctx.scale(grid.size, grid.size);
+    ctx.lineWidth=(1/camera.z)/grid.size;
     ctx.strokeStyle="black";
     ctx.translate(x,y);
     ctx.beginPath();

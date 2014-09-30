@@ -4,8 +4,7 @@
 */
 
 var gc, gd;
-var gridSize=100;
-var camera, circuit, mouse, editor;
+var camera, grid, circuit, mouse, editor;
 
 // Run on startup
 window.onload=main;
@@ -22,11 +21,10 @@ function redraw() {
 
     // Transform into camera-space
     gd.save();
-    gd.translate(camera.x, camera.y);
-    gd.scale(camera.z, camera.z);
+    camera.contextToWorld(gd);
 
     // Draw the grid, circuit, editor
-    drawGrid(gd);
+    grid.draw(gd);
     circuit.draw(gd);
     editor.draw(gd);
 
@@ -39,7 +37,8 @@ function main() {
     gc=document.getElementById('canvas');
     gd=gc.getContext('2d');
 
-    // Create a camera and a mouse
+    // Create a grid, camera, and mouse
+    grid=new Grid();
     camera=new Camera();
     mouse=new Mouse();
     mouse.bind(gd);
@@ -54,9 +53,5 @@ function main() {
     resize();
     camera.center(gc);
     camera.loop();
+    requestAnimationFrame(redraw);
 }
-
-
-// Dumping ground
-//$.getJSON('geometry', onGeometry); }
-

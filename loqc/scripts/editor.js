@@ -6,7 +6,6 @@ function Editor(targetCircuit, targetSimulator)
     self.simulator = targetSimulator;
     self.cursor = new Coupler(0, 0, .5);
     self.keyMap = {88: Coupler, 80: Phaseshifter, 83: SPS, 68: Detector};
-    self.bindKeys();
 
     // Change mode by pressing keys
     self.bindKeys = function () {
@@ -23,16 +22,18 @@ function Editor(targetCircuit, targetSimulator)
     }
 
     self.update = function () {
-        self.cursor = self.circuit.request(self.mode, mouse.x, mouse.y);
+        self.cursor = self.circuit.request(self.mode, mouse.worldPos);
+        requestAnimationFrame(redraw);
     }
 
-    self.hit = function (x, y) {
-        self.circuit.demand(self.mode, mouse.x, mouse.y);
+    self.click = function (x, y) {
+        self.circuit.accept(self.mode, mouse.worldPos);
     }
 
     self.draw = function (ctx) {
         self.cursor.draw(ctx);
     }
 
+    self.bindKeys();
 }
 
