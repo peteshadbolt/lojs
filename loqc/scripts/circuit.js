@@ -32,7 +32,7 @@ function Circuit() {
         }
     }
 
-    // Find at position (x,y);
+    // Find the component at position (x,y); TODO this can be O(log(N))
     self.find = function (x, y) {
         for (var i=0; i<self.components.length; i++) {
             var c = self.components[i];
@@ -54,6 +54,7 @@ function Circuit() {
         };
     }
 
+    // TODO: below are quite inefficient and belong somewhere else
     // Is position (x,y) empty?
     self.empty = function (x, y) { return self.find(x, y)==undefined; }
 
@@ -97,13 +98,67 @@ function Circuit() {
         }
         return JSON.stringify(json);
     }   
+
+    self.request = function (component, x, y) {
+        console.log("Got a request for a", component, "at position", x, y);
+        return new component(mouse.ax, mouse.ay);
+    }
 }
 
-// Useful boilerplatey things
+
+//************************************************************
+// Circuit components
+function Beamsplitter(x, y, ratio) {
+    this.x = x; this.y = y;
+    this.ratio = ratio ? ratio : 0.5;
+    this.draw = drawBS;
+}
+
+function Coupler(x, y, ratio) {
+    this.x = x; this.y = y;
+    this.ratio = ratio ? ratio : 0.5;
+    this.draw = drawCoupler;
+    this.toJSON = function () {
+        return {"type": "coupler", "x": this.x, "y": this.y, "ratio": this.ratio};
+    }
+}
+
+function Phaseshifter(x, y, phase) {
+    this.x = x; this.y = y;
+    this.phase = phase ? phase : 0;
+    this.draw = drawPS;
+    this.toJSON = function () {
+        return {"type": "phaseshifter", "x": this.x, "y": this.y, "phase": this.phase};
+    }
+}
+
+function Connector(x, y) {
+    this.x = x; this.y = y;
+    this.draw = drawConnector;
+}
+
+function SPS(x, y) {
+    this.x = x; this.y = y;
+    this.draw = drawSPS;
+}
+
+function Detector(x, y) {
+    this.x = x; this.y = y;
+    this.draw = drawDetector;
+}
+
+function Deleter(x, y){
+    this.x = x; this.y = y;
+    this.draw = drawDeleter;
+}
+
+//************************************************************
+// Boilerplate for drawing functions. TODO: optimize this stuff a lot!
 function startDrawing(ctx, x, y) {
     ctx.save();
     ctx.scale(gridSize,gridSize);
     ctx.lineWidth=(1/camera.z)/gridSize;
+    ctx.strokeStyle="black";
     ctx.translate(x,y);
     ctx.beginPath();
 }
@@ -114,98 +169,54 @@ function stopDrawing(ctx) {
     ctx.restore();
 }
 
-// Circuit components
-function Beamsplitter(x, y, ratio) {
-    var self=this;
-    self.x = x; self.y = y;
-    self.ratio = ratio ? ratio : 0.5;
-    self.draw = drawBS;
-}
 
-function Coupler(x, y, ratio) {
-    var self=this;
-    self.x = x; self.y = y;
-    self.ratio = ratio ? ratio : 0.5;
-    self.draw = drawCoupler;
-    self.toJSON = function () {
-        return {"type": "coupler", "x": self.x, "y": self.y, "ratio": self.ratio};
-    }
-}
-
-function Phaseshifter(x, y, phase) {
-    var self=this;
-    self.x = x; self.y = y;
-    self.phase = phase ? phase : 0;
-    self.draw = drawPS;
-    self.toJSON = function () {
-        return {"type": "phaseshifter", "x": self.x, "y": self.y, "phase": self.phase};
-    }
-}
-
-function Connector(x, y) {
-    var self=this;
-    self.x = x; self.y = y;
-    self.draw = function(ctx) {
-        startDrawing(ctx, self.x, self.y);
-        ctx.moveTo(0, 0);
-        ctx.lineTo(1, 0); 
-        stopDrawing(ctx);
-    }
-}
-
-function SPS(x, y) {
-    var self=this;
-    self.x = x; self.y = y;
-    self.draw = function(ctx) {
-        startDrawing(ctx, self.x, self.y);
-        ctx.moveTo(0, 0);
-        ctx.lineTo(1, 0); 
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
-        ctx.fillStyle = 'red';
-        ctx.fill();
-        stopDrawing(ctx);
-    }
-}
-
-function Detector(x, y) {
-    var self=this;
-    self.x = x; self.y = y;
-    self.draw = function(ctx) {
-        startDrawing(ctx, self.x, self.y);
-        ctx.moveTo(0, 0);
-        ctx.lineTo(1, 1); 
-        ctx.moveTo(0, 1);
-        ctx.lineTo(1, 0); 
-        stopDrawing(ctx);
-    }
-}
-
-function Deleter(x, y){
-    var self=this;
-    self.x = x; self.y = y;
-    self.draw = function(ctx) {
-        startDrawing(ctx, self.x, self.y);
-        ctx.lineWidth=.1;
-        ctx.moveTo(.2, .2);
-        ctx.lineTo(.8, .8); 
-        ctx.moveTo(.2, .8);
-        ctx.lineTo(.8, .2); 
-        stopDrawing(ctx);
-    }
-}
-
+//************************************************************
 // Complicated drawing functions
+function drawConnector(ctx) {
+    startDrawing(ctx, this.x, this.y);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(1, 0); 
+    stopDrawing(ctx);
+}
+
+function drawSPS(ctx) {
+    startDrawing(ctx, this.x, this.y);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(1, 0); 
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    stopDrawing(ctx);
+}
+
+function drawDetector(ctx) {
+    startDrawing(ctx, this.x, this.y);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(1, 1); 
+    ctx.moveTo(0, 1);
+    ctx.lineTo(1, 0); 
+    stopDrawing(ctx);
+}
+
+function drawDeleter(ctx) {
+    startDrawing(ctx, this.x, this.y);
+    ctx.lineWidth=.1;
+    ctx.moveTo(.2, .2);
+    ctx.lineTo(.8, .8); 
+    ctx.moveTo(.2, .8);
+    ctx.lineTo(.8, .2); 
+    stopDrawing(ctx);
+}
+
 function drawPS(ctx) {
     startDrawing(ctx, this.x, this.y);
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 0); 
-    ctx.moveTo(0, 1);
-    ctx.lineTo(1, 1); 
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(.5, 1, .1, 0, 2*Math.PI, false);
+    ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
     ctx.fillStyle = 'white';
     ctx.fill();
     stopDrawing(ctx);
@@ -213,12 +224,9 @@ function drawPS(ctx) {
 
 function drawBS(ctx) {
     startDrawing(ctx, this.x, this.y);
-    ctx.moveTo(0, 0);
-    ctx.lineTo(1,1); 
-    ctx.moveTo(0, 1);
-    ctx.lineTo(1,0); 
-    ctx.moveTo(.25,.5); 
-    ctx.lineTo(.75,.5); 
+    ctx.moveTo(0, 0); ctx.lineTo(1,1); 
+    ctx.moveTo(0, 1); ctx.lineTo(1,0); 
+    ctx.moveTo(.25,.5); ctx.lineTo(.75,.5); 
     stopDrawing(ctx);
 }
 
@@ -238,7 +246,6 @@ function drawCoupler(ctx) {
     ctx.lineTo(.6, .5+gap); 
     ctx.bezierCurveTo(.75, .5+gap, .75, 1, .9,   1); 
     ctx.lineTo(1, 1);
-
     stopDrawing(ctx);
 }
 
