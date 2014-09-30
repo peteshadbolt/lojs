@@ -7,7 +7,8 @@ function Camera()
 {
     var self=this;
     self.x=0; self.y=0;
-    self.z=.55; self.tz=.55;
+    //self.z=.55; self.tz=.55;
+    self.z=55; self.tz=55;
     self.ox=0; self.oy=0;
 
     self.translate = function (delta) {
@@ -17,8 +18,8 @@ function Camera()
 
     self.zoom = function (dz) {
         self.tz+=dz;
-        if (self.tz<.1) {self.tz=.1};
-        if (self.tz>5) {self.tz=5};
+        if (self.tz<10) {self.tz=10};
+        if (self.tz>100) {self.tz=100};
     }
 
     self.center = function (canvas) {
@@ -50,7 +51,7 @@ function Camera()
 
     // For smooth zooming and targeting
     self.update = function () {
-        if (Math.abs(self.z-self.tz)>.01) {
+        if (Math.abs(self.z-self.tz)>1) {
             // Store the position of the mouse
             var temp1 = self.fromScreen(mouse.screenPos);
             self.z+=(self.tz-self.z)*.4

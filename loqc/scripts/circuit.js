@@ -156,34 +156,31 @@ function Detector(x, y) {
 //}
 
 //************************************************************
-// Boilerplate for drawing functions. TODO: optimize this stuff a lot!
+// Boilerplate for drawing functions. 
 function startDrawing(ctx, position) {
     ctx.save();
-    ctx.scale(grid.size, grid.size);
-    ctx.lineWidth=(1/camera.z)/grid.size;
-    ctx.strokeStyle="black";
+    ctx.lineWidth=1/camera.z; ctx.strokeStyle="black";
     ctx.translate(position.x, position.y);
-    ctx.beginPath();
 }
 
 // Finish drawing and go back to screen space
-function stopDrawing(ctx) {
-    ctx.stroke();
-    ctx.restore();
-}
+function stopDrawing(ctx) { ctx.restore(); }
 
 
 //************************************************************
 // Complicated drawing functions
 function drawConnector(ctx) {
     startDrawing(ctx, this.position);
+    ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 0); 
+    ctx.stroke();
     stopDrawing(ctx);
 }
 
 function drawSPS(ctx) {
     startDrawing(ctx, this.position);
+    ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 0); 
     ctx.stroke();
@@ -191,30 +188,36 @@ function drawSPS(ctx) {
     ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
     ctx.fillStyle = 'red';
     ctx.fill();
+    ctx.stroke();
     stopDrawing(ctx);
 }
 
 function drawDetector(ctx) {
     startDrawing(ctx, this.position);
+    ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 1); 
     ctx.moveTo(0, 1);
     ctx.lineTo(1, 0); 
+    ctx.stroke();
     stopDrawing(ctx);
 }
 
 function drawDeleter(ctx) {
     startDrawing(ctx, this.position);
-    ctx.lineWidth=.1;
+    ctx.beginPath();
+    ctx.lineWidth=.01;
     ctx.moveTo(.2, .2);
     ctx.lineTo(.8, .8); 
     ctx.moveTo(.2, .8);
     ctx.lineTo(.8, .2); 
+    ctx.stroke();
     stopDrawing(ctx);
 }
 
 function drawPS(ctx) {
     startDrawing(ctx, this.position);
+    ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(1, 0); 
     ctx.stroke();
@@ -222,20 +225,14 @@ function drawPS(ctx) {
     ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
     ctx.fillStyle = 'white';
     ctx.fill();
-    stopDrawing(ctx);
-}
-
-function drawBS(ctx) {
-    startDrawing(ctx, this.position);
-    ctx.moveTo(0, 0); ctx.lineTo(1,1); 
-    ctx.moveTo(0, 1); ctx.lineTo(1,0); 
-    ctx.moveTo(.25,.5); ctx.lineTo(.75,.5); 
+    ctx.stroke();
     stopDrawing(ctx);
 }
 
 function drawCoupler(ctx) {
     gap=0.03;
     startDrawing(ctx, this.position);
+    ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(0.1, 0);
     ctx.bezierCurveTo(.25, 0, .25, .5-gap, .4,  .5-gap); 
@@ -249,6 +246,7 @@ function drawCoupler(ctx) {
     ctx.lineTo(.6, .5+gap); 
     ctx.bezierCurveTo(.75, .5+gap, .75, 1, .9,   1); 
     ctx.lineTo(1, 1);
+    ctx.stroke();
     stopDrawing(ctx);
 }
 

@@ -5,28 +5,28 @@
 
 function Grid() {
     var self=this;
-    self.size=100;
     self.draw=function (ctx) {
         // Figure out the boundaries
         var topLeft = camera.fromScreen({"x":0,"y":0});
         var bottomRight = camera.fromScreen({"x":ctx.canvas.width, "y":ctx.canvas.height});
 
-        var nx = Math.ceil((bottomRight.x - topLeft.x)/self.size)+1;
-        var ny = Math.ceil((bottomRight.y - topLeft.y)/self.size)+1;
-        var ox = Math.floor(topLeft.x/self.size);
-        var oy = Math.floor(topLeft.y/self.size);
+        var nx = Math.ceil(bottomRight.x - topLeft.x)+1;
+        var ny = Math.ceil(bottomRight.y - topLeft.y)+1;
+        var ox = Math.floor(topLeft.x);
+        var oy = Math.floor(topLeft.y);
 
         // Draw the grid when we zoom in enough
-        if (camera.z>0.5){
+        if (camera.z>50){
+            ctx.lineWidth=0.01;
             ctx.strokeStyle= "#cccccc";
             ctx.beginPath();
             for (var i=ox; i<ox+nx; i++) { 
-                ctx.moveTo(Math.floor(i*self.size), topLeft.y); 
-                ctx.lineTo(Math.floor(i*self.size), bottomRight.y); 
+                ctx.moveTo(i, topLeft.y); 
+                ctx.lineTo(i, bottomRight.y); 
             }
             for (var i=oy; i<oy+ny; i++) {
-                ctx.moveTo(topLeft.x, Math.floor(i*self.size)); 
-                ctx.lineTo(bottomRight.x, Math.floor(i*self.size)); 
+                ctx.moveTo(topLeft.x, i); 
+                ctx.lineTo(bottomRight.x, i); 
             }
             ctx.stroke();
         }
@@ -44,21 +44,20 @@ function Grid() {
             ctx.lineTo(bottomRight.x, 0); 
         }
         ctx.stroke();
-        ctx.lineWidth=1;
     }
 
 
     // Find the cell containing a point in the world
     self.inside = function (worldPos) {
-        return {"x":Math.floor(worldPos.x/self.size), "y":Math.floor(worldPos.y/self.size)}
+        return {"x":Math.floor(worldPos.x), "y":Math.floor(worldPos.y)}
     }
 
     // Snap using knowledge of an object's width and height
     self.snap = function (worldPos, dimensions) {
         var w=dimensions.width;
         var h=dimensions.height;
-        var temp={"x":worldPos.x+self.size*(1-w)/2, 
-                  "y":worldPos.y+self.size*(1-h)/2};
+        var temp={"x":worldPos.x+(1-w)/2, 
+                  "y":worldPos.y+(1-h)/2};
         return self.inside(temp);
     }
 }

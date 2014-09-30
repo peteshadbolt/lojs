@@ -58,7 +58,7 @@ function Mouse() {
     self.onScroll = function (evt) {
         self.update(evt);
         var delta = -evt.detail;
-        camera.zoom(delta*.05);
+        camera.zoom(delta*5);
         requestAnimationFrame(redraw);
         return false;
     }
