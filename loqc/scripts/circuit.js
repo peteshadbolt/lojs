@@ -12,31 +12,36 @@ function Circuit() {
 
     // Draw the circuit
     self.draw = function (ctx) {
-        ctx.strokeStyle="#000000";
+        // Box around circuit
+        if (self.topLeft.x){
+            startDrawing(ctx, {"x":0, "y":0});
+            ctx.strokeStyle="yellow";
+            ctx.lineWidth=1/camera.z;
+            ctx.beginPath();
+            ctx.moveTo(self.topLeft.x, self.topLeft.y); 
+            ctx.lineTo(self.bottomRight.x, self.topLeft.y); 
+            ctx.lineTo(self.bottomRight.x, self.bottomRight.y); 
+            ctx.lineTo(self.topLeft.x, self.bottomRight.y); 
+            ctx.lineTo(self.topLeft.x, self.topLeft.y); 
+            ctx.fillStyle="#ffffdd";
+            ctx.fill();
+            ctx.stroke();
+            stopDrawing(ctx);
+        }
+
+        // Components and connectors
+        ctx.strokeStyle="black";
         for (var i=0; i<self.components.length; i++) {
             self.components[i].draw(ctx); }
         for (var i=0; i<self.connectors.length; i++) {
             self.connectors[i].draw(ctx); }
-
-        // Box around circuit
-        if (self.topLeft.x){
-            startDrawing(ctx, 0, 0);
-            ctx.strokeStyle= '#999999';
-            ctx.beginPath();
-            ctx.moveTo(self.topLeft.x-1.5, self.topLeft.y-.5); 
-            ctx.lineTo(self.bottomRight.x+2.5, self.topLeft.y-.5); 
-            ctx.lineTo(self.bottomRight.x+2.5, self.bottomRight.y+1.5); 
-            ctx.lineTo(self.topLeft.x-1.5, self.bottomRight.y+1.5); 
-            ctx.lineTo(self.topLeft.x-1.5, self.topLeft.y-.5); 
-            stopDrawing(ctx);
-        }
     }
 
     // Find the component at position (x,y); TODO this can be O(log(N))
     self.find = function (x, y) {
         for (var i=0; i<self.components.length; i++) {
             var c = self.components[i];
-            if (c.x==x && c.y==y) {return c};
+            if (c.position.x==x && c.position.y==y) {return c};
         }
         return undefined;
     }
@@ -46,7 +51,7 @@ function Circuit() {
         var tokill=undefined;
         for (var i=0; i<self.components.length; i++) {
             var c = self.components[i];
-            if (c.x==x && c.y==y) {tokill=i; break;};
+            if (c.position.x==x && c.position.y==y) {tokill=i; break;};
         }
         if (tokill!=undefined){
             self.components.splice(tokill,1)
@@ -70,16 +75,18 @@ function Circuit() {
         // Get the bounds
         self.topLeft={"x":undefined, "y":undefined}; self.bottomRight={"x":undefined, "y":undefined};
         for (var i=0; i<self.components.length; i++) {
-            var c = self.components[i];
-            if (c.x<self.topLeft.x || self.topLeft.x==undefined) {self.topLeft.x=c.x};
-            if (c.y<self.topLeft.y || self.topLeft.y==undefined) {self.topLeft.y=c.y};
-            if (c.x>self.bottomRight.x || self.bottomRight.x==undefined) {self.bottomRight.x=c.x};
-            if (c.y>self.bottomRight.y || self.bottomRight.y==undefined) {self.bottomRight.y=c.y};
+            var c=self.components[i];
+            var cp = c.position;
+            var rp = {"x": c.position.x + c.dimensions.width, "y": c.position.y + c.dimensions.height};
+            if (cp.x<self.topLeft.x || self.topLeft.x==undefined) {self.topLeft.x=cp.x};
+            if (cp.y<self.topLeft.y || self.topLeft.y==undefined) {self.topLeft.y=cp.y};
+            if (rp.x>self.bottomRight.x || self.bottomRight.x==undefined) {self.bottomRight.x=rp.x};
+            if (rp.y>self.bottomRight.y || self.bottomRight.y==undefined) {self.bottomRight.y=rp.y};
         }
 
         // Fill the gaps
-        for (var cx=self.topLeft.x-1; cx<=self.bottomRight.x+1; cx++) {
-            for (var cy=self.topLeft.y; cy<=self.bottomRight.y+1; cy++) {
+        for (var cx=self.topLeft.x-1; cx<self.bottomRight.x+1; cx++) {
+            for (var cy=self.topLeft.y; cy<self.bottomRight.y; cy++) {
                 if (self.empty(cx, cy) && self.empty(cx, cy-1))
                 {
                     self.connectors.push(new Connector(cx, cy));
@@ -159,7 +166,7 @@ function Detector(x, y) {
 // Boilerplate for drawing functions. 
 function startDrawing(ctx, position) {
     ctx.save();
-    ctx.lineWidth=1/camera.z; ctx.strokeStyle="black";
+    ctx.lineWidth=1/camera.z;
     ctx.translate(position.x, position.y);
 }
 

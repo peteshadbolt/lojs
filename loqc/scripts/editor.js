@@ -32,6 +32,7 @@ function Editor(targetCircuit, targetSimulator)
     }
 
     self.draw = function (ctx) {
+        ctx.strokeStyle="gray";
         self.cursor.draw(ctx);
     }
 
