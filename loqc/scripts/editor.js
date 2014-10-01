@@ -28,12 +28,18 @@ function Editor(targetCircuit, targetSimulator)
 
     self.click = function (x, y) {
         self.circuit.accept(self.cursor);
+        simulator.update();
         requestAnimationFrame(redraw);
     }
 
     self.draw = function (ctx) {
         ctx.strokeStyle="gray";
         self.cursor.draw(ctx);
+    }
+
+    self.clear = function () {
+        self.circuit.clear();
+        simulator.update();
     }
 
     self.bindKeys();

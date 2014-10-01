@@ -15,21 +15,21 @@ function Circuit() {
     var self=this;
     self.components=[];
     self.connectors=[];
-    self.topLeft={"x":undefined, "y":undefined}; self.bottomRight={"x":undefined, "y":undefined};
+    self.topLeft=undefined; self.bottomRight=undefined;
 
     // Draw the circuit
     self.draw = function (ctx) {
         // Box around circuit
-        if (self.topLeft.x){
+        if (self.topLeft){
+            var tl=self.topLeft.add(-1.1, -.1)
+            var br=self.bottomRight.add(1.1, .1)
             startDrawing(ctx, {"x":0, "y":0});
-            ctx.strokeStyle="yellow";
+            ctx.strokeStyle="orange";
             ctx.lineWidth=1/camera.z;
             ctx.beginPath();
-            ctx.moveTo(self.topLeft.x, self.topLeft.y); 
-            ctx.lineTo(self.bottomRight.x, self.topLeft.y); 
-            ctx.lineTo(self.bottomRight.x, self.bottomRight.y); 
-            ctx.lineTo(self.topLeft.x, self.bottomRight.y); 
-            ctx.lineTo(self.topLeft.x, self.topLeft.y); 
+            ctx.moveTo(tl.x, tl.y); 
+            ctx.lineTo(br.x, tl.y); ctx.lineTo(br.x, br.y); 
+            ctx.lineTo(tl.x, br.y); ctx.lineTo(tl.x, tl.y); 
             ctx.stroke();
             stopDrawing(ctx);
         }
@@ -68,8 +68,10 @@ function Circuit() {
 
     // Just delete everything
     self.clear=function () {
+        self.topLeft=undefined; self.bottomRight=undefined;
         self.components.splice(0, self.components.length);
         self.decorate();
+        requestAnimationFrame(redraw);
     }
 
     // Add horizontal lines to make clear the connections between components
@@ -77,9 +79,10 @@ function Circuit() {
     self.decorate = function () {
         // Remove all connectors
         self.connectors.splice(0, self.connectors.length);
+        if (self.components.length==0){return;}
 
         // Get the bounds
-        self.topLeft={"x":undefined, "y":undefined}; self.bottomRight={"x":undefined, "y":undefined};
+        self.topLeft=new Vector(); self.bottomRight=new Vector();
         for (var i=0; i<self.components.length; i++) {
             var c=self.components[i];
             var cp = c.pos;
@@ -237,6 +240,11 @@ function drawDeleter(ctx) {
     for (var i=0; i < this.collisions.length; ++i) {
        var c=this.collisions[i]; 
        var center=c.pos.add(c.dimensions.multiply(.5));
+       ctx.strokeStyle="rgba(255,0,0,.5)";
+       ctx.beginPath();  
+       ctx.moveTo(mouse.worldPos.x, mouse.worldPos.y);
+       ctx.lineTo(center.x, center.y); 
+       ctx.stroke();
        drawCross(ctx, center);     
     }
 }
@@ -245,8 +253,8 @@ function drawCross(ctx, center) {
     startDrawing(ctx, center);
     ctx.beginPath();
     ctx.lineWidth=.15;
-    ctx.strokeStyle="rgba(255,0,0,.8)";
-    var s=0.3;
+    ctx.strokeStyle="rgba(255,0,0,1)";
+    var s=0.2;
     ctx.moveTo(-s, -s);
     ctx.lineTo(s, s); 
     ctx.moveTo(-s, s);

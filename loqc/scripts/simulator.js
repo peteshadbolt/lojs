@@ -7,20 +7,28 @@
 function Simulator(myCircuit) {
     var self=this;
     self.circuit=myCircuit;
+    self.outputField=document.getElementById('simulator_output');
 
     self.update = function() {
-        var postData=self.circuit.toJSON();
+        var postData={};
+        postData.circuit=self.circuit.toJSON();
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange=function() {
             if (xhr.readyState==4 && xhr.status==200) {
                 var responseObj=JSON.parse(xhr.responseText);
                 var probabilities=responseObj.probabilities;
-                //console.log(probabilities); 
+                self.output(probabilities);
             }
         }
-
         xhr.open("POST","/",true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.send(postData);
+    }
+
+    self.output=function(simulatorOutput) {
+        self.outputField.innerHTML="";
+        for (var i=0; i<simulatorOutput.length; ++i) {
+            self.outputField.innerHTML += "<li> "+simulatorOutput[i];
+        }
     }
 }
