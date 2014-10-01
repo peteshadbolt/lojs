@@ -3,6 +3,13 @@
    Provides functions to describe and draw components in a linear optical circuit
 */
 
+//function DesignRules(targetCircuit) {
+    //var self=this;
+    //self.circuit=targetCircuit;
+
+
+//}
+
 function Circuit() {
     // Holds a description of the complete circuit
     var self=this;
@@ -23,8 +30,6 @@ function Circuit() {
             ctx.lineTo(self.bottomRight.x, self.bottomRight.y); 
             ctx.lineTo(self.topLeft.x, self.bottomRight.y); 
             ctx.lineTo(self.topLeft.x, self.topLeft.y); 
-            ctx.fillStyle="#ffffdd";
-            ctx.fill();
             ctx.stroke();
             stopDrawing(ctx);
         }
@@ -37,31 +42,35 @@ function Circuit() {
             self.connectors[i].draw(ctx); }
     }
 
-    // Find the component at position (x,y); TODO this can be O(log(N))
-    self.find = function (pos) {
-        for (var i=0; i<self.components.length; i++) {
-            var c = self.components[i];
-            if (c.pos.equ(pos)) {return c};
-        }
-        return undefined;
+    // Do these two components touch? We are lenient about the x-axis!
+    self.touching = function (a, b) {
+        var a1 = a.pos; var a2 = a.pos.add(a.dimensions);
+        var b1 = b.pos; var b2 = b.pos.add(b.dimensions);
+        return !(a2.x<=b1.x || a2.y<b1.y || a1.x>=b2.x || a1.y>b2.y);
     }
 
-    // Delete at position (x,y);
-    self.kill = function (pos) {
-        var tokill=undefined;
-        for (var i=0; i<self.components.length; i++) {
-            var c = self.components[i];
-            if (c.pos.x==x && c.pos.y==y) {tokill=i; break;};
+    // Find all components which touch a given component
+    self.findCollisions = function (c) {
+        output=[];
+        for (var i=0; i < self.components.length; ++i) {
+           if (self.touching(self.components[i], c)){ output.push(self.components[i]); }
         }
-        if (tokill!=undefined){
-            self.components.splice(tokill,1)
-            self.decorate();
-        };
+        return output;
     }
 
-    // TODO: below are quite inefficient and belong somewhere else
-    // Is position (x,y) empty?
-    self.empty = function (pos) { return self.find(pos)==undefined; }
+    // Remove a component. This ought to be O(log(N)) but it's currently a hack!
+    self.remove=function (c) {
+        for (var i=0; i < self.components.length; ++i) {
+           if (self.components[i].pos.equ(c.pos)){self.components.splice(i, 1);}
+        }
+        
+    }
+
+    // Just delete everything
+    self.clear=function () {
+        self.components.splice(0, self.components.length);
+        self.decorate();
+    }
 
     // Add horizontal lines to make clear the connections between components
     // Also work out the input and output ports
@@ -74,20 +83,19 @@ function Circuit() {
         for (var i=0; i<self.components.length; i++) {
             var c=self.components[i];
             var cp = c.pos;
-            var rp = {"x": c.pos.x + c.dimensions.width, "y": c.pos.y + c.dimensions.height};
+            var rp=c.pos.add(c.dimensions);
             if (cp.x<self.topLeft.x || self.topLeft.x==undefined) {self.topLeft.x=cp.x};
             if (cp.y<self.topLeft.y || self.topLeft.y==undefined) {self.topLeft.y=cp.y};
             if (rp.x>self.bottomRight.x || self.bottomRight.x==undefined) {self.bottomRight.x=rp.x};
             if (rp.y>self.bottomRight.y || self.bottomRight.y==undefined) {self.bottomRight.y=rp.y};
         }
 
-        // Fill the gaps
+        // Fill the gaps. This is stupidly slow right now!
         for (var cx=self.topLeft.x-1; cx<self.bottomRight.x+1; cx++) {
-            for (var cy=self.topLeft.y; cy<self.bottomRight.y; cy++) {
-                //if (self.empty(cx, cy) && self.empty(cx, cy-1))
-                //{
-                    //self.connectors.push(new Connector(cx, cy));
-                //}
+            for (var cy=self.topLeft.y; cy<self.bottomRight.y+1; cy++) {
+                // Propose a component, see if it touches anything, if so don't add it!
+                var c=new Connector(cx, cy);
+                if (self.findCollisions(c).length==0){self.connectors.push(c); }
             }
         }
     }
@@ -107,16 +115,21 @@ function Circuit() {
         var c=new component(0,0);
         // Make sure that it is on the nearest grid point
         c.pos = grid.snap(worldPos, c.dimensions);
-        // Is that grid point empty? If not, then we are going to delete
-        if (!self.empty(c.pos))
-        {
-            c=new Deleter(c.pos);
-        }
+
+        // Look for clashes with this new component. 
+        var collisions = self.findCollisions(c);
+        if (collisions.length>0){ return new Deleter(collisions); }
+
         return c;
     }
 
     self.accept = function (component) {
-        self.components.push(component);
+        if (component.act)
+        {
+            component.act(self);
+        } else {
+            self.components.push(component);
+        }
         self.decorate();
     }
 }
@@ -126,7 +139,7 @@ function Circuit() {
 // Circuit components
 function Coupler(x, y, ratio) {
     this.pos = new Vector(x,y);
-    this.dimensions={"width":1, "height":1};
+    this.dimensions=new Vector(1,1);
     this.ratio = ratio ? ratio : 0.5;
     this.draw = drawCoupler;
     this.toJSON = function () {
@@ -136,7 +149,7 @@ function Coupler(x, y, ratio) {
 
 function Phaseshifter(x, y, phase) {
     this.pos = new Vector(x,y);
-    this.dimensions={"width":1, "height":0};
+    this.dimensions=new Vector(1,0);
     this.phase = phase ? phase : 0;
     this.draw = drawPS;
     this.toJSON = function () {
@@ -146,6 +159,7 @@ function Phaseshifter(x, y, phase) {
 
 function Connector(x, y) {
     this.pos = new Vector(x,y);
+    this.dimensions=new Vector(1, 0);
     this.draw = drawConnector;
 }
 
@@ -159,10 +173,16 @@ function Detector(x, y) {
     this.draw = drawDetector;
 }
 
-function Deleter(pos){
-    this.pos = pos.copy();
-    this.dimensions={"width":1, "height":0};
+function Deleter(collisions){
+    this.pos = new Vector();
+    this.dimensions=new Vector();
+    this.collisions=collisions;
     this.draw = drawDeleter;
+    this.act=function (circuit) {
+        for (var i=0; i < this.collisions.length; ++i) {
+           circuit.remove(this.collisions[i]); 
+        }
+    }
 }
 
 //************************************************************
@@ -214,14 +234,23 @@ function drawDetector(ctx) {
 }
 
 function drawDeleter(ctx) {
-    startDrawing(ctx, this.pos);
+    for (var i=0; i < this.collisions.length; ++i) {
+       var c=this.collisions[i]; 
+       var center=c.pos.add(c.dimensions.multiply(.5));
+       drawCross(ctx, center);     
+    }
+}
+
+function drawCross(ctx, center) {
+    startDrawing(ctx, center);
     ctx.beginPath();
     ctx.lineWidth=.15;
-    ctx.strokeStyle="red";
-    ctx.moveTo(.2, .2);
-    ctx.lineTo(.8, .8); 
-    ctx.moveTo(.2, .8);
-    ctx.lineTo(.8, .2); 
+    ctx.strokeStyle="rgba(255,0,0,.8)";
+    var s=0.3;
+    ctx.moveTo(-s, -s);
+    ctx.lineTo(s, s); 
+    ctx.moveTo(-s, s);
+    ctx.lineTo(s, -s); 
     ctx.stroke();
     stopDrawing(ctx);
 }

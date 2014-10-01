@@ -33,20 +33,24 @@ function Vector(x, y) {
         return new Vector(self.x, self.y);
     }
 
-    //self.add=function (a, b) {
-        //if (b){
-            //return new Vector(self.x+a, self.y+b);
-        //} else {
-            //return new Vector(self.x+a.x, self.y+a.y);
-        //}
-    //}
+    self.multiply=function (factor) {
+        return new Vector(self.x*factor, self.y*factor);
+    }
 
-    //self.sub=function (a, b) {
-        //if (b){
-            //return new Vector(self.x-a, self.y-b);
-        //} else {
-            //return new Vector(self.x-a.x, self.y-a.y);
-        //}
-    //}
+    self.add=function (a, b) {
+        if (b){
+            return new Vector(self.x+a, self.y+b);
+        } else {
+            return new Vector(self.x+a.x, self.y+a.y);
+        }
+    }
+
+    self.sub=function (a, b) {
+        if (b){
+            return new Vector(self.x-a, self.y-b);
+        } else {
+            return new Vector(self.x-a.x, self.y-a.y);
+        }
+    }
 
 }

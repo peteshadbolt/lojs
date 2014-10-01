@@ -54,8 +54,8 @@ function Grid() {
 
     // Snap using knowledge of an object's width and height
     self.snap = function (worldPos, dimensions) {
-        var w=dimensions.width;
-        var h=dimensions.height;
+        var w=dimensions.x;
+        var h=dimensions.y;
         var temp=new Vector(worldPos.x+(1-w)/2, worldPos.y+(1-h)/2);
         return self.inside(temp);
     }
