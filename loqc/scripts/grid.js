@@ -7,8 +7,8 @@ function Grid() {
     var self=this;
     self.draw=function (ctx) {
         // Figure out the boundaries
-        var topLeft = camera.fromScreen({"x":0,"y":0});
-        var bottomRight = camera.fromScreen({"x":ctx.canvas.width, "y":ctx.canvas.height});
+        var topLeft = camera.fromScreen(new Vector(0,0));
+        var bottomRight = camera.fromScreen(new Vector(ctx.canvas.width, ctx.canvas.height));
 
         var nx = Math.ceil(bottomRight.x - topLeft.x)+1;
         var ny = Math.ceil(bottomRight.y - topLeft.y)+1;
@@ -49,15 +49,14 @@ function Grid() {
 
     // Find the cell containing a point in the world
     self.inside = function (worldPos) {
-        return {"x":Math.floor(worldPos.x), "y":Math.floor(worldPos.y)}
+        return new Vector(Math.floor(worldPos.x), Math.floor(worldPos.y));
     }
 
     // Snap using knowledge of an object's width and height
     self.snap = function (worldPos, dimensions) {
         var w=dimensions.width;
         var h=dimensions.height;
-        var temp={"x":worldPos.x+(1-w)/2, 
-                  "y":worldPos.y+(1-h)/2};
+        var temp=new Vector(worldPos.x+(1-w)/2, worldPos.y+(1-h)/2);
         return self.inside(temp);
     }
 }

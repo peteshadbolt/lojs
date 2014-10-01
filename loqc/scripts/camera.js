@@ -6,14 +6,12 @@
 function Camera()
 {
     var self=this;
-    self.x=0; self.y=0;
-    //self.z=.55; self.tz=.55;
+    self.pos=new Vector();
+    self.offset=new Vector();
     self.z=55; self.tz=55;
-    self.ox=0; self.oy=0;
 
     self.translate = function (delta) {
-        self.x+=delta.x; 
-        self.y+=delta.y;
+        self.pos.inc(delta);
     }
 
     self.zoom = function (dz) {
@@ -23,22 +21,19 @@ function Camera()
     }
 
     self.center = function (canvas) {
-        self.ox=canvas.width/2;
-        self.oy=canvas.height/2;
+        self.offset.set(canvas.width/2, canvas.height/2);
     }
 
     // Map a context to the world space
     self.contextToWorld = function (ctx) {
-        ctx.translate(self.x+self.ox, self.y+self.oy);
+        ctx.translate(self.pos.x+self.offset.x, self.pos.y+self.offset.y);
         ctx.scale(self.z, self.z);
     }
 
     // Mapping between the screen and the world
     self.fromScreen = function(screenPos) {
-        return {
-            "x": (screenPos.x - self.ox - self.x)/self.z,
-            "y": (screenPos.y - self.oy - self.y)/self.z
-        }
+        return new Vector((screenPos.x - self.offset.x - self.pos.x)/self.z,
+                        (screenPos.y - self.offset.y - self.pos.y)/self.z);
     }
 
     // Alias the above function
@@ -57,8 +52,8 @@ function Camera()
             self.z+=(self.tz-self.z)*.4
             //That position should not change after the zoom
             var temp2 = self.fromScreen(mouse.screenPos);
-            self.x+=(temp2.x-temp1.x)*self.z;
-            self.y+=(temp2.y-temp1.y)*self.z;
+            self.pos.x+=(temp2.x-temp1.x)*self.z;
+            self.pos.y+=(temp2.y-temp1.y)*self.z;
             requestAnimationFrame(redraw);
         }
     }
