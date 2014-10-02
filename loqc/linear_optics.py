@@ -1,6 +1,19 @@
 import numpy as np
 import itertools as it
 from collections import defaultdict
+from operator import mul
+
+ftable=(1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
+def factorial(n): 
+    """ Short-cut! """
+    return ftable[n]
+
+def normalization(modes):
+    """ Get the normalization constant norm=1/np.sqrt(np.product(map(factorial, inputs)+map(factorial, outputs))) """
+    table=defaultdict(int)
+    for mode in modes:
+        table[mode]+=1
+    return reduce(mul, (factorial(t) for t in table.values()))
 
 def permanent(a):
     ''' Calculated the permanent using Ryser's formula. '''
@@ -59,21 +72,23 @@ class Circuit():
             self.unitary=np.dot(self.unitary, cu);
 
 
-def simulate(circuit, input_state, patterns=[], mode="probability"):
+def simulate(circuit, input_state, patterns=[], mode="probability"): #TODO: patterns should probably be a set?
     """ Simulates a given circuit, for a given input state, looking at certain terms in the output state """
-    output_state=defaultdict(int)
+    output_state=defaultdict(complex)
     for cols, amplitude in input_state.items():
-        n1=1 #get_normalization_constant(cols)
+        cols=list(cols)
+        n1=normalization(cols)
         for rows in patterns:
-            n2=1 #get_normalization_constant(rows)
-            perm=permanent(circuit.unitary[list(rows)][:,list(cols)])
+            n2=normalization(rows)
+            perm=permanent(circuit.unitary[list(rows)][:,cols])
             output_state[rows]+=amplitude*perm/np.sqrt(n1*n2)
     return output_state
 
 if __name__=='__main__':
     ''' Test out the simulator '''
-    state = {(1,2,3): 1/np.sqrt(2), (3,4,5): 1/np.sqrt(2)}
+    state = {(0,1,2,3,4,5): 1/np.sqrt(2), (0,0,0,0,0,0): 1/np.sqrt(2)}
     circuitJSON={"components":[{"type":"coupler","pos":{"x":-1,"y":-1},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-1,"y":1},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-1,"y":3},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-2,"y":2},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":0,"y":2},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-2,"y":0},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-4,"y":0},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"phaseshifter","pos":{"x":-3,"y":1},"phase":0,"dimensions":{"x":1,"y":0}}]}
     circuit=Circuit(circuitJSON)
-    output_state = simulate(circuit, state, state.keys())
+    patterns=map(tuple, [np.random.randint(0,6,10) for i in xrange(10)])
+    output_state = simulate(circuit, state, patterns)
     print output_state
