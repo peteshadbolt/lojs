@@ -25,8 +25,8 @@ function redraw() {
 
     // Draw the grid, circuit, editor
     grid.draw(gd);
-    circuit.draw(gd);
     editor.draw(gd);
+    circuit.draw(gd);
 
     // Back to screen-space
     gd.restore();

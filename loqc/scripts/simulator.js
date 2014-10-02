@@ -22,7 +22,7 @@ function Simulator(myCircuit) {
         }
         xhr.open("POST","/",true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        xhr.send(postData);
+        xhr.send(JSON.stringify(postData));
     }
 
     self.output=function(simulatorOutput) {

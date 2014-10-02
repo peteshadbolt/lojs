@@ -42,6 +42,14 @@ function Editor(targetCircuit, targetSimulator)
         simulator.update();
     }
 
+    self.exportCircuit = function () {
+        var data = JSON.stringify(circuit.toJSON(), space="\t");
+        data="<tt>"+data+"</tt>";
+        myWindow = window.open("data:text/html," + encodeURIComponent(data),
+                               "_blank");
+        myWindow.focus();
+    }
+
     self.bindKeys();
 }
 

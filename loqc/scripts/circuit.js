@@ -111,7 +111,7 @@ function Circuit() {
             var c = self.components[i];
             json.components.push(c.toJSON());
         }
-        return JSON.stringify(json);
+        return json;
     }   
 
     self.request = function (component, worldPos) {
@@ -146,7 +146,7 @@ function Coupler(x, y, ratio) {
     this.ratio = ratio ? ratio : 0.5;
     this.draw = drawCoupler;
     this.toJSON = function () {
-        return {"type": "coupler", "pos": this.pos, "ratio": this.ratio};
+        return {"type": "coupler", "pos": this.pos, "ratio": this.ratio, "dimensions":this.dimensions};
     }
 }
 
@@ -156,7 +156,7 @@ function Phaseshifter(x, y, phase) {
     this.phase = phase ? phase : 0;
     this.draw = drawPS;
     this.toJSON = function () {
-        return {"type": "phaseshifter", "pos": this.pos,  "phase": this.phase};
+        return {"type": "phaseshifter", "pos": this.pos,  "phase": this.phase, "dimensions":this.dimensions};
     }
 }
 

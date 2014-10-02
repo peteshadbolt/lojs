@@ -1,7 +1,7 @@
 import webapp2
 import jinja2
 import json, time, logging, os, re
-import linear_optics as lo
+#import linear_optics as lo
 
 # Set up the templating engine
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -21,10 +21,9 @@ class MainPage(webapp2.RequestHandler):
         # Build a linear_optics style object describing the circuit
         request=json.loads(self.request.body)
         circuitJSON = request["circuit"]
-        circuit=lo.circuitFromJSON(circuitJSON);
-        logging.info(circuit);
 
-
+        #circuit=lo.circuitFromJSON(circuitJSON);
+        #logging.info(circuit);
 
         # Send the response back to the user
         response=json.dumps({"probabilities":[.5, .5]})

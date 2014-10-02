@@ -1,2 +1,1 @@
-from simulator import simulator
-from circuits import reck_scheme
+from simulator import simulate
