@@ -3,38 +3,14 @@
    Provides functions to describe and draw components in a linear optical circuit
 */
 
-//function DesignRules(targetCircuit) {
-    //var self=this;
-    //self.circuit=targetCircuit;
-
-
-//}
-
 function Circuit() {
     // Holds a description of the complete circuit
     var self=this;
-    self.components=[];
-    self.connectors=[];
-    self.topLeft=undefined; self.bottomRight=undefined;
-
+    self.components=[]; self.connectors=[];
     // Draw the circuit
     self.draw = function (ctx) {
-        // Box around circuit
-        if (self.topLeft){
-            var tl=self.topLeft.add(-1.1, -.1)
-            var br=self.bottomRight.add(1.1, .1)
-            startDrawing(ctx, {"x":0, "y":0});
-            ctx.strokeStyle="orange";
-            ctx.lineWidth=1/camera.z;
-            ctx.beginPath();
-            ctx.moveTo(tl.x, tl.y); 
-            ctx.lineTo(br.x, tl.y); ctx.lineTo(br.x, br.y); 
-            ctx.lineTo(tl.x, br.y); ctx.lineTo(tl.x, tl.y); 
-            ctx.stroke();
-            stopDrawing(ctx);
-        }
-
-        // Components and connectors
+        if (self.components.length==0){return;}
+        self.drawBox(ctx);
         ctx.strokeStyle="black";
         for (var i=0; i<self.components.length; i++) {
             self.components[i].draw(ctx); }
@@ -63,40 +39,41 @@ function Circuit() {
         for (var i=0; i < self.components.length; ++i) {
            if (self.components[i].pos.equ(c.pos)){self.components.splice(i, 1);}
         }
-        
     }
 
     // Just delete everything
     self.clear=function () {
-        self.topLeft=undefined; self.bottomRight=undefined;
-        self.components.splice(0, self.components.length);
+        self.components=[];
         self.decorate();
         requestAnimationFrame(redraw);
     }
 
-    // Add horizontal lines to make clear the connections between components
-    // Also work out the input and output ports
+    // Measure myself - dimensions, position, etc
+    self.measure = function () {
+        var tl=new Vector(10000, 10000); var br=new Vector(-10000, -10000);
+        for (var i=0; i < self.components.length; ++i) {
+            var c=self.components[i]; 
+            var ctl=c.pos; var cbr=c.pos.add(c.dimensions);
+            if (ctl.x<tl.x) { tl.x=ctl.x; } if (ctl.y<tl.y) { tl.y=ctl.y; }
+            if (cbr.x>br.x) { br.x=cbr.x; } if (cbr.y>br.y) { br.y=cbr.y; }
+        }
+        self.pos = self.components.length>0 ? tl.copy() : undefined;
+        self.dimensions = self.pos ? br.sub(tl) : undefined;
+        self.nmodes = self.dimensions.y;
+        self.topLeft = self.pos.copy();
+        self.bottomRight = self.pos.add(self.dimensions);
+    }
+
+    // Add horizontal lines to make clear the connections between components Also work out the input and output ports
     self.decorate = function () {
         // Remove all connectors
         self.connectors.splice(0, self.connectors.length);
         if (self.components.length==0){return;}
 
-        // Get the bounds
-        self.topLeft=new Vector(); self.bottomRight=new Vector();
-        for (var i=0; i<self.components.length; i++) {
-            var c=self.components[i];
-            var cp = c.pos;
-            var rp=c.pos.add(c.dimensions);
-            if (cp.x<self.topLeft.x || self.topLeft.x==undefined) {self.topLeft.x=cp.x};
-            if (cp.y<self.topLeft.y || self.topLeft.y==undefined) {self.topLeft.y=cp.y};
-            if (rp.x>self.bottomRight.x || self.bottomRight.x==undefined) {self.bottomRight.x=rp.x};
-            if (rp.y>self.bottomRight.y || self.bottomRight.y==undefined) {self.bottomRight.y=rp.y};
-        }
-
         // Fill the gaps. This is stupidly slow right now!
-        for (var cx=self.topLeft.x-1; cx<self.bottomRight.x+1; cx++) {
-            for (var cy=self.topLeft.y; cy<self.bottomRight.y+1; cy++) {
-                // Propose a component, see if it touches anything, if so don't add it!
+        self.measure();
+        for (var cx=self.topLeft.x-1; cx<self.bottomRight+1; cx++) {
+            for (var cy=self.topLeft.y; cy<self.bottomRight+1; cy++) {
                 var c=new Connector(cx, cy);
                 if (self.findCollisions(c).length==0){self.connectors.push(c); }
             }
@@ -104,7 +81,6 @@ function Circuit() {
     }
 
     // Generate a plain-text JSON representation of the circuit. 
-    // Used for saving and sending to the simulator
     self.toJSON = function () {
         var json={"components":[]};
         for (var i=0; i<self.components.length; i++) {
@@ -114,28 +90,47 @@ function Circuit() {
         return json;
     }   
 
+    // Ask whether we can have a particular component at a particular point in the circuit.
     self.request = function (component, worldPos) {
         var c=new component(0,0);
-        // Make sure that it is on the nearest grid point
-        c.pos = grid.snap(worldPos, c.dimensions);
+        c.pos = grid.snap(worldPos, c.dimensions); // Make sure that it is on the nearest grid point
 
         // Look for clashes with this new component. 
-        var collisions = self.findCollisions(c);
+        var collisions = self.findCollisions(c); 
         if (collisions.length>0){ return new Deleter(collisions); }
-
         return c;
     }
 
+    // Okay, yes, we'll have that component please
     self.accept = function (component) {
-        if (component.act)
-        {
+        // Some specialized components modify (act()) on the circuit
+        if (component.act) {
             component.act(self);
         } else {
             self.components.push(component);
         }
         self.decorate();
     }
+
+    // Draw a box around the circuit
+    self.drawBox = function (ctx) {
+        startDrawing(ctx, {"x":0, "y":0});
+        ctx.strokeStyle="orange";
+        ctx.lineWidth=1/camera.z;
+        ctx.beginPath();
+        ctx.moveTo(self.topLeft.x, self.topLeft.y); 
+        ctx.lineTo(self.bottomRight.x, self.topLeft.y); ctx.lineTo(self.bottomRight.x, self.bottomRight.y); 
+        ctx.lineTo(self.topLeft.x, self.bottomRight.y); ctx.lineTo(self.topLeft.x, self.topLeft.y); 
+        ctx.stroke();
+        stopDrawing(ctx);
+    }
+
 }
+
+
+
+
+
 
 
 //************************************************************
@@ -240,11 +235,11 @@ function drawDeleter(ctx) {
     for (var i=0; i < this.collisions.length; ++i) {
        var c=this.collisions[i]; 
        var center=c.pos.add(c.dimensions.multiply(.5));
-       ctx.strokeStyle="rgba(255,0,0,.5)";
-       ctx.beginPath();  
-       ctx.moveTo(mouse.worldPos.x, mouse.worldPos.y);
-       ctx.lineTo(center.x, center.y); 
-       ctx.stroke();
+       //ctx.strokeStyle="rgba(255,0,0,.5)";
+       //ctx.beginPath();  
+       //ctx.moveTo(mouse.worldPos.x, mouse.worldPos.y);
+       //ctx.lineTo(center.x, center.y); 
+       //ctx.stroke();
        drawCross(ctx, center);     
     }
 }
@@ -252,8 +247,8 @@ function drawDeleter(ctx) {
 function drawCross(ctx, center) {
     startDrawing(ctx, center);
     ctx.beginPath();
-    ctx.lineWidth=.15;
-    ctx.strokeStyle="rgba(255,0,0,1)";
+    ctx.lineWidth=.1;
+    ctx.strokeStyle="rgb(255,100,100)";
     var s=0.2;
     ctx.moveTo(-s, -s);
     ctx.lineTo(s, s); 
