@@ -24,20 +24,21 @@
         <!--<a href="#">Keyboard (?)</a> -->
     </div>
     <div class=menuchunk>
-        <b>Circuit</b>
+        <b>Edit</b>
         <ul>
-        <li> <a href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> 
-        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> 
+        <li> <a href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> |
+        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> |
         <a href="#" onclick="javascript:editor.setMode(Crossing);">Crossing</a>
 
-        <li><a href="#" onclick="javascript:editor.setMode(SPS);">SPS</a> 
-            <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> 
-            <a href="#" onclick="javascript:editor.setMode(BellPair);">SPAD</a> 
+        <li><a href="#" onclick="javascript:editor.setMode(SPS);">SPS</a> |
+            <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> |
+            <a href="#" onclick="javascript:editor.setMode(Bucket);">SPAD</a> |
             <a href="#" onclick="javascript:editor.setMode(BellPair);">NRD</a> 
 
-        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a> 
-        <a href="#">Save</a> 
+        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a> |
+        <a href="#">Save</a> |
         <a href="#">Load</a>
+        <li> <a href="#" onclick="javascript:editor.importCircuit();">Import</a> |
         <a href="#" onclick="javascript:editor.exportCircuit();">Export</a> 
         </ul>
     </div>
@@ -46,8 +47,7 @@
         <b>Input state</b> 
         <!--<span class=modest>(Click to edit)</span>-->
         <ul>
-            <li> 1/2 |0&gt; +
-            <li> 1/2 |1&gt;
+            <li> 1 |0&gt; +
         </ul>
     </ul>
     </div>

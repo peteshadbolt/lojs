@@ -5,12 +5,12 @@ function Editor(targetCircuit, targetSimulator)
     self.circuit = targetCircuit;
     self.simulator = targetSimulator;
     self.cursor = new Coupler(0, 0, .5);
-    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair};
+    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair, 68:Bucket};
 
     // Change mode by pressing keys
     self.bindKeys = function () {
         window.addEventListener('keydown', function (evt) {
-            console.log(evt);
+            //console.log(evt);
             if (self.keyMap.hasOwnProperty(evt.keyCode)) {
                 self.setMode(self.keyMap[evt.keyCode]);
             }}, true);

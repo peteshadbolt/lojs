@@ -25,6 +25,7 @@ function Renderer(ctx, canv) {
 
    self.redraw= function () {
         if (!self.change){return;}
+        self.change=false;
 
         // Clear canvas
         self.ctx.clearRect(0, 0, self.canvas.width, self.canvas.height);

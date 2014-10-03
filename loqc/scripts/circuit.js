@@ -29,7 +29,7 @@ function Circuit() {
     self.findCollisions = function (c) {
         output=[];
         for (var i=0; i < self.components.length; ++i) {
-           if (self.touching(self.components[i], c)){ output.push(self.components[i]); }
+           if (self.touching(self.components[i], c) && self.components[i]!=c){ output.push(self.components[i]); }
         }
         return output;
     }
@@ -66,24 +66,35 @@ function Circuit() {
 
     // Add horizontal lines to make clear the connections between components Also work out the input and output ports
     self.decorate = function () {
+        // Remove all connectors
+        self.connectors.splice(0, self.connectors.length);
+        if (self.components.length==0){return;}
+
         // Sort everything, label indeces
-        // TODO. The below object-specific design rules should be implemented by the class itself
-        self.measure();
-        for (var i=0; i < self.components.length; ++i) {
-            if (self.components[i].type=="sps"){self.components[i].pos.x=this.topLeft.x;}
-        }
         compare = function (a, b){ return a.pos.x-b.pos.x; }
         self.components.sort(compare);
         for (var i=0; i < self.components.length; ++i) {
             self.components[i].index=i;
         }
 
-        // Remove all connectors
-        self.connectors.splice(0, self.connectors.length);
-        if (self.components.length==0){return;}
+        // Enforce design rules
+        self.measure();
+        for (var i=0; i < self.components.length; ++i) {
+            if(self.components[i].enforceRules){self.components[i].enforceRules();}
+        }
+
+        // If, after all that, there are collisions - then just delete them
+        for (var i=0; i < self.components.length; ++i) {
+            var collisions=self.findCollisions(self.components[i]);
+            for (var j=0; j < collisions.length; ++j) {
+               self.remove(collisions[j]);
+            }
+        }
+
+        //self.measure();
+        
 
         // Fill the gaps. This is stupidly slow right now!
-        self.measure();
         for (var cx=self.topLeft.x; cx<self.bottomRight.x; cx++) {
             for (var cy=self.topLeft.y; cy<=self.bottomRight.y; cy++) {
                 var c=new Connector(cx, cy);
@@ -104,9 +115,10 @@ function Circuit() {
 
     // Ask whether we can have a particular component at a particular point in the circuit.
     self.request = function (component, worldPos) {
+        // Make the component and put it on the grid
         var c=new component(0,0);
         c.pos = grid.snap(worldPos, c.dimensions); // Make sure that it is on the nearest grid point
-        if (c.type=="sps"){c.pos.x=this.topLeft.x-1;}
+        if(c.enforceRules){c.enforceRules();}
 
         // Look for clashes with this new component. 
         var collisions = self.findCollisions(c); 
@@ -167,6 +179,7 @@ function Crossing(x, y) {
     this.toJSON = function () { return {"type": "crossing", "pos": this.pos}; }
 }
 
+// A phase shifter
 function Phaseshifter(x, y, phase) {
     this.index=undefined;
     this.pos = new Vector(x,y);
@@ -176,12 +189,14 @@ function Phaseshifter(x, y, phase) {
     this.toJSON = function () { return {"type": "phaseshifter", "pos": this.pos,  "phase": this.phase }; }
 }
 
+// Connects things together. The identity!
 function Connector(x, y) {
     this.pos = new Vector(x,y);
     this.dimensions=new Vector(1, 0);
     this.draw = drawConnector;
 }
 
+// Shows what we are about to delete and why
 function Deleter(collisions, request){
     this.pos = new Vector();
     this.dimensions=new Vector();
@@ -195,20 +210,40 @@ function Deleter(collisions, request){
     }
 }
 
+// A single-photon source
 function SPS(x, y) {
     this.pos = new Vector(x,y);
     this.dimensions=new Vector(1, 0);
     this.type="sps";
     this.draw = drawSPS;
     this.toJSON = function () { return {"type": "sps", "pos": this.pos}; }
+    this.enforceRules = function () {
+       if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;}
+    }
 }
 
+// A Bell pair
 function BellPair(x, y) {
     this.pos = new Vector(x,y);
     this.dimensions=new Vector(1, 3);
     this.draw = drawBellPair;
     this.toJSON = function () { return {"type": "bellpair", "pos": this.pos}; }
+    this.enforceRules = function () {
+       if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;}
+    }
 }
+
+// A bucket detector
+function Bucket(x, y) {
+    this.pos = new Vector(x,y);
+    this.dimensions=new Vector(1, 0);
+    this.draw = drawBucket;
+    this.toJSON = function () { return {"type": "bucket", "pos": this.pos}; }
+    this.enforceRules = function () {
+       if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;}
+    }
+}
+
 
 //************************************************************
 // Boilerplate for drawing functions. 
@@ -223,7 +258,7 @@ function stopDrawing(ctx) { ctx.restore(); }
 
 
 //************************************************************
-// Complicated drawing functions
+// Complicated and messy drawing functions
 function drawConnector(ctx) {
     startDrawing(ctx, this.pos);
     ctx.beginPath();
@@ -313,9 +348,39 @@ function drawPS(ctx) {
     ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
     ctx.fillStyle = 'white';
     ctx.fill();
+
+    this.phase+=0.01;
+
+    var l=.3;
+    var x=Math.sin(this.phase)*l;
+    var y=-Math.cos(this.phase)*l;
+    ctx.moveTo(.5-x, -y);
+    ctx.lineTo(.5+x, y);
+
+    ctx.lineTo(.5+x*.8-y*.1, y*.8+x*.1);
+    ctx.moveTo(.5+x, y);
+    ctx.lineTo(.5+x*.8+y*.1, y*.8-x*.1);
+
     ctx.stroke();
+
+
+
     stopDrawing(ctx);
 }
+
+function drawBucket(ctx) {
+    startDrawing(ctx, this.pos);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(1,0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(1, 0, .2, 3*Math.PI/2, Math.PI/2, false);
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    stopDrawing(ctx);
+}
+
 
 function drawCoupler(ctx) {
     var gap=0.03;
