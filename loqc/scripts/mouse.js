@@ -38,7 +38,7 @@ function Mouse() {
         editor.update();
         if (self.pressed){
             camera.translate(self.screenDelta);
-            requestAnimationFrame(redraw);
+            renderer.needFrame();
             if (Math.abs(self.screenDelta.x)>1 || Math.abs(self.screenDelta.y)>1){self.wasClick=false;}
         }
     }
@@ -59,7 +59,7 @@ function Mouse() {
         self.update(evt);
         var delta = -evt.detail;
         camera.zoom(delta*5);
-        requestAnimationFrame(redraw);
+        renderer.needFrame();
         return false;
     }
 }

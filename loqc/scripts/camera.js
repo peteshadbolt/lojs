@@ -16,8 +16,8 @@ function Camera()
 
     self.zoom = function (dz) {
         self.tz+=dz;
-        if (self.tz<10) {self.tz=10};
-        if (self.tz>100) {self.tz=100};
+        if (self.tz<5) {self.tz=5};
+        if (self.tz>200) {self.tz=200};
     }
 
     self.center = function (canvas) {
@@ -41,7 +41,7 @@ function Camera()
 
     // Check to see whether we need to do a smooth zoom
     self.loop = function () {
-        setInterval(self.update, 33);
+        setInterval(self.update, 16);
     }
 
     // For smooth zooming and targeting
@@ -54,7 +54,7 @@ function Camera()
             var temp2 = self.fromScreen(mouse.screenPos);
             self.pos.x+=(temp2.x-temp1.x)*self.z;
             self.pos.y+=(temp2.y-temp1.y)*self.z;
-            requestAnimationFrame(redraw);
+            renderer.needFrame();
         }
     }
 }

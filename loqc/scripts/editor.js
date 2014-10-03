@@ -5,12 +5,12 @@ function Editor(targetCircuit, targetSimulator)
     self.circuit = targetCircuit;
     self.simulator = targetSimulator;
     self.cursor = new Coupler(0, 0, .5);
-    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler};
+    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair};
 
     // Change mode by pressing keys
     self.bindKeys = function () {
         window.addEventListener('keydown', function (evt) {
-            //console.log(evt);
+            console.log(evt);
             if (self.keyMap.hasOwnProperty(evt.keyCode)) {
                 self.setMode(self.keyMap[evt.keyCode]);
             }}, true);
@@ -19,18 +19,18 @@ function Editor(targetCircuit, targetSimulator)
     self.setMode = function (mode) {
         self.mode=mode;
         self.update();
-        requestAnimationFrame(redraw);
+        renderer.needFrame();
     }
 
     self.update = function () {
         self.cursor = self.circuit.request(self.mode, mouse.worldPos);
-        requestAnimationFrame(redraw);
+        renderer.needFrame();
     }
 
     self.click = function (x, y) {
         self.circuit.accept(self.cursor);
         simulator.update();
-        requestAnimationFrame(redraw);
+        renderer.needFrame();
     }
 
     self.draw = function (ctx) {

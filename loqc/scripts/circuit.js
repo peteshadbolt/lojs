@@ -45,7 +45,7 @@ function Circuit() {
     self.clear=function () {
         self.components=[];
         self.decorate();
-        requestAnimationFrame(redraw);
+        renderer.needFrame();
     }
 
     // Measure myself - dimensions, position, etc
@@ -66,6 +66,18 @@ function Circuit() {
 
     // Add horizontal lines to make clear the connections between components Also work out the input and output ports
     self.decorate = function () {
+        // Sort everything, label indeces
+        // TODO. The below object-specific design rules should be implemented by the class itself
+        self.measure();
+        for (var i=0; i < self.components.length; ++i) {
+            if (self.components[i].type=="sps"){self.components[i].pos.x=this.topLeft.x;}
+        }
+        compare = function (a, b){ return a.pos.x-b.pos.x; }
+        self.components.sort(compare);
+        for (var i=0; i < self.components.length; ++i) {
+            self.components[i].index=i;
+        }
+
         // Remove all connectors
         self.connectors.splice(0, self.connectors.length);
         if (self.components.length==0){return;}
@@ -94,10 +106,11 @@ function Circuit() {
     self.request = function (component, worldPos) {
         var c=new component(0,0);
         c.pos = grid.snap(worldPos, c.dimensions); // Make sure that it is on the nearest grid point
+        if (c.type=="sps"){c.pos.x=this.topLeft.x-1;}
 
         // Look for clashes with this new component. 
         var collisions = self.findCollisions(c); 
-        if (collisions.length>0){ return new Deleter(collisions); }
+        if (collisions.length>0){ return new Deleter(collisions, c); }
         return c;
     }
 
@@ -136,32 +149,31 @@ function Circuit() {
 //************************************************************
 // Circuit components
 function Coupler(x, y, ratio) {
+    this.index=undefined;
     this.pos = new Vector(x,y);
     this.dimensions=new Vector(1,1);
     this.ratio = ratio ? ratio : 0.5;
     this.draw = drawCoupler;
     this.toJSON = function () {
-        return {"type": "coupler", "pos": this.pos, "ratio": this.ratio, "dimensions":this.dimensions};
+        return {"type": "coupler", "pos": this.pos, "ratio": this.ratio, "index":this.index};
     }
 }
 
 function Crossing(x, y) {
+    this.index=undefined;
     this.pos = new Vector(x,y);
     this.dimensions=new Vector(1,1);
     this.draw = drawCrossing
-    this.toJSON = function () {
-        return {"type": "crossing", "pos": this.pos, "dimensions":this.dimensions};
-    }
+    this.toJSON = function () { return {"type": "crossing", "pos": this.pos}; }
 }
 
 function Phaseshifter(x, y, phase) {
+    this.index=undefined;
     this.pos = new Vector(x,y);
     this.dimensions=new Vector(1,0);
     this.phase = phase ? phase : 0;
     this.draw = drawPS;
-    this.toJSON = function () {
-        return {"type": "phaseshifter", "pos": this.pos,  "phase": this.phase, "dimensions":this.dimensions};
-    }
+    this.toJSON = function () { return {"type": "phaseshifter", "pos": this.pos,  "phase": this.phase }; }
 }
 
 function Connector(x, y) {
@@ -170,26 +182,32 @@ function Connector(x, y) {
     this.draw = drawConnector;
 }
 
-function SPS(x, y) {
-    this.pos = new Vector(x,y);
-    this.draw = drawSPS;
-}
-
-function Detector(x, y) {
-    this.pos = new Vector(x,y);
-    this.draw = drawDetector;
-}
-
-function Deleter(collisions){
+function Deleter(collisions, request){
     this.pos = new Vector();
     this.dimensions=new Vector();
     this.collisions=collisions;
+    this.request=request;
     this.draw = drawDeleter;
     this.act=function (circuit) {
         for (var i=0; i < this.collisions.length; ++i) {
            circuit.remove(this.collisions[i]); 
         }
     }
+}
+
+function SPS(x, y) {
+    this.pos = new Vector(x,y);
+    this.dimensions=new Vector(1, 0);
+    this.type="sps";
+    this.draw = drawSPS;
+    this.toJSON = function () { return {"type": "sps", "pos": this.pos}; }
+}
+
+function BellPair(x, y) {
+    this.pos = new Vector(x,y);
+    this.dimensions=new Vector(1, 3);
+    this.draw = drawBellPair;
+    this.toJSON = function () { return {"type": "bellpair", "pos": this.pos}; }
 }
 
 //************************************************************
@@ -215,18 +233,38 @@ function drawConnector(ctx) {
     stopDrawing(ctx);
 }
 
-function drawSPS(ctx) {
-    startDrawing(ctx, this.pos);
+function drawSPS(ctx, thepos, color) {
+    if (thepos==undefined)(thepos=this.pos);
+    if (color==undefined){color="red";}
+    startDrawing(ctx, thepos);
+    // Photon
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(1, 0); 
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(.5, 0, .1, 0, 2*Math.PI, false);
-    ctx.fillStyle = 'red';
+    ctx.arc(0, 0, .1, 0, 2*Math.PI, false);
+    ctx.fillStyle = color;
     ctx.fill();
+
+    // Arrow
+    ctx.strokeStyle=color; ctx.lineWidth=.05;
+    ctx.beginPath();
+    ctx.moveTo(0, 0); ctx.lineTo(1, 0); 
+    ctx.moveTo(.7, -.1);
+    ctx.lineTo(1, 0); ctx.lineTo(.7, .1);
     ctx.stroke();
     stopDrawing(ctx);
+}
+
+function drawBellPair(ctx) {
+    //TODO: fix these stupid Bezier curves
+    //var c=.5;
+    //ctx.moveTo(0, 0); ctx.bezierCurveTo(-c, 0, -c, 2, 0, 2);
+    //ctx.moveTo(0, 1); ctx.bezierCurveTo(-c, 1, -c, 3, 0, 3);
+    //ctx.stroke();
+    //ctx.restore();
+
+    drawSPS(ctx, this.pos, "purple");
+    drawSPS(ctx, this.pos.add(0,2), "blue");
+    drawSPS(ctx, this.pos.add(0,1), "purple");
+    drawSPS(ctx, this.pos.add(0,3), "blue");
 }
 
 function drawDetector(ctx) {
@@ -240,16 +278,14 @@ function drawDetector(ctx) {
     stopDrawing(ctx);
 }
 
+
 function drawDeleter(ctx) {
     for (var i=0; i < this.collisions.length; ++i) {
        var c=this.collisions[i]; 
        var center=c.pos.add(c.dimensions.multiply(.5));
-       //ctx.strokeStyle="rgba(255,0,0,.5)";
-       //ctx.beginPath();  
-       //ctx.moveTo(mouse.worldPos.x, mouse.worldPos.y);
-       //ctx.lineTo(center.x, center.y); 
-       //ctx.stroke();
        drawCross(ctx, center);     
+       ctx.strokeStyle="red";
+       this.request.draw(ctx);
     }
 }
 
@@ -282,7 +318,11 @@ function drawPS(ctx) {
 }
 
 function drawCoupler(ctx) {
-    gap=0.03;
+    var gap=0.03;
+    var couplingLength=this.ratio/2;
+    var l=0.5 - couplingLength/2;
+    var r=0.5 + couplingLength/2;
+
     startDrawing(ctx, this.pos);
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -299,6 +339,15 @@ function drawCoupler(ctx) {
     ctx.bezierCurveTo(.75, .5+gap, .75, 1, .9,   1); 
     ctx.lineTo(1, 1);
     ctx.stroke();
+
+    //ctx.textBaseline = 'bottom';
+    //if (this.index!=undefined && !mouse.pressed){
+        //ctx.textAlign = 'center';
+        //ctx.fillStyle = 'orange';
+        //ctx.font=(.2)+'pt courier';
+        //ctx.fillText(this.index, 0.55, 0.25);
+    //}
+
     stopDrawing(ctx);
 }
 
@@ -312,6 +361,13 @@ function drawCrossing(ctx) {
     ctx.bezierCurveTo(.2, 1, .2, 1, .5, .5); 
     ctx.bezierCurveTo(.8, 0, .8, 0, 1, 0); 
     ctx.stroke();
+
+    //if (this.index!=undefined && !mouse.pressed){
+        //ctx.textAlign = 'center';
+        //ctx.fillStyle = 'blue';
+        //ctx.font=(.2)+'pt courier';
+        //ctx.fillText(this.index, 0.55, 0.25);
+    //}
     stopDrawing(ctx);
 }
 

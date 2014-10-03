@@ -18,36 +18,49 @@
 
 <div id=menu> 
     <div class=menuchunk>
+        <b>LOQC</b>
+        <a href="/instructions">Instructions</a> 
+        <a href="/api">API</a> 
+        <!--<a href="#">Keyboard (?)</a> -->
+    </div>
+    <div class=menuchunk>
+        <b>Circuit</b>
         <ul>
-        <li> Camera: drag + scroll 
-        <li> Click to add/erase
-        <li> <a href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> (C) /
-        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> (P)
-        <li> <a href="#" onclick="javascript:editor.setMode(Crossing);">Crossing</a> (X)
-        <!--<li><a href="#" onclick="javascript:editor.setMode('sps');">Source</a> (S) / -->
-        <!--<a href="#" onclick="javascript:editor.setMode('det');">Detector</a> (D)-->
+        <li> <a href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> 
+        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> 
+        <a href="#" onclick="javascript:editor.setMode(Crossing);">Crossing</a>
+
+        <li><a href="#" onclick="javascript:editor.setMode(SPS);">SPS</a> 
+            <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> 
+            <a href="#" onclick="javascript:editor.setMode(BellPair);">SPAD</a> 
+            <a href="#" onclick="javascript:editor.setMode(BellPair);">NRD</a> 
+
+        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a> 
+        <a href="#">Save</a> 
+        <a href="#">Load</a>
+        <a href="#" onclick="javascript:editor.exportCircuit();">Export</a> 
         </ul>
     </div>
 
     <div class=menuchunk>
+        <b>Input state</b> 
+        <!--<span class=modest>(Click to edit)</span>-->
         <ul>
-            <!--<li> Mode: <a href="#">Edit</a> / <a href="#">Simulate</a>-->
-            <li> <a href="#" onclick="javascript:editor.clear();">Clear</a> / 
-            <a href="#">Save</a>
-            <li> <a href="#">Load</a> /
-            <a href="#" onclick="javascript:editor.exportCircuit();">Export</a> 
-            <li> <a href="#">About</a> 
+            <li> 1/2 |0&gt; +
+            <li> 1/2 |1&gt;
         </ul>
+    </ul>
     </div>
 
 
     <div class=menuchunk>
-        <a href="#">Amp</a> / <a href="#">Prob</a> / <a href="#">Graph</a> <br>
+        <b>Output</b> 
+        <!--<span class=modest>(Click to edit)</span><br>-->
         <ul id="simulator_output">
             <li>[no circuit]
         </ul>
-        <!--<a href="#">+ New pattern</a>-->
-        <!--</ul>-->
+
+        <span class=modest>Display: <a href="#">Amp</a> <a href="#">Prob</a> <a href="#">Graph</a> <a href="#">Sort</a> <br></span>
     </div>
 
 

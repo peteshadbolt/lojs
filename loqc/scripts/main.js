@@ -4,32 +4,54 @@
 */
 
 var gc, gd;
-var camera, grid, circuit, mouse, editor;
+var camera, renderer, grid, circuit, mouse, editor;
 
 // Run on startup
 window.onload=main;
 
+function Renderer(ctx, canv) {
+   var self=this; 
+   self.ctx=ctx;
+   self.canvas=canv;
+   self.change=false;
+
+   self.loop=function () {
+        setInterval(self.redraw, 17);
+   }
+
+   self.requestDraw=function () {
+       requestAnimationFrame(self.redraw);
+   }
+
+   self.redraw= function () {
+        if (!self.change){return;}
+
+        // Clear canvas
+        self.ctx.clearRect(0, 0, self.canvas.width, self.canvas.height);
+
+        // Transform into camera-space
+        self.ctx.save();
+        camera.contextToWorld(self.ctx);
+
+        // Draw the grid, circuit, editor
+        grid.draw(self.ctx);
+        editor.draw(self.ctx);
+        circuit.draw(self.ctx);
+
+        // Back to screen-space
+        self.ctx.restore();
+    }
+
+    self.needFrame=function () {
+        self.change=true;
+    }
+
+}
+
 function resize() {
     gc.width  = Math.floor(window.innerWidth);
     gc.height = Math.floor(window.innerHeight);
-    redraw();
-}
-
-function redraw() {
-    // Clear canvas
-    gd.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Transform into camera-space
-    gd.save();
-    camera.contextToWorld(gd);
-
-    // Draw the grid, circuit, editor
-    grid.draw(gd);
-    editor.draw(gd);
-    circuit.draw(gd);
-
-    // Back to screen-space
-    gd.restore();
+    renderer.needFrame();
 }
 
 function main() {
@@ -41,17 +63,18 @@ function main() {
     grid=new Grid();
     camera=new Camera();
     mouse=new Mouse();
+    renderer=new Renderer(gd, gc);
     mouse.bind(gd);
 
     // Create the circuit, simulator, and editor
     circuit = new Circuit();
     simulator = new Simulator(circuit);
-    editor=new Editor(circuit, simulator);
+    editor = new Editor(circuit, simulator);
 
     // Away we go
     window.onresize=resize;
     resize();
     camera.center(gc);
     camera.loop();
-    requestAnimationFrame(redraw);
+    renderer.loop();
 }
