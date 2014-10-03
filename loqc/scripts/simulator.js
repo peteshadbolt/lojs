@@ -8,14 +8,14 @@ function Simulator(myCircuit) {
     var self=this;
     self.circuit=myCircuit;
     self.outputField=document.getElementById('simulator_output');
-    self.state = {"0":1};
+    self.state = {"0,0,0,0":1};
     self.patterns = [];
 
     // Set patterns of interest to all p-photon permutations
     self.autoPattern = function () {
         self.patterns=[]
         for (var i=0; i <= circuit.nmodes; ++i) {
-            self.patterns.push([i]);
+            self.patterns.push([i,i,i,i]);
         }
     }
 
