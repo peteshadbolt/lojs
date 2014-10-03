@@ -34,8 +34,9 @@ function Editor(targetCircuit, targetSimulator)
     }
 
     self.draw = function (ctx) {
-        ctx.strokeStyle="gray";
+        ctx.globalAlpha=.5;
         self.cursor.draw(ctx);
+        ctx.globalAlpha=1;
     }
 
     self.clear = function () {

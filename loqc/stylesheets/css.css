@@ -6,3 +6,4 @@ canvas { display:block }
 .menuchunk a {color: #ccccff;}
 .menuchunk li {padding: 2px;}
 .modest {font-size: 8pt; color:lightgray;}
+.menuchunk .hi{color:yellow}

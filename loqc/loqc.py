@@ -39,7 +39,8 @@ class Simulate(webapp2.RequestHandler):
         state={decsv(key):value for key, value in request["state"].items()}
         patterns = map(tuple, request["patterns"])
         output = lo.simulate(circuit, state, patterns)
-        output = {str(key)[1:-1].replace(" ", ""): pretty(value) for key, value in output.items()}
+        tidy = lambda key: ",".join(map(int, key))
+        output = {tidy(key): pretty(value) for key, value in output.items()}
 
         # Send this data back to the user
         response=json.dumps(output, sort_keys=1)
