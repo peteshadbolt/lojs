@@ -51,6 +51,13 @@ class Coupler(Component):
         self.size=len(self.unitary)
 
 
+class Crossing(Coupler):
+    """ A crossing """
+    def __init__(self, params):
+        params["ratio"]=1
+        Coupler.__init__(self, params)
+
+
 class PhaseShifter(Component):
     """ A phase shifter """
     def __init__(self, params):
@@ -62,7 +69,7 @@ class PhaseShifter(Component):
 class Circuit():
     """ A linear-optical circuit """
     def __init__(self, json):
-        lookup={"coupler":Coupler, "phaseshifter":PhaseShifter}
+        lookup={"coupler":Coupler, "phaseshifter":PhaseShifter, "crossing":Crossing}
         self.components=map(lambda c: lookup[c["type"]](c), json["components"])
         self.components.sort(key=lambda c: c.x)
         top = min([c.y for c in self.components])

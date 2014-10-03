@@ -72,8 +72,8 @@ function Circuit() {
 
         // Fill the gaps. This is stupidly slow right now!
         self.measure();
-        for (var cx=self.topLeft.x-1; cx<self.bottomRight+1; cx++) {
-            for (var cy=self.topLeft.y; cy<self.bottomRight+1; cy++) {
+        for (var cx=self.topLeft.x; cx<self.bottomRight.x; cx++) {
+            for (var cy=self.topLeft.y; cy<=self.bottomRight.y; cy++) {
                 var c=new Connector(cx, cy);
                 if (self.findCollisions(c).length==0){self.connectors.push(c); }
             }
@@ -116,7 +116,7 @@ function Circuit() {
     self.drawBox = function (ctx) {
         startDrawing(ctx, {"x":0, "y":0});
         ctx.strokeStyle="orange";
-        ctx.lineWidth=1/camera.z;
+        ctx.lineWidth=.5/camera.z;
         ctx.beginPath();
         ctx.moveTo(self.topLeft.x, self.topLeft.y); 
         ctx.lineTo(self.bottomRight.x, self.topLeft.y); ctx.lineTo(self.bottomRight.x, self.bottomRight.y); 
@@ -142,6 +142,15 @@ function Coupler(x, y, ratio) {
     this.draw = drawCoupler;
     this.toJSON = function () {
         return {"type": "coupler", "pos": this.pos, "ratio": this.ratio, "dimensions":this.dimensions};
+    }
+}
+
+function Crossing(x, y) {
+    this.pos = new Vector(x,y);
+    this.dimensions=new Vector(1,1);
+    this.draw = drawCrossing
+    this.toJSON = function () {
+        return {"type": "crossing", "pos": this.pos, "dimensions":this.dimensions};
     }
 }
 
@@ -289,6 +298,19 @@ function drawCoupler(ctx) {
     ctx.lineTo(.6, .5+gap); 
     ctx.bezierCurveTo(.75, .5+gap, .75, 1, .9,   1); 
     ctx.lineTo(1, 1);
+    ctx.stroke();
+    stopDrawing(ctx);
+}
+
+function drawCrossing(ctx) {
+    startDrawing(ctx, this.pos);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(.2, 0, .2, 0, .5, .5); 
+    ctx.bezierCurveTo(.8, 1, .8, 1, 1, 1); 
+    ctx.moveTo(0, 1);
+    ctx.bezierCurveTo(.2, 1, .2, 1, .5, .5); 
+    ctx.bezierCurveTo(.8, 0, .8, 0, 1, 0); 
     ctx.stroke();
     stopDrawing(ctx);
 }

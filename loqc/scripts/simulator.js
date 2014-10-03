@@ -54,7 +54,7 @@ function Simulator(myCircuit) {
     self.display=function(response) {
         self.outputField.innerHTML="";
         for (var key in response) {
-            var line = "<li> |"+ key + "&gt; :\t  " + response[key] + "\n";
+            var line = "<li> |"+ key + "&gt; -  " + response[key] + "\n";
             self.outputField.innerHTML += line;
         }
     }
