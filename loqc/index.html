@@ -27,7 +27,7 @@
     <div class=menuchunk>
         <b>Mode</b>
         <ul>
-            <a class="hi" href="#" onclick="javascript:editor.construct();">Construct</a> |
+            <a class="hi" href="#" onclick="javascript:editor.construct();">Construct</a> 
             <a href="#" onclick="javascript:editor.adjust();">Adjust</a>
         </ul>
     </div>
@@ -35,45 +35,57 @@
     <div class=menuchunk>
         <b>Components</b>
         <ul>
-        <li> <a class="hi" href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> |
-        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> |
+        <li> <a class="hi" href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> 
+        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> 
         <a href="#" onclick="javascript:editor.setMode(Crossing);">Crossing</a>
 
-        <li><a href="#" onclick="javascript:editor.setMode(SPS);">SPS</a> |
-            <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> |
-            <a href="#" onclick="javascript:editor.setMode(Bucket);">SPAD</a> |
+        <li><a href="#" onclick="javascript:editor.setMode(SPS);">SPS</a> 
+            <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> 
+            <a href="#" onclick="javascript:editor.setMode(Bucket);">SPAD</a> 
             <a href="#" onclick="javascript:editor.setMode(BellPair);">NRD</a> 
     </div>
 
 
     <div class=menuchunk>
         <b>I/O</b>
-        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a> |
-        <a href="#">Save</a> |
+        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a> 
+        <a href="#">Save</a> 
         <a href="#">Load</a>
-        <li> <a href="#" onclick="javascript:editor.importCircuit();">Import</a> |
+        <li> <a href="#" onclick="javascript:editor.importCircuit();">Import</a> 
         <a href="#" onclick="javascript:editor.exportCircuit();">Export</a> 
         </ul>
     </div>
 
-    <div class=menuchunk>
-        <b>Input state</b> 
-        <!--<span class=modest>(Click to edit)</span>-->
-        <ul>
-            <li> 1 |0&gt; +
-        </ul>
-    </ul>
-    </div>
 
-
-    <div class=menuchunk>
+    <div class=menuchunk style="overflow: auto; max-height:300px">
         <b>Output</b> 
-        <!--<span class=modest>(Click to edit)</span><br>-->
+        <span class=modest><a href="#" style="color:yellow">State</a> <a href="#">Prob</a> <a href="#">Sort</a> </span>
+
         <ul id="simulator_output">
-            <li>[no circuit]
+            <li>|0,0,0,0&gt;  0.5 <hr width=10% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=10% />
+            <li style="color:yellow">|0,0,0,0&gt;  0.5 <hr width=50% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=20% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=30% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=50% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=15% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=80% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=90% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=100% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=100% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=10% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=10% />
+            <li style="color:yellow">|0,0,0,0&gt;  0.5 <hr width=50% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=20% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=30% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=50% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=15% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=80% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=90% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=100% />
+            <li>|0,0,0,0&gt;  0.5 <hr width=100% />
         </ul>
 
-        <span class=modest>Display: <a href="#">Amp</a> <a href="#">Prob</a> <a href="#">Graph</a> <a href="#">Sort</a> <br></span>
     </div>
 
 

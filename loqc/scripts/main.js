@@ -56,7 +56,7 @@ function resize() {
 }
 
 function main() {
-    // Set up the drawing environment and fit to window
+    // Set up the drawing environment an-d fit to window
     gc=document.getElementById('canvas');
     gd=gc.getContext('2d');
 
