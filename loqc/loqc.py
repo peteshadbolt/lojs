@@ -10,13 +10,14 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=["jinja2.ext.autoescape"])
 
 def pretty(x):
-    f=Fraction(x).limit_denominator(100)
-    # Look at the relative error
-    relative_error=abs(x-float(f))/x
-    if relative_error>1e-5:
-        return "%.4f" % x
-    else:
-        return str(f)
+    return x
+    #f=Fraction(x).limit_denominator(100)
+     #Look at the relative error
+    #relative_error=abs(x-float(f))/x
+    #if relative_error>1e-5:
+        #return "%.4f" % x
+    #else:
+        #return str(f)
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -36,11 +37,15 @@ class Simulate(webapp2.RequestHandler):
 
         # Do the simulation
         decsv = lambda x: tuple(map(int, x.split(",")))
-        state={decsv(key):value for key, value in request["state"].items()}
+        state = {decsv(key):value for key, value in request["state"].items()}
         patterns = map(tuple, request["patterns"])
-        output = lo.simulate(circuit, state, patterns)
-        tidy = lambda key: ",".join(map(int, key))
-        output = {tidy(key): pretty(value) for key, value in output.items()}
+        data = lo.simulate(circuit, state, patterns)
+
+        tidy = lambda key: ",".join(map(str, key))
+        data = {tidy(key): pretty(value) for key, value in data.items()}
+
+        output={"probabilities":data}
+        output["maximum"]=max(data.values())
 
         # Send this data back to the user
         response=json.dumps(output, sort_keys=1)

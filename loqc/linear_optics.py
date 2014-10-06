@@ -112,9 +112,7 @@ def simulate(circuit, input_state, patterns=[], mode="probability"): #TODO: patt
 
 if __name__=="__main__":
     """ Test out the simulator """
-    state = {(0,1,2,3,4,5): 1/np.sqrt(2), 
-             (0,0,0,0,0,0): 1/np.sqrt(2)}
-
+    state = {(0,): 1}
     circuitJSON={"components":[{"type":"coupler","pos":{"x":-1,"y":-1},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-1,"y":1},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-1,"y":3},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-2,"y":2},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":0,"y":2},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-2,"y":0},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"coupler","pos":{"x":-4,"y":0},"ratio":0.5,"dimensions":{"x":1,"y":1}},{"type":"phaseshifter","pos":{"x":-3,"y":1},"phase":0,"dimensions":{"x":1,"y":0}}]}
     circuit=Circuit(circuitJSON)
     patterns=map(tuple, [np.random.randint(0,6,10) for i in xrange(10)])

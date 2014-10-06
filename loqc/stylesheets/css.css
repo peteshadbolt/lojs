@@ -8,4 +8,4 @@ canvas { display:block }
 .modest {font-size: 8pt; color:lightgray;}
 .menuchunk .hi{color:yellow}
 
-hr {color:gray; padding:0px; margin:0px; border: 1px solid gray; height:1px}
+hr {color:orange; padding:0px; margin-bottom:5px; margin:0px; border: 1px solid orange; height:1px}

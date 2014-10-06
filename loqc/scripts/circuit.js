@@ -219,6 +219,7 @@ function SPS(x, y) {
 // A Bell pair
 function BellPair(x, y) {
     this.pos = new Vector(x,y);
+    this.type="bellpair";
     this.dimensions=new Vector(1, 3);
     this.draw = drawBellPair;
     this.toJSON = function () { return {"type": "bellpair", "pos": this.pos}; }
