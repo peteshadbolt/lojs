@@ -101,12 +101,14 @@ function Circuit() {
         }
     }
 
-    // Generate a plain-text JSON representation of the circuit. 
+    // Generate a plain-text JSON representation of the state, circuit, and detection patterns. 
     self.toJSON = function () {
-        var json={"components":[]};
+        var json={"components":[], "state":[], "patterns":[]};
         for (var i=0; i<self.components.length; i++) {
             var c = self.components[i];
             json.components.push(c.toJSON());
+            if (c.source){json.state.push(c.source())}
+            if (c.detector){json.patterns.push(c.detector())}
         }
         return json;
     }   
@@ -120,8 +122,10 @@ function Circuit() {
 
         // Look for clashes with this new component. 
         var collisions = self.findCollisions(c); 
-        if (collisions.length>0){ return new Deleter(collisions, c); }
-        return c;
+        if (collisions.length>0) {
+            return new Deleter(collisions, c); 
+        } else {
+            return c; }
     }
 
     // Okay, yes, we'll have that component please
@@ -151,46 +155,49 @@ function Circuit() {
 }
 
 
+// Base class
+function Component(type, x, y, dx, dy, drawFunc) {
+   this.pos = new Vector(x, y);
+   this.type = type;
+   this.dimensions = new Vector(dx, dy);
+   this.draw = drawFunc;
+   this.toJSON = function () {
+       output={} 
+       console.log(this); 
+   }
+}
 
-// Circuit components (TODO: inheritance)
+// Bits and pieces 
 
 function Coupler(x, y, ratio) {
-    this.index=undefined;
-    this.pos = new Vector(x,y);
-    this.dimensions=new Vector(1,1);
+    Component.call(this, x, y, 1, 1, drawCoupler);
     this.ratio = ratio ? ratio : 0.5;
-    this.draw = drawCoupler;
-    this.toJSON = function () {
-        return {"type": "coupler", "pos": this.pos, "ratio": this.ratio, "index":this.index};
-    }
 }
 
-function Crossing(x, y) {
-    this.index=undefined;
-    this.pos = new Vector(x,y);
-    this.dimensions=new Vector(1,1);
-    this.draw = drawCrossing
-    this.toJSON = function () { return {"type": "crossing", "pos": this.pos}; }
-}
+function Crossing(x, y) { Component.call(this, x, y, 1, 1, drawCrossing); }
 
-// A phase shifter
 function Phaseshifter(x, y, phase) {
-    this.index=undefined;
-    this.pos = new Vector(x,y);
-    this.dimensions=new Vector(1,0);
+    Component.call(this, x, y, 1, 1, drawPhase);
     this.phase = phase ? phase : 0;
-    this.draw = drawPS;
-    this.toJSON = function () { return {"type": "phaseshifter", "pos": this.pos,  "phase": this.phase }; }
 }
 
-// Connects things together. The identity!
-function Connector(x, y) {
-    this.pos = new Vector(x,y);
-    this.dimensions=new Vector(1, 0);
-    this.draw = drawConnector;
+function Connector(x, y) { Component.call(this, x, y, 1, 1, drawConnector); }
+
+function SPS(x, y) {
+    Component.call(this, x, y, 1, 1, drawSPS);
+    this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
-// Shows what we are about to delete and why
+function BellPair(x, y) {
+    Component.call(this, x, y, 1, 1, drawBellPair);
+    this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
+}
+
+function Bucket(x, y) {
+    Component.call(this, x, y, 1, 1, drawBucket);
+    this.enforceRules = function () { if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;} }
+}
+
 function Deleter(collisions, request){
     this.pos = new Vector();
     this.dimensions=new Vector();
@@ -204,37 +211,3 @@ function Deleter(collisions, request){
     }
 }
 
-// A single-photon source
-function SPS(x, y) {
-    this.pos = new Vector(x,y);
-    this.dimensions=new Vector(1, 0);
-    this.type="sps";
-    this.draw = drawSPS;
-    this.toJSON = function () { return {"type": "sps", "pos": this.pos}; }
-    this.enforceRules = function () {
-       if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;}
-    }
-}
-
-// A Bell pair
-function BellPair(x, y) {
-    this.pos = new Vector(x,y);
-    this.type="bellpair";
-    this.dimensions=new Vector(1, 3);
-    this.draw = drawBellPair;
-    this.toJSON = function () { return {"type": "bellpair", "pos": this.pos}; }
-    this.enforceRules = function () {
-       if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;}
-    }
-}
-
-// A bucket detector
-function Bucket(x, y) {
-    this.pos = new Vector(x,y);
-    this.dimensions=new Vector(1, 0);
-    this.draw = drawBucket;
-    this.toJSON = function () { return {"type": "bucket", "pos": this.pos}; }
-    this.enforceRules = function () {
-       if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;}
-    }
-}

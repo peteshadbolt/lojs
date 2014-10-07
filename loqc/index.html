@@ -20,15 +20,16 @@
 
 <div id=menu> 
     <div class=menuchunk>
-        <b>LOQC</b>
-        <a href="/instructions">Instructions</a> 
-        <!--<a href="#">Keyboard (?)</a> -->
-    </div>
-    <div class=menuchunk>
-        <b>Mode</b>
+        <b>LOQC</b><br>
         <ul>
-            <a class="hi" href="#" onclick="javascript:editor.construct();">Construct</a> 
-            <a href="#" onclick="javascript:editor.adjust();">Adjust</a>
+            <li><a href="/instructions">Instructions</a> <br>
+            <li>Mode: <a class="hi" href="#" onclick="javascript:editor.construct();">Construct</a> 
+        <a href="#" onclick="javascript:editor.adjust();">Adjust</a>
+        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a>
+        <a href="#">Save</a> 
+        <a href="#">Load</a>
+        <li> <a href="#" onclick="javascript:editor.importCircuit();">Import</a> 
+        <a href="#" onclick="javascript:editor.exportCircuit();">Export</a> 
         </ul>
     </div>
 
@@ -43,17 +44,6 @@
             <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> 
             <a href="#" onclick="javascript:editor.setMode(Bucket);">SPAD</a> 
             <a href="#" onclick="javascript:editor.setMode(BellPair);">NRD</a> 
-    </div>
-
-
-    <div class=menuchunk>
-        <b>I/O</b>
-        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a> 
-        <a href="#">Save</a> 
-        <a href="#">Load</a>
-        <li> <a href="#" onclick="javascript:editor.importCircuit();">Import</a> 
-        <a href="#" onclick="javascript:editor.exportCircuit();">Export</a> 
-        </ul>
     </div>
 
 
