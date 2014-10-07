@@ -103,13 +103,9 @@ function Circuit() {
 
     // Generate a plain-text JSON representation of the state, circuit, and detection patterns. 
     self.toJSON = function () {
-        var json={"components":[], "state":[], "patterns":[]};
+        var json=[];
         for (var i=0; i<self.components.length; i++) {
-            var c = self.components[i];
-            //json.components.push(c.toJSON());
-            json.components.push(c.json);
-            if (c.source){json.state.push(c.source())}
-            if (c.detector){json.patterns.push(c.detector())}
+            json.push(self.components[i].json);
         }
         return json;
     }   

@@ -62,11 +62,7 @@ class Circuit():
         lookup={"coupler":Coupler, "phaseshifter":PhaseShifter, "crossing":Crossing}
         self.components=[lookup[c["type"]](c) for c in json["components"] if c["type"] in lookup]
         self.components.sort(key=lambda c: c.x)
-        top = min([c.y for c in self.components])
-        bottom = max([c.y + c.size for c in self.components])
-        self.d = bottom-top
-        for c in self.components:
-            c.y+=-top
+        self.d = max([c.y + c.size for c in self.components])
         self.computeUnitary();
 
     def computeUnitary(self):

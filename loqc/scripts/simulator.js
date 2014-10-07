@@ -1,9 +1,6 @@
 /*
    pete.shadbolt@gmail.com
    Communicates with the server-side simulator and renders the output.
-   The job here is to communicate between our internal representation of the circuit, 
-   where states are actually represented by "source"-type components, and the API, 
-   which needs an object/dict-like representation of the state.
 */
 
 function Simulator(myCircuit) {
@@ -16,8 +13,6 @@ function Simulator(myCircuit) {
         // Prepare the post data
         var request={};
         request.circuit=self.circuit.toJSON();
-        request.state=self.constructState();
-        request.patterns=self.constructPatterns();
 
         // Prepare the request
         var xhr = new XMLHttpRequest();
@@ -30,16 +25,6 @@ function Simulator(myCircuit) {
         xhr.open("POST","/simulate",true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.send(JSON.stringify(request));
-    }
-
-    // Construct a state based on the sources in the circuit
-    self.constructState = function () {
-       return {"0":0};
-    }
-
-    // Construct a list of patterns of interest
-    self.constructPatterns = function () {
-        return [[0]]
     }
 
     // Display the probabilities (or amplitudes) on the screen

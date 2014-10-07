@@ -28,12 +28,35 @@ class MainPage(webapp2.RequestHandler):
         self.response.out.write(template.render(template_values))
 
 class Simulate(webapp2.RequestHandler):
+    def sanitize(self, circuit):
+        """ Looks at the JSON and shifts everything to position zero """
+        sourceTypes=set(("sps", "bellpair"))
+        detectorTypes=set(("bucket",))
+
+        # Shift everything up and group
+        top=min([c["pos"]["y"] for c in circuit])
+        for c in circuit:
+            #c["pos"]["y"]+=-top
+            print c
+
+        return 1,2,3
+        
     def post(self):
         """ This is handles requests from the user and initiates a simulation """
         request = json.loads(self.request.body)
+        circuit = request["circuit"]
+
+        # Sanitize the request without contaminating the simulator
+        a,b,c = self.sanitize(circuit)
+        print a,b,c
+
+        # Give up
+        output={"probabilities":{"fish":69}, "maximum":1}
+        self.response.out.write(json.dumps(output))
+        return
 
         # Build a python object describing the circuit, state, patterns of interest
-        circuit = lo.Circuit(request["circuit"])
+        circuit = lo.Circuit(circuit)
 
         # Do the simulation
         decsv = lambda x: tuple(map(int, x.split(",")))
