@@ -11,13 +11,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 def pretty(x):
     return x
-    #f=Fraction(x).limit_denominator(100)
-     #Look at the relative error
-    #relative_error=abs(x-float(f))/x
-    #if relative_error>1e-5:
-        #return "%.4f" % x
-    #else:
-        #return str(f)
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -30,16 +23,17 @@ class MainPage(webapp2.RequestHandler):
 class Simulate(webapp2.RequestHandler):
     def sanitize(self, circuit):
         """ Looks at the JSON and shifts everything to position zero """
-        sourceTypes=set(("sps", "bellpair"))
-        detectorTypes=set(("bucket",))
-
         # Shift everything up and group
         top=min([c["pos"]["y"] for c in circuit])
         for c in circuit:
-            #c["pos"]["y"]+=-top
-            print c
+            c["pos"]["y"]+=-top
 
-        return 1,2,3
+        sourceTypes={"sps", "bellpair"}
+        detectorTypes={"bucket",}
+        sources = filter(lambda x: x["type"] in sourceTypes, circuit)
+        detectors = filter(lambda x: x["type"] in detectorTypes, circuit)
+        waveguides = filter(lambda x: not x["type"] in sourceTypes|detectorTypes, circuit)
+        return waveguides, sources, detectors
         
     def post(self):
         """ This is handles requests from the user and initiates a simulation """
@@ -47,16 +41,10 @@ class Simulate(webapp2.RequestHandler):
         circuit = request["circuit"]
 
         # Sanitize the request without contaminating the simulator
-        a,b,c = self.sanitize(circuit)
-        print a,b,c
-
-        # Give up
-        output={"probabilities":{"fish":69}, "maximum":1}
-        self.response.out.write(json.dumps(output))
-        return
+        waveguides, sources, detectors = self.sanitize(circuit)
 
         # Build a python object describing the circuit, state, patterns of interest
-        circuit = lo.Circuit(circuit)
+        circuit = lo.Circuit(waveguides)
 
         # Do the simulation
         decsv = lambda x: tuple(map(int, x.split(",")))

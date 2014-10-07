@@ -105,7 +105,7 @@ function Circuit() {
     self.toJSON = function () {
         var json=[];
         for (var i=0; i<self.components.length; i++) {
-            json.push(self.components[i].json);
+            json.push(self.components[i].json());
         }
         return json;
     }   
@@ -159,20 +159,20 @@ function Component(type, x, y, dx, dy, drawFunc) {
    this.type = type;
    this.dimensions = new Vector(dx, dy);
    this.draw = drawFunc;
-   this.json = {"type":this.type, "pos":this.pos}
+   this.json = function(){return {"type":this.type, "pos":this.pos}}
 }
 
 // Bits and pieces 
 function Coupler(x, y, ratio) {
     Component.call(this, "coupler", x, y, 1, 1, drawCoupler);
     this.ratio = ratio ? ratio : .5;
-    this.json.ratio=this.ratio;
+    this.json = function(){return {"type":this.type, "pos":this.pos, "ratio":this.ratio}}
 }
 
 function Phaseshifter(x, y, phase) {
     Component.call(this, "phaseshifter", x, y, 1, 0, drawPhaseShifter);
     this.phase = phase ? phase : 0;
-    this.json.phase=this.phase;
+    this.json = function(){return {"type":this.type, "pos":this.pos, "phase":this.phase}}
 }
 
 function Crossing(x, y) { Component.call(this, "crossing", x, y, 1, 1, drawCrossing); }
