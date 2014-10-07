@@ -4,17 +4,13 @@ This file provides a universal linear-optics simulator based on Ryser's formula 
 It depends on numpy.
 If you need to go faster, there are accelerated libraries here: https://github.com/peteshadbolt/loqc-simulator
 """
-
 import numpy as np
 import itertools as it
 from collections import defaultdict
 from operator import mul
 
 ftable=(1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
-def factorial(n): 
-    """ Short-cut! """
-    return ftable[n]
-
+def factorial(n): return ftable[n]
 
 def normalization(modes):
     """ Get the normalization constant """
@@ -22,7 +18,6 @@ def normalization(modes):
     for mode in modes:
         table[mode]+=1
     return reduce(mul, (factorial(t) for t in table.values()))
-
 
 def permanent(a):
     """ Calculated the permanent using Ryser"s formula. """
@@ -35,12 +30,10 @@ def permanent(a):
     terms=map(get_term, indeces) 
     return np.sum(terms)*((-1)**n)
 
-
 class Component():
     """ A generic linear-optical component """
     def __init__(self, params):
         self.x=params["pos"]["x"]; self.y=params["pos"]["y"]
-
 
 class Coupler(Component):
     """ A directional coupler """
@@ -50,13 +43,11 @@ class Coupler(Component):
         self.unitary=np.array([[t, r], [r, t]], dtype=complex)
         self.size=len(self.unitary)
 
-
 class Crossing(Coupler):
     """ A crossing """
     def __init__(self, params):
         params["ratio"]=1
         Coupler.__init__(self, params)
-
 
 class PhaseShifter(Component):
     """ A phase shifter """
@@ -64,13 +55,12 @@ class PhaseShifter(Component):
         Component.__init__(self, params)
         self.unitary=np.array([[np.exp(1j*params["phase"])]], dtype=complex)
         self.size=len(self.unitary)
-
         
 class Circuit():
     """ A linear-optical circuit """
     def __init__(self, json):
         lookup={"coupler":Coupler, "phaseshifter":PhaseShifter, "crossing":Crossing}
-        self.components=map(lambda c: lookup[c["type"]](c), json["components"])
+        self.components=[lookup[c["type"]](c) for c in json["components"] if c["type"] in lookup]
         self.components.sort(key=lambda c: c.x)
         top = min([c.y for c in self.components])
         bottom = max([c.y + c.size for c in self.components])
@@ -105,10 +95,8 @@ def simulate(circuit, input_state, patterns=[], mode="probability"): #TODO: patt
         for key, value in output_state.items():
             output_state[key]=np.abs(value)**2
         return output_state
-    elif mode == "amplitude":
-        return output_state
     else:
-        raise ValueError
+        return output_state
 
 if __name__=="__main__":
     """ Test out the simulator """

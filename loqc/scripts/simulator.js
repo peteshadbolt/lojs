@@ -1,12 +1,9 @@
 /*
    pete.shadbolt@gmail.com
-   Comminicates with the server-side simulator and renders the output
-*/
-
-
-/* The job here is to communicate between our internal representation of the circuit, 
+   Communicates with the server-side simulator and renders the output.
+   The job here is to communicate between our internal representation of the circuit, 
    where states are actually represented by "source"-type components, and the API, 
-   which needs an object/dict-like representation of the state
+   which needs an object/dict-like representation of the state.
 */
 
 function Simulator(myCircuit) {
@@ -42,7 +39,7 @@ function Simulator(myCircuit) {
 
     // Construct a list of patterns of interest
     self.constructPatterns = function () {
-        return [[0],[1],[2],[3]]
+        return [[0]]
     }
 
     // Display the probabilities (or amplitudes) on the screen
@@ -51,9 +48,7 @@ function Simulator(myCircuit) {
         var probabilities=response.probabilities;
         var lines="";
         for (var key in probabilities) {
-            //<li>|0,0,0,0&gt;  0.5 <hr width=10% />
             var magnitude=(100*probabilities[key]/response.maximum).toFixed(0);
-            //console.log(response.maximum);
             lines += "<li> |"+ key + "&gt; -  " + probabilities[key].toFixed(4) + "\n";
             lines += "<hr width="+magnitude+"% />\n";
             
