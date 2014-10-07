@@ -106,7 +106,8 @@ function Circuit() {
         var json={"components":[], "state":[], "patterns":[]};
         for (var i=0; i<self.components.length; i++) {
             var c = self.components[i];
-            json.components.push(c.toJSON());
+            //json.components.push(c.toJSON());
+            json.components.push(c.json);
             if (c.source){json.state.push(c.source())}
             if (c.detector){json.patterns.push(c.detector())}
         }
@@ -157,49 +158,49 @@ function Circuit() {
 
 // Base class
 function Component(type, x, y, dx, dy, drawFunc) {
+   this.type=type;
    this.pos = new Vector(x, y);
    this.type = type;
    this.dimensions = new Vector(dx, dy);
    this.draw = drawFunc;
-   this.toJSON = function () {
-       output={} 
-       console.log(this); 
-   }
+   this.json = {"type":this.type, "pos":this.pos}
 }
 
 // Bits and pieces 
-
 function Coupler(x, y, ratio) {
-    Component.call(this, x, y, 1, 1, drawCoupler);
-    this.ratio = ratio ? ratio : 0.5;
+    Component.call(this, "coupler", x, y, 1, 1, drawCoupler);
+    this.ratio = ratio ? ratio : .5;
+    this.json.ratio=this.ratio;
 }
-
-function Crossing(x, y) { Component.call(this, x, y, 1, 1, drawCrossing); }
 
 function Phaseshifter(x, y, phase) {
-    Component.call(this, x, y, 1, 1, drawPhase);
+    Component.call(this, "phaseshifter", x, y, 1, 0, drawPhaseShifter);
     this.phase = phase ? phase : 0;
+    this.json.phase=this.phase;
 }
 
-function Connector(x, y) { Component.call(this, x, y, 1, 1, drawConnector); }
+function Crossing(x, y) { Component.call(this, "crossing", x, y, 1, 1, drawCrossing); }
+
+function Connector(x, y) { Component.call(this, "connector", x, y, 1, 0, drawConnector); }
 
 function SPS(x, y) {
-    Component.call(this, x, y, 1, 1, drawSPS);
+    Component.call(this, "sps", x, y, 1, 0, drawSPS);
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
 function BellPair(x, y) {
-    Component.call(this, x, y, 1, 1, drawBellPair);
+    Component.call(this, "bellpair", x, y, 1, 3, drawBellPair);
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
 function Bucket(x, y) {
-    Component.call(this, x, y, 1, 1, drawBucket);
+    Component.call(this, "bucket", x, y, 1, 0, drawBucket);
     this.enforceRules = function () { if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;} }
 }
 
 function Deleter(collisions, request){
     this.pos = new Vector();
+    this.type = "deleter";
     this.dimensions=new Vector();
     this.collisions=collisions;
     this.request=request;

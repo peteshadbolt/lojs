@@ -4,16 +4,23 @@
 */
 
 
+/* The job here is to communicate between our internal representation of the circuit, 
+   where states are actually represented by "source"-type components, and the API, 
+   which needs an object/dict-like representation of the state
+*/
+
 function Simulator(myCircuit) {
-    var self=this;
-    self.circuit=myCircuit;
-    self.outputField=document.getElementById('simulator_output');
+    var self = this;
+    self.circuit = myCircuit;
+    self.outputField = document.getElementById('simulator_output');
 
     // The circuit changed, we need to ask for new data
     self.update = function() {
         // Prepare the post data
         var request={};
         request.circuit=self.circuit.toJSON();
+        request.state=self.constructState();
+        request.patterns=self.constructPatterns();
 
         // Prepare the request
         var xhr = new XMLHttpRequest();
@@ -28,8 +35,18 @@ function Simulator(myCircuit) {
         xhr.send(JSON.stringify(request));
     }
 
+    // Construct a state based on the sources in the circuit
+    self.constructState = function () {
+       return {"0":0};
+    }
+
+    // Construct a list of patterns of interest
+    self.constructPatterns = function () {
+        return [[0],[1],[2],[3]]
+    }
+
     // Display the probabilities (or amplitudes) on the screen
-    self.display=function(response) {
+    self.display = function(response) {
         self.outputField.innerHTML="";
         var probabilities=response.probabilities;
         var lines="";
