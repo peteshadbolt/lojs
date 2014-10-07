@@ -3,16 +3,42 @@
    Communicates with the server-side simulator and renders the output.
 */
 
+
 function Simulator(myCircuit) {
     var self = this;
     self.circuit = myCircuit;
     self.outputField = document.getElementById('simulator_output');
 
+    // Generate a plain-text JSON representation of the state, circuit, and detection patterns. 
+    self.getGroup = function (groupName) {
+        return self.circuit.components.filter(function (x) {return x.group==groupName})
+    }
+
+    self.getWaveguides = function () {
+        var wgs=self.getGroup("waveguide");
+        var json=[];
+        for (var i=0; i < wgs.length; ++i) { json.push(wgs[i].json()); }
+        return json;
+    }   
+
+    // Generate a JSON representation of the state generate by these sources
+    self.getState = function () {
+        return [];
+    }
+
+    // Generate a JSON representation of the set of patterns of interest
+    self.getPatterns = function () {
+        return [];
+    }
+
+
     // The circuit changed, we need to ask for new data
     self.update = function() {
         // Prepare the post data
         var request={};
-        request.circuit=self.circuit.toJSON();
+        request.circuit=self.getWaveguides();
+        request.state=self.getState();
+        request.patterns=self.getPatterns();
 
         // Prepare the request
         var xhr = new XMLHttpRequest();

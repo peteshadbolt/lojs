@@ -60,7 +60,8 @@ class Circuit():
     """ A linear-optical circuit """
     def __init__(self, json):
         lookup={"coupler":Coupler, "phaseshifter":PhaseShifter, "crossing":Crossing}
-        self.components=[lookup[c["type"]](c) for c in json["components"] if c["type"] in lookup]
+        convert = lambda c: lookup[c["type"]](c)
+        self.components = map(convert, json)
         self.components.sort(key=lambda c: c.x)
         self.d = max([c.y + c.size for c in self.components])
         self.computeUnitary();

@@ -21,30 +21,12 @@ class MainPage(webapp2.RequestHandler):
         self.response.out.write(template.render(template_values))
 
 class Simulate(webapp2.RequestHandler):
-    def sanitize(self, circuit):
-        """ Looks at the JSON and shifts everything to position zero """
-        # Shift everything up and group
-        top=min([c["pos"]["y"] for c in circuit])
-        for c in circuit:
-            c["pos"]["y"]+=-top
-
-        sourceTypes={"sps", "bellpair"}
-        detectorTypes={"bucket",}
-        sources = filter(lambda x: x["type"] in sourceTypes, circuit)
-        detectors = filter(lambda x: x["type"] in detectorTypes, circuit)
-        waveguides = filter(lambda x: not x["type"] in sourceTypes|detectorTypes, circuit)
-        return waveguides, sources, detectors
-        
     def post(self):
-        """ This is handles requests from the user and initiates a simulation """
+        """ This handles requests from the user and initiates a simulation """
         request = json.loads(self.request.body)
-        circuit = request["circuit"]
-
-        # Sanitize the request without contaminating the simulator
-        waveguides, sources, detectors = self.sanitize(circuit)
 
         # Build a python object describing the circuit, state, patterns of interest
-        circuit = lo.Circuit(waveguides)
+        circuit = lo.Circuit(request["circuit"])
 
         # Do the simulation
         decsv = lambda x: tuple(map(int, x.split(",")))
