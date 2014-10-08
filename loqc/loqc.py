@@ -33,16 +33,17 @@ class Simulate(webapp2.RequestHandler):
         state = {decsv(key):value for key, value in request["state"].items()}
         patterns = map(tuple, request["patterns"])
         data = lo.simulate(circuit, state, patterns)
-
         tidy = lambda key: ",".join(map(str, key))
         data = {tidy(key): pretty(value) for key, value in data.items()}
 
-        output={"probabilities":data}
-        output["maximum"]=max(data.values())
+        if len(data)==0:
+            output={"warning": "No output"}
+        else:
+            output={"probabilities":data}
+            output["maximum"]=max(data.values())
 
         # Send this data back to the user
         response=json.dumps(output, sort_keys=1)
-        logging.info(response)
         self.response.out.write(response)
 
 application = webapp2.WSGIApplication([

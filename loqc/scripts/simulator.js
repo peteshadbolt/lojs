@@ -8,6 +8,7 @@ function Simulator(myCircuit) {
     var self = this;
     self.circuit = myCircuit;
     self.outputField = document.getElementById('simulator_output');
+    self.debugField = document.getElementById('debug');
 
     // Generate a plain-text JSON representation of the state, circuit, and detection patterns. 
     self.getGroup = function (groupName) {
@@ -23,14 +24,13 @@ function Simulator(myCircuit) {
 
     // Generate a JSON representation of the state generate by these sources
     self.getState = function () {
-        return [];
+        return {};
     }
 
     // Generate a JSON representation of the set of patterns of interest
     self.getPatterns = function () {
         return [];
     }
-
 
     // The circuit changed, we need to ask for new data
     self.update = function() {
@@ -39,6 +39,11 @@ function Simulator(myCircuit) {
         request.circuit=self.getWaveguides();
         request.state=self.getState();
         request.patterns=self.getPatterns();
+
+        // Fill out the debug field
+        self.debugField.innerHTML=JSON.stringify(request.circuit)+"<br/><br/>";
+        self.debugField.innerHTML+=JSON.stringify(request.state)+"<br/><br/>";
+        self.debugField.innerHTML+=JSON.stringify(request.patterns);
 
         // Prepare the request
         var xhr = new XMLHttpRequest();
@@ -56,6 +61,10 @@ function Simulator(myCircuit) {
     // Display the probabilities (or amplitudes) on the screen
     self.display = function(response) {
         self.outputField.innerHTML="";
+        if (response.warning){
+            self.outputField.innerHTML = "[no output]";
+            return;
+        }
         var probabilities=response.probabilities;
         var lines="";
         for (var key in probabilities) {
