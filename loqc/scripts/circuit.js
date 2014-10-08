@@ -128,6 +128,14 @@ function Circuit() {
         self.decorate();
     }
 
+    self.toJSON = function () {
+        json=[];
+        for (var i=0; i < self.components.length; ++i) {
+           json.push(self.components[i].json());
+        }       
+        return json;
+    }
+
     // Draw a box around the circuit
     self.drawBox = function (ctx) {
         startDrawing(ctx, {"x":0, "y":0});
@@ -140,13 +148,11 @@ function Circuit() {
         ctx.stroke();
         stopDrawing(ctx);
     }
-
 }
 
 
-// TODO: the mechanism of "groups" is ugly as sin
 // Base class
-function Component(type, x, y, dx, dy, drawFunc, group) {
+function Component(type, x, y, dx, dy, drawFunc) {
    this.type=type;
    this.pos = new Vector(x, y);
    this.relPos = function () {return this.pos.add(0, -circuit.topLeft.y)}
@@ -154,7 +160,6 @@ function Component(type, x, y, dx, dy, drawFunc, group) {
    this.dimensions = new Vector(dx, dy);
    this.draw = drawFunc;
    this.json = function(){return {"type":this.type, "pos":this.relPos()}}
-   this.group = group ? group : "waveguide";
 }
 
 // Bits and pieces 
@@ -175,24 +180,23 @@ function Crossing(x, y) { Component.call(this, "crossing", x, y, 1, 1, drawCross
 function Connector(x, y) { Component.call(this, "connector", x, y, 1, 0, drawConnector); }
 
 function SPS(x, y) {
-    Component.call(this, "sps", x, y, 1, 0, drawSPS, "source");
+    Component.call(this, "sps", x, y, 1, 0, drawSPS);
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
 function BellPair(x, y) {
-    Component.call(this, "bellpair", x, y, 1, 3, drawBellPair, "source");
+    Component.call(this, "bellpair", x, y, 1, 3, drawBellPair);
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
 function Bucket(x, y) {
-    Component.call(this, "bucket", x, y, 1, 0, drawBucket, "detector");
+    Component.call(this, "bucket", x, y, 1, 0, drawBucket);
     this.enforceRules = function () { if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;} }
 }
 
 function Deleter(collisions, request){
     this.pos = new Vector();
     this.type = "deleter";
-    this.group = "deleter";
     this.dimensions=new Vector();
     this.collisions=collisions;
     this.request=request;

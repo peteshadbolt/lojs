@@ -14,5 +14,15 @@ def dtens(*terms):
 source1 = {(0,):1}
 source2 = {(1,2):1/sqrt(2), (3,4):1/sqrt(2)}
 source3 = {(5,):1}
+state = dtens(source1, source2, source2, source3)
+print state
+nphotons=len(state.keys()[0])
+print nphotons
 
-print dtens(source1, source2, source2, source3)
+detector1 = 0
+detector2 = 4
+detector3 = 5
+patterns = list(it.combinations_with_replacement([0,4,5], nphotons))
+print patterns
+
+

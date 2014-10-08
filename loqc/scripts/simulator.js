@@ -10,40 +10,12 @@ function Simulator(myCircuit) {
     self.outputField = document.getElementById('simulator_output');
     self.debugField = document.getElementById('debug');
 
-    // Generate a plain-text JSON representation of the state, circuit, and detection patterns. 
-    self.getGroup = function (groupName) {
-        return self.circuit.components.filter(function (x) {return x.group==groupName})
-    }
-
-    self.getWaveguides = function () {
-        var wgs=self.getGroup("waveguide");
-        var json=[];
-        for (var i=0; i < wgs.length; ++i) { json.push(wgs[i].json()); }
-        return json;
-    }   
-
-    // Generate a JSON representation of the state generate by these sources
-    self.getState = function () {
-        return {};
-    }
-
-    // Generate a JSON representation of the set of patterns of interest
-    self.getPatterns = function () {
-        return [];
-    }
-
     // The circuit changed, we need to ask for new data
     self.update = function() {
         // Prepare the post data
         var request={};
-        request.circuit=self.getWaveguides();
-        request.state=self.getState();
-        request.patterns=self.getPatterns();
-
-        // Fill out the debug field
-        self.debugField.innerHTML=JSON.stringify(request.circuit)+"<br/><br/>";
-        self.debugField.innerHTML+=JSON.stringify(request.state)+"<br/><br/>";
-        self.debugField.innerHTML+=JSON.stringify(request.patterns);
+        request.circuit=self.circuit.toJSON();
+        self.debugField.innerHTML=JSON.stringify(request.circuit);
 
         // Prepare the request
         var xhr = new XMLHttpRequest();
