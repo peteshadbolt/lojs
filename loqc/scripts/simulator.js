@@ -8,14 +8,12 @@ function Simulator(myCircuit) {
     var self = this;
     self.circuit = myCircuit;
     self.outputField = document.getElementById('simulator_output');
-    self.debugField = document.getElementById('debug');
 
     // The circuit changed, we need to ask for new data
     self.update = function() {
         // Prepare the post data
         var request={};
         request.circuit=self.circuit.toJSON();
-        self.debugField.innerHTML=JSON.stringify(request.circuit);
 
         // Prepare the request
         var xhr = new XMLHttpRequest();
@@ -39,12 +37,15 @@ function Simulator(myCircuit) {
         }
         var probabilities=response.probabilities;
         var lines="";
-        for (var key in probabilities) {
-            var magnitude=(100*probabilities[key]/response.maximum).toFixed(0);
-            lines += "<li> |"+ key + "&gt; -  " + probabilities[key].toFixed(4) + "\n";
+        for (var i=0; i<probabilities.length; ++i) {
+            var p=probabilities[i]
+            c = p[1]==0 ? "gray" : "white";
+            lines += "<li style=\"color:"+c+"\"> ";
+            lines+="|"+ p[0] + "&gt; -  " + p[1].toFixed(4) + "\n";
+            var magnitude=(100*p[1]/response.maximum).toFixed(0);
             lines += "<hr width="+magnitude+"% />\n";
-            
         }
         self.outputField.innerHTML += lines;
     }
 }
+

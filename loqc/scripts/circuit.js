@@ -80,8 +80,10 @@ function Circuit() {
 
         // Enforce design rules
         self.measure();
-        for (var i=0; i < self.components.length; ++i) {
-            if(self.components[i].enforceRules){self.components[i].enforceRules();}
+        if (self.topLeft!=undefined){
+            for (var i=0; i < self.components.length; ++i) {
+                if(self.components[i].enforceRules){self.components[i].enforceRules();}
+            }
         }
 
         // If, after all that, there are collisions - then just delete them
@@ -107,7 +109,7 @@ function Circuit() {
         // Make the component and put it on the grid
         var c=new component(0,0);
         c.pos = grid.snap(worldPos, c.dimensions); // Make sure that it is on the nearest grid point
-        if(c.enforceRules){c.enforceRules();}
+        if(c.enforceRules && self.topLeft!=undefined){c.enforceRules();}
 
         // Look for clashes with this new component. 
         var collisions = self.findCollisions(c); 

@@ -64,7 +64,7 @@ class SPS(Component):
 class BellPair(Component):
     def __init__(self, params):
         Component.__init__(self, params)
-        ir2=np.sqrt(2)
+        ir2=1/np.sqrt(2)
         self.state={(self.y, self.y+2):ir2, (self.y+1, self.y+3):ir2}
         self.size=4
 
@@ -97,7 +97,7 @@ class Circuit():
         """ Compute the input state vector """
         s=[c.state for c in self.components if c.state!=None]
         self.input_state = dtens(*s)
-        self.nphotons=len(self.input_state.keys()[0])
+        self.nphotons=0 if len(self.input_state)==0 else len(self.input_state.keys()[0])
 
     def computePatterns(self):
         """ Compute the set of interesting detection patterns """
@@ -120,7 +120,6 @@ class Circuit():
         if mode == "probability":
             for key, value in output_state.items():
                 output_state[key]=np.abs(value)**2
-        print output_state
         return output_state
 
 

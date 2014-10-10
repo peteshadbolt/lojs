@@ -25,18 +25,19 @@ class Simulate(webapp2.RequestHandler):
 
         # Build a python object describing the circuit, state, patterns of interest
         # TODO: if the request specifies state or patterns, then we just override here
-        circuit = lo.Circuit(circuit)
-        data = circuit.simulate()
-        tidy = lambda key: ",".join(map(str, key))
-        data = {tidy(key): value for key, value in data.items()}
-
-        if len(data)==0:
+        try:
+            circuit = lo.Circuit(circuit)
+            data = circuit.simulate().items()
+            data.sort(key=lambda x: -x[1])
+            maximum = data[0][1]
+            output={"probabilities":data, "maximum":1 if maximum==0 else maximum}
+        except ValueError:
             output={"warning": "No output"}
-        else:
-            output={"probabilities":data, "maximum":max(data.values())}
+        except IndexError:
+            output={"warning": "No output"}
 
         # Send this data back to the user
-        response=json.dumps(output, sort_keys=1)
+        response=json.dumps(output)
         self.response.out.write(response)
 
 application = webapp2.WSGIApplication([
