@@ -76,7 +76,6 @@ class Circuit():
                 cu[p1:p2, p1:p2] = component.unitary
             self.unitary=np.dot(cu, self.unitary);
 
-
 def simulate(circuit, input_state, patterns=[], mode="probability"): #TODO: patterns should probably be a set?
     """ Simulates a given circuit, for a given input state, looking at certain terms in the output state """
     output_state=defaultdict(complex)
