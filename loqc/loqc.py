@@ -26,7 +26,7 @@ class Simulate(webapp2.RequestHandler):
         # Build a python object describing the circuit, state, patterns of interest
         # TODO: if the request specifies state or patterns, then we just override here
         circuit = lo.Circuit(circuit)
-        data = lo.simulate(circuit, state, patterns)
+        data = circuit.simulate()
         tidy = lambda key: ",".join(map(str, key))
         data = {tidy(key): value for key, value in data.items()}
 

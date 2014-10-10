@@ -2,7 +2,7 @@
 import numpy as np
 import itertools as it
 from collections import defaultdict
-from operator import mul
+from operator import mul, add
 
 ftable=(1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
 def factorial(n): return ftable[n]
@@ -28,7 +28,8 @@ def dtens(*terms):
     output=defaultdict(complex)
     for q in it.product(*(t.items() for t in terms)):
         keys, amps = zip(*q)
-        output[tuple(sorted(np.sum(keys)))] = np.prod(amps)
+        newkey=tuple(sorted(reduce(add, keys)))
+        output[newkey] = np.prod(amps)
     return output
 
 class Component():
@@ -119,6 +120,7 @@ class Circuit():
         if mode == "probability":
             for key, value in output_state.items():
                 output_state[key]=np.abs(value)**2
+        print output_state
         return output_state
 
 
