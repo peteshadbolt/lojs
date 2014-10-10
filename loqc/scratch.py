@@ -8,6 +8,7 @@ def dtens(*terms):
     output=defaultdict(complex)
     for q in it.product(*(t.items() for t in terms)):
         keys, amps = zip(*q)
+        print keys
         output[tuple(sorted(sum(keys)))] = prod(amps)
     return output
 
