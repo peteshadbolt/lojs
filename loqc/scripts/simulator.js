@@ -7,6 +7,7 @@
 function Simulator(myCircuit) {
     var self = this;
     self.circuit = myCircuit;
+    self.highlightedPattern = [];
     self.outputField = document.getElementById('simulator_output');
 
     // The circuit changed, we need to ask for new data
@@ -28,6 +29,12 @@ function Simulator(myCircuit) {
         xhr.send(JSON.stringify(request));
     }
 
+    // Higlight a particular pattern
+    self.highlight = function (pattern) {
+        self.highlightedPattern = pattern;
+        renderer.needFrame();
+    }
+
     // Display the probabilities (or amplitudes) on the screen
     self.display = function(response) {
         self.outputField.innerHTML="";
@@ -40,8 +47,10 @@ function Simulator(myCircuit) {
         for (var i=0; i<probabilities.length; ++i) {
             var p=probabilities[i]
             c = p[1]==0 ? "gray" : "white";
-            lines += "<li style=\"color:"+c+"\"> ";
-            lines+="|"+ p[0] + "&gt; -  " + p[1].toFixed(4) + "\n";
+            lines += "<li class=state_term ";
+            lines += "style=\"color:"+c+"\" ";
+            lines +="onmouseover = \"javascript:simulator.highlight(["+p[0]+"])\"> ";
+            lines +="|"+ p[0] + "&gt; -  " + p[1].toFixed(4) + "\n";
             var magnitude=(100*p[1]/response.maximum).toFixed(0);
             lines += "<hr width="+magnitude+"% />\n";
         }

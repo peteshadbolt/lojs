@@ -138,7 +138,10 @@ function drawBucket(ctx) {
     ctx.stroke();
     ctx.beginPath();
     ctx.arc(1, 0, .2, 3*Math.PI/2, Math.PI/2, false);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = "black";
+    if (simulator.highlightedPattern.indexOf(this.relPos().y)!=-1){
+        ctx.fillStyle="red";
+    }
     ctx.fill();
     stopDrawing(ctx);
 }

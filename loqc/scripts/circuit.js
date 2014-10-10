@@ -45,7 +45,10 @@ function Circuit() {
     // Just delete everything
     self.clear=function () {
         self.components=[];
+        self.connectors=[];
         self.decorate();
+        self.topLeft=undefined;
+        self.bottomRight=undefined;
         renderer.needFrame();
     }
 
@@ -80,6 +83,7 @@ function Circuit() {
 
         // Enforce design rules
         self.measure();
+        console.log(self.topLeft);
         if (self.topLeft!=undefined){
             for (var i=0; i < self.components.length; ++i) {
                 if(self.components[i].enforceRules){self.components[i].enforceRules();}

@@ -12,3 +12,4 @@ hr {color:orange; padding:0px; margin-bottom:5px; margin:0px; border: 1px solid 
 
 #debug { height:200px; width:300px; position: absolute; top:5px; left:5px; background: rgba(0,0,0,.5); color:#ddffdd; padding: 5px; border-radius:3px; margin:5px; text-align:justify; overflow:auto}
 
+.state_term:hover {font-weight:bold; cursor:default}
