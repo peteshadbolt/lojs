@@ -6,8 +6,8 @@
 function Camera()
 {
     var self=this;
-    self.pos=new Vector();
-    self.offset=new Vector();
+    self.pos=new Vector(0, 0);
+    self.offset=new Vector(0, 0);
     self.z=55; self.tz=55;
 
     self.translate = function (delta) {

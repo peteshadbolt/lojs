@@ -82,7 +82,7 @@ function drawDetector(ctx) {
 function drawDeleter(ctx) {
     for (var i=0; i < this.collisions.length; ++i) {
        var c=this.collisions[i]; 
-       var center=c.pos.add(c.dimensions.multiply(.5));
+       var center=c.pos.addVec(c.dimensions.multiply(.5));
        drawCross(ctx, center);     
        ctx.strokeStyle="red";
        this.request.draw(ctx);

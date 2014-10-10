@@ -107,6 +107,8 @@ class Circuit():
     def simulate(self, mode="probability"): 
         """ Simulates a given circuit, for a given input state, looking at certain terms in the output state """
         self.computeUnitary(); self.computeState(); self.computePatterns();
+        N=len(self.patterns)*len(self.input_state)
+        print "Computing %d %dx%d permanents..." % (N, self.nphotons, self.nphotons)
 
         output_state=defaultdict(complex)
         for cols, amplitude in self.input_state.items():

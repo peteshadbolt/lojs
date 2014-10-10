@@ -12,6 +12,9 @@ handlers:
   static_files: doc/index.html
   upload: doc/(.*)
 
+- url: /images
+  static_dir: images
+
 - url: /scripts
   static_dir: scripts
 

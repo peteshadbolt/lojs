@@ -28,6 +28,7 @@ class Simulate(webapp2.RequestHandler):
         try:
             circuit = lo.Circuit(circuit)
             data = circuit.simulate().items()
+            data = filter(lambda x: x[1]>0, data)
             data.sort(key=lambda x: -x[1])
             maximum = data[0][1]
             output={"probabilities":data, "maximum":1 if maximum==0 else maximum}

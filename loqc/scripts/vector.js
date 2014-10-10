@@ -4,52 +4,51 @@
 */
 
 function Vector(x, y) {
-    var self=this;
-    self.x = x ? x : 0;
-    self.y = y ? y : 0;
+    this.x = x;
+    this.y = y;
 
-    self.set=function(a, b) {
-        if (b){
-            self.x=a; self.y=b;
+    this.set=function(a, b) {
+        if (b!=undefined){
+            this.x=a; this.y=b;
         } else {
-            self.x=a.x; self.y=a.y;
+            this.x=a.x; this.y=a.y;
         }
     }
 
-    self.inc=function(a, b) {
-        if (b){
-            self.x+=a; self.y+=b;
+    this.inc=function(a, b) {
+        if (b!=undefined){
+            this.x+=a; this.y+=b;
         } else {
-            self.x+=a.x;
-            self.y+=a.y;
+            this.x+=a.x;
+            this.y+=a.y;
         }
     }
 
-    self.equ=function (v) {
-        return self.x==v.x && self.y==v.y;
+    this.equ=function (v) {
+        return this.x==v.x && this.y==v.y;
     }
 
-    self.copy=function () {
-        return new Vector(self.x, self.y);
+    this.copy=function () {
+        return new Vector(this.x, this.y);
     }
 
-    self.multiply=function (factor) {
-        return new Vector(self.x*factor, self.y*factor);
+    this.multiply=function (factor) {
+        return new Vector(this.x*factor, this.y*factor);
     }
 
-    self.add=function (a, b) {
-        if (b){
-            return new Vector(self.x+a, self.y+b);
+    this.add=function (a, b) {
+        return new Vector(this.x+a, this.y+b);
+    }
+
+    this.addVec=function (a) {
+        return new Vector(this.x+a.x, this.y+a.y);
+    }
+
+    this.sub=function (a, b) {
+        if (b!=undefined){
+            return new Vector(this.x-a, this.y-b);
         } else {
-            return new Vector(self.x+a.x, self.y+a.y);
-        }
-    }
-
-    self.sub=function (a, b) {
-        if (b){
-            return new Vector(self.x-a, self.y-b);
-        } else {
-            return new Vector(self.x-a.x, self.y-a.y);
+            return new Vector(this.x-a.x, this.y-a.y);
         }
     }
 

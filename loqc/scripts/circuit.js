@@ -21,8 +21,8 @@ function Circuit() {
 
     // Do these two components touch? We are lenient about the x-axis!
     self.touching = function (a, b) {
-        var a1 = a.pos; var a2 = a.pos.add(a.dimensions);
-        var b1 = b.pos; var b2 = b.pos.add(b.dimensions);
+        var a1 = a.pos; var a2 = a.pos.addVec(a.dimensions);
+        var b1 = b.pos; var b2 = b.pos.addVec(b.dimensions);
         return !(a2.x<=b1.x || a2.y<b1.y || a1.x>=b2.x || a1.y>b2.y);
     }
 
@@ -57,7 +57,7 @@ function Circuit() {
         var tl=new Vector(10000, 10000); var br=new Vector(-10000, -10000);
         for (var i=0; i < self.components.length; ++i) {
             var c=self.components[i]; 
-            var ctl=c.pos; var cbr=c.pos.add(c.dimensions);
+            var ctl=c.pos; var cbr=c.pos.addVec(c.dimensions);
             if (ctl.x<tl.x) { tl.x=ctl.x; } if (ctl.y<tl.y) { tl.y=ctl.y; }
             if (cbr.x>br.x) { br.x=cbr.x; } if (cbr.y>br.y) { br.y=cbr.y; }
         }
@@ -65,7 +65,7 @@ function Circuit() {
         self.dimensions = self.pos ? br.sub(tl) : undefined;
         self.nmodes = self.dimensions.y;
         self.topLeft = self.pos.copy();
-        self.bottomRight = self.pos.add(self.dimensions);
+        self.bottomRight = self.pos.addVec(self.dimensions);
     }
 
     // Add horizontal lines to make clear the connections between components Also work out the input and output ports
@@ -83,7 +83,6 @@ function Circuit() {
 
         // Enforce design rules
         self.measure();
-        console.log(self.topLeft);
         if (self.topLeft!=undefined){
             for (var i=0; i < self.components.length; ++i) {
                 if(self.components[i].enforceRules){self.components[i].enforceRules();}
@@ -201,9 +200,9 @@ function Bucket(x, y) {
 }
 
 function Deleter(collisions, request){
-    this.pos = new Vector();
+    this.pos = new Vector(0, 0);
     this.type = "deleter";
-    this.dimensions=new Vector();
+    this.dimensions=new Vector(0, 0);
     this.collisions=collisions;
     this.request=request;
     this.draw = drawDeleter;

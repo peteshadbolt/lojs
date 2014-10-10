@@ -10,7 +10,6 @@ function Editor(targetCircuit, targetSimulator)
     // Change mode by pressing keys
     self.bindKeys = function () {
         window.addEventListener('keydown', function (evt) {
-            //console.log(evt);
             if (self.keyMap.hasOwnProperty(evt.keyCode)) {
                 self.setMode(self.keyMap[evt.keyCode]);
             }}, true);
