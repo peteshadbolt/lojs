@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>LOQC</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/css.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/css.css">
+    <script type="text/javascript" src="/scripts/vector.js"></script>
+    <script type="text/javascript" src="/scripts/mouse.js"></script>
+    <script type="text/javascript" src="/scripts/camera.js"></script>
+    <script type="text/javascript" src="/scripts/grid.js"></script>
+    <script type="text/javascript" src="/scripts/circuit.js"></script>
+    <script type="text/javascript" src="/scripts/editor.js"></script>
+    <script type="text/javascript" src="/scripts/drawing.js"></script>
+    <script type="text/javascript" src="/scripts/simulator.js"></script>
+    <script type="text/javascript" src="/scripts/main.js"></script>
+</head>
+
+<body> 
+<canvas id=canvas> </canvas> 
+
+<div id=menu> 
+    <div class=menuchunk>
+        <b>LOQC</b><br>
+        <ul>
+            <li><a href="/instructions">Instructions</a> <br>
+            <li>Mode: <a class="hi" href="#" onclick="javascript:editor.construct();">Construct</a> 
+        <a href="#" onclick="javascript:editor.adjust();">Adjust</a>
+        <li> <a href="#" onclick="javascript:editor.clear();">Clear</a>
+        <a href="#">Save</a> 
+        <a href="#">Load</a>
+        <a href="#" onclick="javascript:editor.exportCircuit();">Export</a> 
+        </ul>
+    </div>
+
+    <div class=menuchunk>
+        <b>Components</b>
+        <ul>
+        <li> <a class="hi" href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> 
+        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> 
+        <a href="#" onclick="javascript:editor.setMode(Crossing);">Crossing</a>
+
+        <li><a href="#" onclick="javascript:editor.setMode(SPS);">SPS</a> 
+            <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> 
+            <a href="#" onclick="javascript:editor.setMode(Bucket);">SPAD</a> 
+            <a href="#" onclick="javascript:editor.setMode(BellPair);">NRD</a> 
+    </div>
+
+
+    <div class=menuchunk style="overflow: auto; max-height:300px">
+        <b>Output</b> 
+        <span class=modest><a href="#" style="color:yellow">State</a> <a href="#">Probability</a> </span>
+        <img src="/images/spin.gif" id="spinner" style="display:none">
+        <ul id="simulator_output">
+            [no output]
+        </ul>
+
+    </div>
+</div>
+
+
+<div style="display:none">{{gae_message}}</div>
+
+</body>
+</html>
+

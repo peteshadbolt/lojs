@@ -1,0 +1,17 @@
+html, body { margin: 0; padding: 0px; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
+canvas { display:block }
+#menu { position: absolute; top:5px; right:5px;}
+.menuchunk {background:  black; color:white; padding: 5px; border-radius:3px; margin:5px; text-align:justify; width:250px}
+.menuchunk ul {list-style: none; padding: 0px; margin: 0px;}
+.menuchunk a {color: #ccccff;}
+.menuchunk li {padding: 2px;}
+.modest {font-size: 8pt; color:lightgray;}
+.menuchunk .hi{color:yellow}
+
+hr {color:orange; padding:0px; margin-bottom:5px; margin:0px; border: 1px solid orange; height:1px}
+
+#debug { height:200px; width:300px; position: absolute; top:5px; left:5px; background: rgba(0,0,0,.5); color:#ddffdd; padding: 5px; border-radius:3px; margin:5px; text-align:justify; overflow:auto}
+
+.state_term:hover {font-weight:bold; cursor:default}
+
+#spinner {float:right}
