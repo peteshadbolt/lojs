@@ -1,5 +1,5 @@
 *.gif
-*.png
+/**.png*/
 *.jpg
 *.pdf
 
