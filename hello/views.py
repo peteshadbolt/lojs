@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import numpy as np
 
 from .models import Greeting
 
 # Create your views here.
 def index(request):
-    return HttpResponse('Hello from Python!')
+    x=np.zeros(100)
+    return HttpResponse('Hello from Python %d!' % len(x))
 
 
 def db(request):
