@@ -26,8 +26,8 @@ class Simulate(webapp2.RequestHandler):
         # Build a python object describing the circuit, state, patterns of interest
         # TODO: if the request specifies state or patterns, then we just override here
         try:
-            circuit = lo.Circuit(circuit)
-            data = circuit.simulate().items()
+            circuit = lo.compile(circuit)
+            data = lo.simulate(**circuit).items()
             data = filter(lambda x: x[1]>0, data)
             data.sort(key=lambda x: -x[1])
             maximum = data[0][1]
