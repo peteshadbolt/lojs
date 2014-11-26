@@ -1,5 +1,3 @@
-#LOJS
-
-Build and simulate linear optical circuits in the browser
+Build linear optical circuits in the browser
 
 ![Screenshot](screenshot.png)
