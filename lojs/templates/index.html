@@ -19,7 +19,6 @@
 
 <div id=menu> 
     <div class=menuchunk>
-        <b>LOQC</b><br>
         <ul>
             <li><a href="/instructions">Instructions</a> <br>
             <li>Mode: <a class="hi" href="#" onclick="javascript:editor.construct();">Construct</a> 
@@ -35,19 +34,18 @@
         <b>Components</b>
         <ul>
         <li> <a class="hi" href="#" onclick="javascript:editor.setMode(Coupler);">Coupler</a> 
-        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">Phase</a> 
+        <a href="#" onclick="javascript:editor.setMode(Phaseshifter);">PhaseShifter</a> 
         <a href="#" onclick="javascript:editor.setMode(Crossing);">Crossing</a>
 
-        <li><a href="#" onclick="javascript:editor.setMode(SPS);">SPS</a> 
+        <li><a href="#" onclick="javascript:editor.setMode(SPS);">Source</a> 
             <a href="#" onclick="javascript:editor.setMode(BellPair);">Bell Pair</a> 
-            <a href="#" onclick="javascript:editor.setMode(Bucket);">SPAD</a> 
-            <a href="#" onclick="javascript:editor.setMode(BellPair);">NRD</a> 
+            <a href="#" onclick="javascript:editor.setMode(Bucket);">Detector</a> 
     </div>
 
 
     <div class=menuchunk style="overflow: auto; max-height:300px">
         <b>Output</b> 
-        <span class=modest><a href="#" style="color:yellow">State</a> <a href="#">Probability</a> </span>
+        <span class=modest><a href="#" style="color:yellow">Amplitude</a> <a href="#">Probability</a> </span>
         <img src="/static/spin.gif" id="spinner" style="display:none">
         <ul id="simulator_output">
             [no output]
