@@ -4,8 +4,11 @@ import numpy as np
 import itertools as it
 from collections import defaultdict
 from operator import add
-from time import clock
-from permanent import permanent
+try: 
+    from permanent import permanent
+except ImportError:
+    print "Fell back to a slow implementation of the permanent.\nSee http://github.com/peteshadbolt/permanent"
+    def permanent(a): r=range(len(a)); return sum([np.prod(a[r, p]) for p in it.permutations(r)])
 
 ir2=1/np.sqrt(2)
 factorial = (1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
@@ -96,9 +99,7 @@ def simulate(input_state, unitary, patterns, mode="probability", **kwargs):
         n1 = normalization(cols)
         for rows in patterns:
             n2 = normalization(rows)
-            t=clock()
             perm = permanent(unitary[list(rows)][:,cols])
-            print "\nPERMANENT TIME: %.4f\n" % (clock()-t)
             output_state[rows] += amplitude*perm/np.sqrt(n1*n2)
     if mode=="probability":
         for key, value in output_state.items():
