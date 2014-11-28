@@ -2,10 +2,11 @@ function Editor(targetCircuit, targetSimulator)
 {
     var self = this;
     self.mode = Coupler;
+    self.supermode = "construct";
     self.circuit = targetCircuit;
     self.simulator = targetSimulator;
     self.cursor = new Coupler(0, 0, .5);
-    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair, 68:Bucket};
+    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair, 68:Detector};
 
     // Change mode by pressing keys
     self.bindKeys = function () {
@@ -15,9 +16,18 @@ function Editor(targetCircuit, targetSimulator)
             }}, true);
     }
 
-    self.setMode = function (mode) {
+    self.setMode = function (mode, button) {
         self.mode=mode;
         self.update();
+
+        var temp=new mode(0,0);
+        document.getElementById("coupler").className="nothing";
+        document.getElementById("phaseshifter").className="nothing";
+        document.getElementById("crossing").className="nothing";
+        document.getElementById("source").className="nothing";
+        document.getElementById("bellpair").className="nothing";
+        document.getElementById("detector").className="nothing";
+        document.getElementById(temp.type).className="hi";
         renderer.needFrame();
     }
 
@@ -52,6 +62,20 @@ function Editor(targetCircuit, targetSimulator)
         myWindow.focus();
     }
 
+    self.construct = function () {
+        self.supermode="construct";
+        document.getElementById("construct").className="hi";
+        document.getElementById("adjust").className="nothing";
+    }
+
+    self.adjust = function () {
+        self.supermode="adjust";
+        document.getElementById("adjust").className="hi";
+        document.getElementById("construct").className="nothing";
+    }
+
     self.bindKeys();
+    self.setMode(Coupler, document.getElementById("coupler"));
+    self.construct();
 }
 

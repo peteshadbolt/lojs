@@ -185,7 +185,7 @@ function Crossing(x, y) { Component.call(this, "crossing", x, y, 1, 1, drawCross
 function Connector(x, y) { Component.call(this, "connector", x, y, 1, 0, drawConnector); }
 
 function SPS(x, y) {
-    Component.call(this, "sps", x, y, 1, 0, drawSPS);
+    Component.call(this, "source", x, y, 1, 0, drawSPS);
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
@@ -194,8 +194,8 @@ function BellPair(x, y) {
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
-function Bucket(x, y) {
-    Component.call(this, "bucket", x, y, 1, 0, drawBucket);
+function Detector(x, y) {
+    Component.call(this, "detector", x, y, 1, 0, drawDetector);
     this.enforceRules = function () { if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;} }
 }
 

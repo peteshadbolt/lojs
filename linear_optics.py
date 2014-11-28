@@ -16,9 +16,9 @@ factorial = (1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
 spec = {"coupler":      { "size":2,  "unitary": lambda p: directional_coupler(p["ratio"]) },
         "phaseshifter": { "size":1,  "unitary": lambda p: phase_shifter(p["phase"]) },
         "crossing":     { "size":2,  "unitary": lambda p: np.array([[0,1],[1,0]]) },
-        "sps":          { "size":1,  "state": lambda p: {(p["pos"]["y"],): 1} },
+        "source":       { "size":1,  "state": lambda p: {(p["pos"]["y"],): 1} },
         "bellpair":     { "size":4,  "state": lambda p: bell_state(p["pos"]["y"]) },
-        "bucket":       { "size":1 , "pattern": lambda p: p["pos"]["y"] } }
+        "detector":     { "size":1 , "pattern": lambda p: p["pos"]["y"] } }
 
 prototype = {"bottom": lambda p: p["pos"]["y"]+p["size"], 
              "x": lambda p: p["pos"]["x"], "y":lambda p: p["pos"]["y"]}

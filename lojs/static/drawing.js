@@ -114,8 +114,6 @@ function drawPhaseShifter(ctx) {
     ctx.fillStyle = 'white';
     ctx.fill();
 
-    this.phase+=0.01;
-
     var l=.3;
     var x=Math.sin(this.phase)*l;
     var y=-Math.cos(this.phase)*l;
@@ -130,7 +128,7 @@ function drawPhaseShifter(ctx) {
     stopDrawing(ctx);
 }
 
-function drawBucket(ctx) {
+function drawDetector(ctx) {
     startDrawing(ctx, this.pos);
     ctx.beginPath();
     ctx.moveTo(0,0);

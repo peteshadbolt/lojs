@@ -32,18 +32,18 @@ function Grid() {
         }
 
         // Always draw the origin
-        //ctx.strokeStyle= '#ffcccc';
-        //ctx.lineWidth=2/camera.z;
-        //ctx.beginPath();
-        //if (topLeft.x<0 && bottomRight.x<<0) {
-            //ctx.moveTo(0, topLeft.y); 
-            //ctx.lineTo(0, bottomRight.y); 
-        //}
-        //if (topLeft.y<0 && bottomRight.y<<0) {
-            //ctx.moveTo(topLeft.x, 0); 
-            //ctx.lineTo(bottomRight.x, 0); 
-        //}
-        //ctx.stroke();
+        ctx.strokeStyle= '#ffcccc';
+        ctx.lineWidth=2/camera.z;
+        ctx.beginPath();
+        if (topLeft.x<0 && bottomRight.x<<0) {
+            ctx.moveTo(0, topLeft.y); 
+            ctx.lineTo(0, bottomRight.y); 
+        }
+        if (topLeft.y<0 && bottomRight.y<<0) {
+            ctx.moveTo(topLeft.x, 0); 
+            ctx.lineTo(bottomRight.x, 0); 
+        }
+        ctx.stroke();
     }
 
 
