@@ -72,10 +72,13 @@ function Adjuster(targetCircuit)
     var self = this;
     self.label="adjuster";
     self.circuit=targetCircuit;
+    self.hover=undefined;
 
     self.update = function () {
-        var c = self.circuit.findAdjustable(mouse.worldPos);
-        console.log(c);
+        var wasnull = self.hover==undefined;
+        self.hover = self.circuit.findAdjustable(mouse.worldPos.x, mouse.worldPos.y);
+        var nownull = self.hover==undefined;
+        if (wasnull!=nownull){renderer.needFrame();}
     }
 
     self.click = function (x, y) {
@@ -84,6 +87,16 @@ function Adjuster(targetCircuit)
 
     self.draw = function (ctx) {
         ctx.globalAlpha=.5;
+        if (self.hover != undefined){
+            var c = self.hover.center();
+            startDrawing(ctx, c);
+            ctx.strokeStyle="red";
+            ctx.lineWidth*=3;
+            ctx.beginPath();
+            ctx.arc(0, 0, .3, 0, 2*Math.PI, false);
+            ctx.stroke();
+            stopDrawing(ctx);
+        }
         ctx.globalAlpha=1;
     }
 
