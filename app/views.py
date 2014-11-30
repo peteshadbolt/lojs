@@ -13,7 +13,6 @@ def index(request):
 def simulate(request):
     request = json.loads(request.body)
     circuit = request["circuit"]
-    minprob=0.00001
 
     # Build a python object describing the circuit, state, patterns of interest
     # TODO: if the request specifies state or patterns, then we just override here
@@ -22,7 +21,6 @@ def simulate(request):
         data = lo.simulate(**circuit).items()
         print "Number of terms:", len(data)
         sys.stdout.flush()
-        data = filter(lambda x: x[1]>minprob, data)
         data.sort(key=lambda x: -x[1])
         maximum = data[0][1]
         output={"probabilities":data, "maximum":1 if maximum==0 else maximum}

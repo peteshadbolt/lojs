@@ -10,9 +10,13 @@ function Simulator(myCircuit) {
     self.highlightedPattern = [];
     self.outputField = document.getElementById('simulator_output');
     self.spinner = document.getElementById('spinner');
+    self.ready=true;
 
     // The circuit changed, we need to ask for new data
     self.update = function() {
+        if(!self.ready){return;}
+        self.ready=false;
+
         // Prepare the post data
         var request={};
         request.circuit=self.circuit.toJSON();
@@ -41,6 +45,7 @@ function Simulator(myCircuit) {
     self.display = function(response) {
         self.spinner.setAttribute("style", "display:none;");
         self.outputField.innerHTML="";
+        self.ready=true;
         if (response.warning){
             self.outputField.innerHTML = "[no output]";
             return;
