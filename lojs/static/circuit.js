@@ -37,10 +37,15 @@ function Circuit() {
 
     // Find components which can be adjusted, near a given point
     self.findAdjustable = function (x, y) {
+        var mindist2=0.3*0.3;
         for (var i=0; i < self.components.length; ++i) {
             var c = self.components[i];
             if (c.adjust == undefined){continue;}
-            console.log(c);
+            var center=c.center();
+            var dx = center.x-x;
+            var dy = center.y-y;
+            var distance = dx*dx+dy*dy;
+            if (distance<mindist2) return c;
         }
         return undefined;
     }
@@ -175,6 +180,7 @@ function Component(type, x, y, dx, dy, drawFunc) {
    this.dimensions = new Vector(dx, dy);
    this.draw = drawFunc;
    this.json = function(){return {"type":this.type, "pos":this.relPos()}}
+   this.center = function(){return this.pos.add(this.dimensions.x/2, this.dimensions.y/2);}
 }
 
 // Bits and pieces 

@@ -60,6 +60,7 @@ function construct() {
     document.getElementById("adjust").className="nothing";
     editor=constructor;
     console.log("Now in CONSTRUCT mode");
+    renderer.needFrame();
 }
 
 function adjust() {
@@ -67,6 +68,7 @@ function adjust() {
     document.getElementById("construct").className="nothing";
     editor=adjuster;
     console.log("Now in ADJUST mode");
+    renderer.needFrame();
 }
 
 // Change mode by pressing keys
