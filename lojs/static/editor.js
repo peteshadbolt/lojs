@@ -73,16 +73,38 @@ function Adjuster(targetCircuit)
     self.label="adjuster";
     self.circuit=targetCircuit;
     self.hover=undefined;
+    self.info = document.getElementById("info");
 
     self.update = function () {
-        var wasnull = self.hover==undefined;
-        self.hover = self.circuit.findAdjustable(mouse.worldPos.x, mouse.worldPos.y);
-        var nownull = self.hover==undefined;
-        if (wasnull!=nownull){renderer.needFrame();}
+        if (self.moving==undefined){
+            var wasnull = self.hover==undefined;
+            self.hover = self.circuit.findAdjustable(mouse.worldPos.x, mouse.worldPos.y);
+            var nownull = self.hover==undefined;
+            if (wasnull!=nownull){renderer.needFrame();}
+        } else {
+            renderer.needFrame();
+            var c = self.moving.center();
+            var m = mouse.worldPos;
+            var angle = Math.atan2(-(c.x-m.x), c.y-m.y);
+            if (angle<0){angle+=2*Math.PI;}
+            var response = self.moving.adjust(angle);
+            self.info.innerHTML = response;
+            self.info.innerHTML += "<br>(Hold shift to snap)"
+            simulator.update();
+            //console.log("Change the parameter", self.moving, mouse.worldPos);
+        }
     }
 
     self.click = function (x, y) {
-        
+        if (self.hover!=undefined && self.moving==undefined){
+            self.info.setAttribute("style", "");
+            self.moving=self.hover;
+            return;
+        }
+        self.info.setAttribute("style", "display:none");
+        self.moving=undefined;
+        simulator.update();
+        renderer.needFrame();
     }
 
     self.draw = function (ctx) {
@@ -90,10 +112,30 @@ function Adjuster(targetCircuit)
         if (self.hover != undefined){
             var c = self.hover.center();
             startDrawing(ctx, c);
-            ctx.strokeStyle="red";
-            ctx.lineWidth*=3;
+            ctx.strokeStyle="blue";
+            ctx.lineWidth*=4;
             ctx.beginPath();
-            ctx.arc(0, 0, .3, 0, 2*Math.PI, false);
+            ctx.arc(0, 0, .2, 0, 2*Math.PI, false);
+            ctx.stroke();
+            stopDrawing(ctx);
+        }
+
+        for (var i=0; i < circuit.components.length; ++i) {
+            var c = circuit.components[i];
+            if (c.adjust != undefined){
+                drawKnob(ctx, c.center());
+            }
+        }
+
+        if (self.moving) {
+            var c = self.moving.center();
+            var m = mouse.worldPos;
+            startDrawing(ctx, new Vector(0,0));
+            ctx.strokeStyle="blue";
+            ctx.lineWidth*=4;
+            ctx.beginPath();
+            ctx.moveTo(c.x, c.y);
+            ctx.lineTo(m.x, m.y);
             ctx.stroke();
             stopDrawing(ctx);
         }

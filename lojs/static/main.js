@@ -16,7 +16,7 @@ function Renderer(ctx, canv) {
    self.change=false;
 
    self.loop=function () {
-        setInterval(self.redraw, 17);
+        setInterval(self.redraw, 20);
    }
 
    self.requestDraw=function () {
@@ -59,7 +59,6 @@ function construct() {
     document.getElementById("construct").className="hi";
     document.getElementById("adjust").className="nothing";
     editor=constructor;
-    console.log("Now in CONSTRUCT mode");
     renderer.needFrame();
 }
 
@@ -67,7 +66,6 @@ function adjust() {
     document.getElementById("adjust").className="hi";
     document.getElementById("construct").className="nothing";
     editor=adjuster;
-    console.log("Now in ADJUST mode");
     renderer.needFrame();
 }
 

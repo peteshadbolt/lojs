@@ -125,6 +125,7 @@ function drawPhaseShifter(ctx) {
     ctx.lineTo(.5+x*.8+y*.1, y*.8-x*.1);
 
     ctx.stroke();
+    drawLabel(ctx, this, -0.2);
     stopDrawing(ctx);
 }
 
@@ -144,12 +145,21 @@ function drawDetector(ctx) {
     stopDrawing(ctx);
 }
 
+function drawLabel(ctx, thing, yoff) {
+    // TODO: this is a hack, we should render these to an off screen canvas when the object is created
+    if (thing.index==undefined || mouse.pressed || camera.zooming){ return; }
+    if (editor.moving!=undefined){return;}
+    ctx.textBaseline = 'bottom';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'black';
+    ctx.font=(.15)+'pt sans';
+    ctx.fillText(thing.index, 0.55, yoff);
+}
+
 
 function drawCoupler(ctx) {
-    var gap=0.03;
+    var gap=0.1*(1-this.ratio);
     var couplingLength=this.ratio/2;
-    var l=0.5 - couplingLength/2;
-    var r=0.5 + couplingLength/2;
 
     startDrawing(ctx, this.pos);
     ctx.beginPath();
@@ -168,13 +178,7 @@ function drawCoupler(ctx) {
     ctx.lineTo(1, 1);
     ctx.stroke();
 
-    //ctx.textBaseline = 'bottom';
-    //if (this.index!=undefined && !mouse.pressed){
-        //ctx.textAlign = 'center';
-        //ctx.fillStyle = 'orange';
-        //ctx.font=(.2)+'pt courier';
-        //ctx.fillText(this.index, 0.55, 0.25);
-    //}
+    drawLabel(ctx, this, 0.25);
 
     stopDrawing(ctx);
 }
@@ -190,12 +194,18 @@ function drawCrossing(ctx) {
     ctx.bezierCurveTo(.8, 0, .8, 0, 1, 0); 
     ctx.stroke();
 
-    //if (this.index!=undefined && !mouse.pressed){
-        //ctx.textAlign = 'center';
-        //ctx.fillStyle = 'blue';
-        //ctx.font=(.2)+'pt courier';
-        //ctx.fillText(this.index, 0.55, 0.25);
-    //}
+    drawLabel(ctx, this, 0.25);
+    stopDrawing(ctx);
+}
+
+////////////////////////
+function drawKnob(ctx, pos) {
+    startDrawing(ctx, pos);
+    ctx.beginPath();
+    ctx.strokeStyle="#blue";
+    ctx.beginPath();
+    ctx.arc(0, 0, .2, 0, 2*Math.PI, false);
+    ctx.stroke();
     stopDrawing(ctx);
 }
 

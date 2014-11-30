@@ -188,8 +188,9 @@ function Coupler(x, y, ratio) {
     Component.call(this, "coupler", x, y, 1, 1, drawCoupler);
     this.ratio = ratio ? ratio : .5;
     this.json = function(){return {"type":this.type, "pos":this.relPos(), "ratio":this.ratio}}
-    this.adjust = function () {
-        
+    this.adjust = function (angle) {
+       this.ratio = (1-Math.cos(angle))/2;
+       return "Coupling ratio: " + this.ratio.toFixed(5); 
     }
 }
 
@@ -197,8 +198,9 @@ function Phaseshifter(x, y, phase) {
     Component.call(this, "phaseshifter", x, y, 1, 0, drawPhaseShifter);
     this.phase = phase ? phase : 0;
     this.json = function(){return {"type":this.type, "pos":this.relPos(), "phase":this.phase}}
-    this.adjust = function () {
-        
+    this.adjust = function (angle) {
+       this.phase = angle;
+       return "Phase: " + this.phase.toFixed(5); 
     }
 }
 

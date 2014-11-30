@@ -9,6 +9,7 @@ function Camera()
     self.pos=new Vector(0, 0);
     self.offset=new Vector(0, 0);
     self.z=55; self.tz=55;
+    self.zooming=false;
 
     self.translate = function (delta) {
         self.pos.inc(delta);
@@ -16,6 +17,7 @@ function Camera()
 
     self.zoom = function (dz) {
         self.tz+=dz;
+        self.zooming = true;
         if (self.tz<5) {self.tz=5};
         if (self.tz>200) {self.tz=200};
     }
@@ -55,6 +57,8 @@ function Camera()
             self.pos.x+=(temp2.x-temp1.x)*self.z;
             self.pos.y+=(temp2.y-temp1.y)*self.z;
             renderer.needFrame();
+        } else {
+            self.zooming=false;
         }
     }
 }

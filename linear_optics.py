@@ -12,6 +12,7 @@ except ImportError:
 
 ir2=1/np.sqrt(2)
 factorial = (1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
+precision = 1e-6
 
 spec = {"coupler":      { "size":2,  "unitary": lambda p: directional_coupler(p["ratio"]) },
         "phaseshifter": { "size":1,  "unitary": lambda p: phase_shifter(p["phase"]) },
@@ -100,7 +101,8 @@ def simulate(input_state, unitary, patterns, mode="probability", **kwargs):
         for rows in patterns:
             n2 = normalization(rows)
             perm = permanent(unitary[list(rows)][:,cols])
-            output_state[rows] += amplitude*perm/np.sqrt(n1*n2)
+            if np.abs(perm)**2 > precision:
+                output_state[rows] += amplitude*perm/np.sqrt(n1*n2)
     if mode=="probability":
         for key, value in output_state.items():
             output_state[key] = np.abs(value)**2
