@@ -1,10 +1,10 @@
 /*
    pete.shadbolt@gmail.com
-   This is the main JS file which runs the editor/simulator
+   This is the main JS file which runs the constructor/simulator
 */
 
 var gc, gd;
-var camera, renderer, grid, circuit, mouse, editor;
+var camera, renderer, grid, circuit, mouse, adjuster, constructor, editor;
 
 // Run on startup
 window.onload=main;
@@ -34,7 +34,7 @@ function Renderer(ctx, canv) {
         self.ctx.save();
         camera.contextToWorld(self.ctx);
 
-        // Draw the grid, circuit, editor
+        // Draw the grid, circuit, constructor
         grid.draw(self.ctx);
         editor.draw(self.ctx);
         circuit.draw(self.ctx);
@@ -55,6 +55,31 @@ function resize() {
     renderer.needFrame();
 }
 
+function construct() {
+    document.getElementById("construct").className="hi";
+    document.getElementById("adjust").className="nothing";
+    editor=constructor;
+    console.log("Now in CONSTRUCT mode");
+}
+
+function adjust() {
+    document.getElementById("adjust").className="hi";
+    document.getElementById("construct").className="nothing";
+    editor=adjuster;
+    console.log("Now in ADJUST mode");
+}
+
+// Change mode by pressing keys
+function bindKeys() {
+    window.addEventListener('keydown', function (evt) {
+        if (evt.keyCode == 9) {
+           if (editor.label=="constructor"){ adjust(); } else { construct(); }
+           evt.preventDefault();
+           return false;
+        }
+    }, true);
+}
+
 function main() {
     // Set up the drawing environment an-d fit to window
     gc=document.getElementById('canvas');
@@ -66,11 +91,14 @@ function main() {
     mouse=new Mouse();
     renderer=new Renderer(gd, gc);
     mouse.bind(gd);
+    bindKeys();
 
-    // Create the circuit, simulator, and editor
+    // Create the circuit, simulator, and constructor
     circuit = new Circuit();
     simulator = new Simulator(circuit);
-    editor = new Editor(circuit, simulator);
+    constructor = new Constructor(circuit);
+    adjuster = new Adjuster(circuit);
+    construct();
 
     // Away we go
     window.onresize=resize;

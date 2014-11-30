@@ -35,6 +35,16 @@ function Circuit() {
         return output;
     }
 
+    // Find components which can be adjusted, near a given point
+    self.findAdjustable = function (x, y) {
+        for (var i=0; i < self.components.length; ++i) {
+            var c = self.components[i];
+            if (c.adjust == undefined){continue;}
+            console.log(c);
+        }
+        return undefined;
+    }
+
     // Remove a component. This ought to be O(log(N)) but it's currently a hack!
     self.remove=function (c) {
         for (var i=0; i < self.components.length; ++i) {
@@ -172,12 +182,18 @@ function Coupler(x, y, ratio) {
     Component.call(this, "coupler", x, y, 1, 1, drawCoupler);
     this.ratio = ratio ? ratio : .5;
     this.json = function(){return {"type":this.type, "pos":this.relPos(), "ratio":this.ratio}}
+    this.adjust = function () {
+        
+    }
 }
 
 function Phaseshifter(x, y, phase) {
     Component.call(this, "phaseshifter", x, y, 1, 0, drawPhaseShifter);
     this.phase = phase ? phase : 0;
     this.json = function(){return {"type":this.type, "pos":this.relPos(), "phase":this.phase}}
+    this.adjust = function () {
+        
+    }
 }
 
 function Crossing(x, y) { Component.call(this, "crossing", x, y, 1, 1, drawCrossing); }

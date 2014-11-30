@@ -14,12 +14,14 @@ function Mouse() {
     self.screenDelta = {"x":0, "y":0};
     self.worldPos = {"x":0, "y":0};
     self.gridPos = {"x":0, "y":0};
+    self.gridPosOld = {"x":0, "y":0};
 
     self.update = function (evt) {
         self.screenPosOld.x=self.screenPos.x; self.screenPosOld.y=self.screenPos.y;
         self.screenPos.x = evt.offsetX || (evt.pageX - gc.offsetLeft);
         self.screenPos.y = evt.offsetY || (evt.pageY - canvas.offsetTop);
         self.worldPos = camera.fromScreen(self.screenPos);
+        self.gridPosOld.x = self.gridPos.x; self.gridPosOld.y = self.gridPos.y;
         self.gridPos = grid.inside(self.worldPos);
         self.screenDelta.x = self.screenPos.x - self.screenPosOld.x;
         self.screenDelta.y = self.screenPos.y - self.screenPosOld.y;
@@ -40,6 +42,9 @@ function Mouse() {
             camera.translate(self.screenDelta);
             renderer.needFrame();
             if (Math.abs(self.screenDelta.x)>1 || Math.abs(self.screenDelta.y)>1){self.wasClick=false;}
+        }
+        if (self.gridPos.x!=self.gridPosOld.x || self.gridPos.y!=self.gridPosOld.y) {
+            renderer.needFrame();
         }
     }
 

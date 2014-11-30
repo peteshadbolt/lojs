@@ -1,10 +1,9 @@
-function Editor(targetCircuit, targetSimulator)
+function Constructor(targetCircuit)
 {
     var self = this;
+    self.circuit=targetCircuit;
     self.mode = Coupler;
-    self.supermode = "construct";
-    self.circuit = targetCircuit;
-    self.simulator = targetSimulator;
+    self.label = "constructor";
     self.cursor = new Coupler(0, 0, .5);
     self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair, 68:Detector};
 
@@ -32,8 +31,9 @@ function Editor(targetCircuit, targetSimulator)
     }
 
     self.update = function () {
+        var oc = self.cursor.pos.copy();
         self.cursor = self.circuit.request(self.mode, mouse.worldPos);
-        renderer.needFrame();
+        if (oc.x!=self.cursor.pos.x || oc.y !=self.cursor.pos.y){renderer.needFrame();}
     }
 
     self.click = function (x, y) {
@@ -62,20 +62,29 @@ function Editor(targetCircuit, targetSimulator)
         myWindow.focus();
     }
 
-    self.construct = function () {
-        self.supermode="construct";
-        document.getElementById("construct").className="hi";
-        document.getElementById("adjust").className="nothing";
-    }
-
-    self.adjust = function () {
-        self.supermode="adjust";
-        document.getElementById("adjust").className="hi";
-        document.getElementById("construct").className="nothing";
-    }
-
     self.bindKeys();
     self.setMode(Coupler, document.getElementById("coupler"));
-    self.construct();
 }
 
+
+function Adjuster(targetCircuit)
+{
+    var self = this;
+    self.label="adjuster";
+    self.circuit=targetCircuit;
+
+    self.update = function () {
+        var c = self.circuit.findAdjustable(mouse.worldPos);
+        console.log(c);
+    }
+
+    self.click = function (x, y) {
+        
+    }
+
+    self.draw = function (ctx) {
+        ctx.globalAlpha=.5;
+        ctx.globalAlpha=1;
+    }
+
+}
