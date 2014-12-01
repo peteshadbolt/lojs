@@ -58,6 +58,7 @@ function resize() {
 function construct() {
     document.getElementById("construct").className="hi";
     document.getElementById("adjust").className="nothing";
+    adjuster.moving=undefined;
     editor=constructor;
     renderer.needFrame();
 }

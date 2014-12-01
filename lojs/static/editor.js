@@ -11,6 +11,7 @@ function Constructor(targetCircuit)
     self.bindKeys = function () {
         window.addEventListener('keydown', function (evt) {
             if (self.keyMap.hasOwnProperty(evt.keyCode)) {
+                construct();
                 self.setMode(self.keyMap[evt.keyCode]);
             }}, true);
     }
@@ -74,6 +75,7 @@ function Adjuster(targetCircuit)
     self.circuit=targetCircuit;
     self.hover=undefined;
     self.info = document.getElementById("info");
+    self.angle=0;
 
     self.update = function () {
         if (self.moving==undefined){
@@ -85,11 +87,15 @@ function Adjuster(targetCircuit)
             renderer.needFrame();
             var c = self.moving.center();
             var m = mouse.worldPos;
-            var angle = Math.atan2(-(c.x-m.x), c.y-m.y);
-            if (angle<0){angle+=2*Math.PI;}
-            var response = self.moving.adjust(angle);
+            self.angle = Math.atan2(-(c.x-m.x), c.y-m.y);
+            if (mouse.shift){
+                var resolution = Math.PI/8;
+                n=Math.round(self.angle/resolution);
+                self.angle = n*resolution;
+            }
+            if (self.angle<0){self.angle+=2*Math.PI;}
+            var response = self.moving.adjust(self.angle);
             self.info.innerHTML = response;
-            self.info.innerHTML += "<br>(Hold shift to snap)"
             simulator.update();
             //console.log("Change the parameter", self.moving, mouse.worldPos);
         }
@@ -129,13 +135,16 @@ function Adjuster(targetCircuit)
 
         if (self.moving) {
             var c = self.moving.center();
-            var m = mouse.worldPos;
+            var x1 = c.x + Math.sin(self.angle)*.2;
+            var y1 = c.y - Math.cos(self.angle)*.2;
+            var x2 = c.x + Math.sin(self.angle)*10;
+            var y2 = c.y - Math.cos(self.angle)*10;
             startDrawing(ctx, new Vector(0,0));
             ctx.strokeStyle="blue";
             ctx.lineWidth*=4;
             ctx.beginPath();
-            ctx.moveTo(c.x, c.y);
-            ctx.lineTo(m.x, m.y);
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
             ctx.stroke();
             stopDrawing(ctx);
         }
