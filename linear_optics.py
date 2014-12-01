@@ -98,11 +98,13 @@ def simulate(input_state, unitary, patterns, mode="probability", **kwargs):
     for cols, amplitude in input_state.items():
         cols = list(cols)
         n1 = normalization(cols)
+        # TODO: should pick out cols here I guess
         for rows in patterns:
             n2 = normalization(rows)
             perm = permanent(unitary[list(rows)][:,cols])
-            if np.abs(perm)**2 > precision:
-                output_state[rows] += amplitude*perm/np.sqrt(n1*n2)
+            value = amplitude*perm/np.sqrt(n1*n2)
+            if np.abs(value)**2 > precision:
+                output_state[rows] += value
     if mode=="probability":
         for key, value in output_state.items():
             output_state[key] = np.abs(value)**2

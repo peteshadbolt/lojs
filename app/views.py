@@ -21,8 +21,8 @@ def simulate(request):
         data = lo.simulate(**circuit).items()
         print "Number of terms:", len(data)
         sys.stdout.flush()
-        data.sort(key=lambda x: -x[1])
-        maximum = data[0][1]
+        #data.sort(key=lambda x: -x[1])
+        maximum = max([x[1] for x in data])
         output={"probabilities":data, "maximum":1 if maximum==0 else maximum}
     except ValueError:
         output={"warning": "No output"}

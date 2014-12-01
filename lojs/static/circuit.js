@@ -156,6 +156,23 @@ function Circuit() {
         return json;
     }
 
+    self.fromJSON = function (json) {
+        self.clear();
+        for (var i=0; i <json.length; ++i) {
+           var c = json[i];
+           console.log(c);
+           if (c.type=="source"){self.components.push(new SPS(c.pos.x, c.pos.y));}
+           if (c.type=="bellpair"){self.components.push(new BellPair(c.pos.x, c.pos.y));}
+           if (c.type=="coupler"){self.components.push(new Coupler(c.pos.x, c.pos.y, c.ratio));}
+           if (c.type=="phaseshifter"){self.components.push(new Phaseshifter(c.pos.x, c.pos.y, c.phase));}
+           if (c.type=="crossing"){self.components.push(new Crossing(c.pos.x, c.pos.y));}
+           if (c.type=="detector"){self.components.push(new Detector(c.pos.x, c.pos.y));}
+        }       
+        self.decorate();
+        return json;
+    }
+
+
     // Draw a box around the circuit
     self.drawBox = function (ctx) {
         startDrawing(ctx, {"x":0, "y":0});
@@ -200,7 +217,7 @@ function Phaseshifter(x, y, phase) {
     this.json = function(){return {"type":this.type, "pos":this.relPos(), "phase":this.phase}}
     this.adjust = function (angle) {
        this.phase = angle;
-       return "Phase: " + this.phase.toFixed(5); 
+       return "Phase: " + (this.phase/Math.PI).toFixed(5) + " pi";
     }
 }
 

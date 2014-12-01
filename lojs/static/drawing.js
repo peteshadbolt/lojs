@@ -199,7 +199,7 @@ function drawCrossing(ctx) {
 function drawKnob(ctx, pos) {
     startDrawing(ctx, pos);
     ctx.beginPath();
-    ctx.strokeStyle="#blue";
+    ctx.strokeStyle="blue";
     ctx.beginPath();
     ctx.arc(0, 0, .2, 0, 2*Math.PI, false);
     ctx.stroke();

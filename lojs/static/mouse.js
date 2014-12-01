@@ -15,6 +15,7 @@ function Mouse() {
     self.worldPos = {"x":0, "y":0};
     self.gridPos = {"x":0, "y":0};
     self.gridPosOld = {"x":0, "y":0};
+    self.shift=false;
 
     self.update = function (evt) {
         self.screenPosOld.x=self.screenPos.x; self.screenPosOld.y=self.screenPos.y;
@@ -25,6 +26,7 @@ function Mouse() {
         self.gridPos = grid.inside(self.worldPos);
         self.screenDelta.x = self.screenPos.x - self.screenPosOld.x;
         self.screenDelta.y = self.screenPos.y - self.screenPosOld.y;
+        self.shift=evt.shiftKey;
     }
 
     self.bind = function (evt) {
