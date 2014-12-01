@@ -4,11 +4,8 @@ import numpy as np
 import itertools as it
 from collections import defaultdict
 from operator import add
-try: 
-    from permanent import permanent
-except ImportError:
-    print "Fell back to a slow implementation of the permanent.\nSee http://github.com/peteshadbolt/permanent"
-    def permanent(a): r=range(len(a)); return sum([np.prod(a[r, p]) for p in it.permutations(r)])
+import sys
+from permanent import permanent
 
 ir2=1/np.sqrt(2)
 factorial = (1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
@@ -96,6 +93,8 @@ def compile(json):
             pattern = [i for i in range(nmodes) if row[i]>precision]
             termpatterns.append(pattern)
         patterns+=list(it.product(*termpatterns))
+    print "Identified %d non-zero patterns" % len(patterns)
+    sys.stdout.flush()
 
     # Return a compiled representation of the state
     return {"input_state": input_state, "unitary":unitary, "patterns":patterns, "nmodes":nmodes, "nphotons":nphotons}

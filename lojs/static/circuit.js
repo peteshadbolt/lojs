@@ -196,7 +196,7 @@ function Component(type, x, y, dx, dy, drawFunc) {
    this.type = type;
    this.dimensions = new Vector(dx, dy);
    this.draw = drawFunc;
-   this.json = function(){return {"type":this.type, "x":this.relPos(), "y":this.relPos().y}}
+   this.json = function(){return {"type":this.type, "x":this.relPos().x, "y":this.relPos().y}}
    this.center = function(){return this.pos.add(this.dimensions.x/2, this.dimensions.y/2);}
 }
 
@@ -204,7 +204,7 @@ function Component(type, x, y, dx, dy, drawFunc) {
 function Coupler(x, y, ratio) {
     Component.call(this, "coupler", x, y, 1, 1, drawCoupler);
     this.ratio = ratio ? ratio : .5;
-    this.json = function(){return {"type":this.type, "pos":this.relPos(), "ratio":this.ratio}}
+    this.json = function(){return {"type":this.type, "x":this.relPos().x, "y":this.relPos().y, "ratio":this.ratio}}
     this.adjust = function (angle) {
        this.ratio = (1-Math.cos(angle))/2;
        return "Coupling ratio: " + this.ratio.toFixed(5); 
@@ -214,7 +214,7 @@ function Coupler(x, y, ratio) {
 function Phaseshifter(x, y, phase) {
     Component.call(this, "phaseshifter", x, y, 1, 0, drawPhaseShifter);
     this.phase = phase ? phase : 0;
-    this.json = function(){return {"type":this.type, "pos":this.relPos(), "phase":this.phase}}
+    this.json = function(){return {"type":this.type, "x":this.relPos().x, "y":this.relPos().y, "phase":this.phase}}
     this.adjust = function (angle) {
        this.phase = angle;
        return "Phase: " + (this.phase/Math.PI).toFixed(5) + " pi";
