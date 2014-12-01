@@ -196,7 +196,7 @@ function Component(type, x, y, dx, dy, drawFunc) {
    this.type = type;
    this.dimensions = new Vector(dx, dy);
    this.draw = drawFunc;
-   this.json = function(){return {"type":this.type, "pos":this.relPos()}}
+   this.json = function(){return {"type":this.type, "x":this.relPos(), "y":this.relPos().y}}
    this.center = function(){return this.pos.add(this.dimensions.x/2, this.dimensions.y/2);}
 }
 

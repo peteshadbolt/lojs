@@ -17,12 +17,12 @@ precision = 1e-6
 spec = {"coupler":      { "size":2,  "unitary": lambda p: directional_coupler(p["ratio"]) },
         "phaseshifter": { "size":1,  "unitary": lambda p: phase_shifter(p["phase"]) },
         "crossing":     { "size":2,  "unitary": lambda p: np.array([[0,1],[1,0]]) },
-        "source":       { "size":1,  "state": lambda p: {(p["pos"]["y"],): 1} },
-        "bellpair":     { "size":4,  "state": lambda p: bell_state(p["pos"]["y"]) },
-        "detector":     { "size":1 , "pattern": lambda p: p["pos"]["y"] } }
+        "source":       { "size":1,  "state": lambda p: {(p["y"],): 1} },
+        "bellpair":     { "size":4,  "state": lambda p: bell_state(p["y"]) },
+        "detector":     { "size":1 , "pattern": lambda p: p["y"] } }
 
-prototype = {"bottom": lambda p: p["pos"]["y"]+p["size"], 
-             "x": lambda p: p["pos"]["x"], "y":lambda p: p["pos"]["y"]}
+prototype = {"bottom": lambda p: p["y"]+p["size"], 
+             "x": lambda p: p["x"], "y":lambda p: p["y"]}
 
 def directional_coupler(ratio): r = 1j*np.sqrt(ratio); t = np.sqrt(1-ratio); return np.array([[t, r], [r, t]])
 def phase_shifter(phase): return np.array([[np.exp(1j*phase)]])
@@ -81,13 +81,21 @@ def compile(json):
             cu[p1:p2, p1:p2] = component["unitary"]
         unitary = np.dot(cu, unitary);
 
-    # Parse input states and detection patterns
+    # Parse input states 
     s = [c["state"] for c in components if "state" in c]
     input_state = dtens(*s)
     nphotons = 0 if len(input_state) == 0 else len(input_state.keys()[0])
-    p = [c["pattern"] for c in components if "pattern" in c]
-    if p==[]: p = range(nmodes)
-    patterns = list(it.combinations_with_replacement(p, nphotons))
+
+    # Find all nonzero patterns by classical (fast) means
+    u2=np.abs(unitary**2)
+    patterns=[]
+    for key, value in input_state.items():
+        termpatterns = []
+        for photon in key:
+            row=u2[photon]
+            pattern = [i for i in range(nmodes) if row[i]>precision]
+            termpatterns.append(pattern)
+        patterns+=list(it.product(*termpatterns))
 
     # Return a compiled representation of the state
     return {"input_state": input_state, "unitary":unitary, "patterns":patterns, "nmodes":nmodes, "nphotons":nphotons}
@@ -98,16 +106,16 @@ def simulate(input_state, unitary, patterns, mode="probability", **kwargs):
     for cols, amplitude in input_state.items():
         cols = list(cols)
         n1 = normalization(cols)
-        # TODO: should pick out cols here I guess
         for rows in patterns:
             n2 = normalization(rows)
             perm = permanent(unitary[list(rows)][:,cols])
             value = amplitude*perm/np.sqrt(n1*n2)
-            if np.abs(value)**2 > precision:
-                output_state[rows] += value
+            if value!=0: output_state[rows] += value
     if mode=="probability":
         for key, value in output_state.items():
             output_state[key] = np.abs(value)**2
     return output_state
 
-
+if __name__=="__main__":
+    import test
+    test.test()
