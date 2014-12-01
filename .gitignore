@@ -1,6 +1,6 @@
 venv/
 
-*.gif
+/**.gif*/
 /**.png*/
 *.jpg
 *.pdf
