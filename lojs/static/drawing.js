@@ -67,17 +67,6 @@ function drawSPS(ctx, thepos, color) {
     stopDrawing(ctx);
 }
 
-function drawDetector(ctx) {
-    startDrawing(ctx, this.pos);
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(1, 1); 
-    ctx.moveTo(0, 1);
-    ctx.lineTo(1, 0); 
-    ctx.stroke();
-    stopDrawing(ctx);
-}
-
 
 function drawDeleter(ctx) {
     for (var i=0; i < this.collisions.length; ++i) {
@@ -138,10 +127,18 @@ function drawDetector(ctx) {
     ctx.beginPath();
     ctx.arc(1, 0, .2, 3*Math.PI/2, Math.PI/2, false);
     ctx.fillStyle = "black";
-    if (simulator.highlightedPattern.indexOf(this.relPos().y)!=-1){
-        ctx.fillStyle="red";
-    }
     ctx.fill();
+    
+    //TODO: this is a hack
+    if (simulator.highlightedPattern.indexOf(this.relPos().y)!=-1){
+        ctx.beginPath();
+        ctx.fillStyle = "red";
+        ctx.strokeStyle = "white";
+        ctx.arc(1.2, 0, .08, 0, 2*Math.PI, false);
+        ctx.fill();
+        ctx.stroke();
+    }
+
     stopDrawing(ctx);
 }
 
