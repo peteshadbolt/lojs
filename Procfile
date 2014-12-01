@@ -1,1 +1,1 @@
-web: gunicorn lojs.wsgi --log-file -
+web: gunicorn lojs.wsgi 

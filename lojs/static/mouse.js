@@ -58,6 +58,7 @@ function Mouse() {
         self.update(evt);
         self.pressed=false;
         if (self.wasClick) {editor.click(mouse.ax, mouse.ay);}
+        renderer.needFrame();
     }
 
     self.onScroll = function (evt) {

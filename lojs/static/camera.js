@@ -59,6 +59,7 @@ function Camera()
             renderer.needFrame();
         } else {
             self.zooming=false;
+            renderer.needFrame();
         }
     }
 }
