@@ -1,10 +1,12 @@
 /*
    pete.shadbolt@gmail.com
-   This is the main JS file which runs the constructor/simulator
+   This is the main JS file which runs the constructer/simulator
 */
 
 var gc, gd;
-var camera, renderer, grid, circuit, mouse, adjuster, constructor, editor;
+var camera, renderer, grid, circuit, mouse, adjuster, constructer, editor;
+var exportBox;
+var instructionBox;
 
 // Run on startup
 window.onload=main;
@@ -26,6 +28,7 @@ function Renderer(ctx, canv) {
    self.redraw= function () {
         if (!self.change){return;}
         self.change=false;
+        //console.log("redraw");
 
         // Clear canvas
         self.ctx.clearRect(0, 0, self.canvas.width, self.canvas.height);
@@ -34,7 +37,7 @@ function Renderer(ctx, canv) {
         self.ctx.save();
         camera.contextToWorld(self.ctx);
 
-        // Draw the grid, circuit, constructor
+        // Draw the grid, circuit, constructer
         grid.draw(self.ctx);
         editor.draw(self.ctx);
         circuit.draw(self.ctx);
@@ -59,7 +62,7 @@ function construct() {
     document.getElementById("construct").className="hi";
     document.getElementById("adjust").className="nothing";
     adjuster.moving=undefined;
-    editor=constructor;
+    editor=constructer;
     renderer.needFrame();
 }
 
@@ -74,16 +77,29 @@ function adjust() {
 function bindKeys() {
     window.addEventListener('keydown', function (evt) {
         if (evt.keyCode == 9) {
-           if (editor.label=="constructor"){ adjust(); } else { construct(); }
+           if (editor.label=="constructer"){ adjust(); } else { construct(); }
            evt.preventDefault();
            return false;
         }
     }, true);
 }
 
+function exportCircuit() {
+    exportBox.innerHTML=JSON.stringify(circuit.toJSON());;
+    exportBox.setAttribute("style", "");
+}
+
+function hideExport() {
+    exportBox.innerHTML="";
+    exportBox.setAttribute("style", "display:none");
+}
+
+
 function main() {
     // Set up the drawing environment an-d fit to window
     gc=document.getElementById('canvas');
+    exportBox = document.getElementById('export');
+    instructionBox = document.getElementById('instructions');
     gd=gc.getContext('2d');
 
     // Create a grid, camera, and mouse
@@ -94,10 +110,10 @@ function main() {
     mouse.bind(gd);
     bindKeys();
 
-    // Create the circuit, simulator, and constructor
+    // Create the circuit, simulator, and constructer
     circuit = new Circuit();
     simulator = new Simulator(circuit);
-    constructor = new Constructor(circuit);
+    constructer = new Constructer(circuit);
     adjuster = new Adjuster(circuit);
     construct();
 

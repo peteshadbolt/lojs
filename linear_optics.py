@@ -4,7 +4,6 @@ import numpy as np
 import itertools as it
 from collections import defaultdict
 from operator import add
-import sys
 from permanent import permanent
 
 ir2=1/np.sqrt(2)
@@ -51,7 +50,7 @@ def dtens(*terms):
 
 def dinner(a,b):
     """ Inner product of states represented as dicts """
-    return sum([a[key]*b[key] for key in set(a.keys()+b.keys())])
+    return sum([np.conj(a[key])*b[key] for key in set(a.keys()+b.keys())])
 
 def fill_gaps(component):
     """ Fills the gaps (size, unitary, state) in a dictionary representing a component. """
@@ -83,18 +82,10 @@ def compile(json):
     input_state = dtens(*s)
     nphotons = 0 if len(input_state) == 0 else len(input_state.keys()[0])
 
-    # Find all nonzero patterns by classical (fast) means
-    u2=np.abs(unitary**2)
-    patterns=[]
-    for key, value in input_state.items():
-        termpatterns = []
-        for photon in key:
-            row=u2[photon]
-            pattern = [i for i in range(nmodes) if row[i]>precision]
-            termpatterns.append(pattern)
-        patterns+=list(it.product(*termpatterns))
-    print "Identified %d non-zero patterns" % len(patterns)
-    sys.stdout.flush()
+    # Choose the list of patterns
+    p = [c["pattern"] for c in components if "pattern" in c]
+    if p==[]: p = range(nmodes)
+    patterns = tuple(it.combinations_with_replacement(p, nphotons))
 
     # Return a compiled representation of the state
     return {"input_state": input_state, "unitary":unitary, "patterns":patterns, "nmodes":nmodes, "nphotons":nphotons}
@@ -109,12 +100,9 @@ def simulate(input_state, unitary, patterns, mode="probability", **kwargs):
             n2 = normalization(rows)
             perm = permanent(unitary[list(rows)][:,cols])
             value = amplitude*perm/np.sqrt(n1*n2)
-            if value!=0: output_state[rows] += value
+            if np.abs(value)>precision: output_state[rows] += value
     if mode=="probability":
         for key, value in output_state.items():
             output_state[key] = np.abs(value)**2
-    return output_state
 
-if __name__=="__main__":
-    import test
-    test.test()
+    return output_state

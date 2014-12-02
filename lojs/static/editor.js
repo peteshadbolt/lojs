@@ -1,9 +1,9 @@
-function Constructor(targetCircuit)
+function Constructer(targetCircuit)
 {
     var self = this;
     self.circuit=targetCircuit;
     self.mode = Coupler;
-    self.label = "constructor";
+    self.label = "constructer";
     self.cursor = new Coupler(0, 0, .5);
     self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair, 68:Detector};
 
@@ -55,13 +55,6 @@ function Constructor(targetCircuit)
         simulator.update();
     }
 
-    // TODO: data-URIs are dumbass
-    self.exportCircuit = function () {
-        var data = JSON.stringify(circuit.toJSON(), space="\t");
-        data="<tt>"+data+"</tt>";
-        myWindow = window.open("data:text/html," + encodeURIComponent(data), "_blank");
-        myWindow.focus();
-    }
 
     self.bindKeys();
     self.setMode(Coupler, document.getElementById("coupler"));

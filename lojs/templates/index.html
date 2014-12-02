@@ -18,20 +18,37 @@
 <canvas id=canvas> </canvas> 
 
 <div id=infoholder>
-    <div id=info class=menuchunk style="display:none">
+    <div id=instructions class=menuchunk style=""> 
+        <p>Work in progress. Code is available <a href="http://github.com/peteshadbolt/ulo">here</a> (simulator) and <a href="http://github.com/peteshadbolt/lojs">here</a> (website).</p>
+        <p>Click+drag to look around. Scrollwheel to zoom.
+        <h3>Keyboard shortcuts:</h3>
+        <ul>
+            <li>Tab: Construct/adjust</li>
+            <li>Shift: Snap parameters</li>
+            <li>C: Coupler</li>
+            <li>S: Source</li>
+            <li>P: Phaseshifter</li>
+            <li>X: Crossing</li>
+            <li>B: Bell-Pair</li>
+        </ul>
+        <p><a class=hi href="javascript:instructionBox.setAttribute('style', 'display:none');">Dismiss</a></p>
     </div>
+
+    <div id=info class=menuchunk style="display:none"> </div>
+
+    <div id=export class=menuchunk style="display:none"> </div>
 </div>
 
 <div id=menu> 
 
     <div class=menuchunk>
         <ul>
-            <li><a href="/instructions">Instructions</a> <br>
+            <li><a href="javascript:instructionBox.setAttribute('style', '');">Instructions</a> <br>
             <li>Mode: 
             <a id="construct" href="#" onclick="javascript:construct();">Construct</a> 
             <a id="adjust" href="#" onclick="javascript:adjust();">Adjust</a>
-        <li> <a href="#" onclick="javascript:constructor.clear();">Clear</a>
-        <a href="#" onclick="javascript:constructor.exportCircuit();">Export</a> 
+        <li> <a href="#" onclick="javascript:circuit.clear();">Clear</a>
+        <a href="#" onclick="javascript:exportCircuit();">Export</a> 
         <a href="#">Import</a>
         </ul>
     </div>
@@ -39,13 +56,13 @@
     <div class=menuchunk>
         <b>Components</b>
         <ul>
-        <li> <a id="coupler" href="#" onclick="javascript:constructor.setMode(Coupler);">Coupler</a> 
-        <a id="phaseshifter" href="#" onclick="javascript:constructor.setMode(Phaseshifter);">PhaseShifter</a> 
-        <a id="crossing" href="#" onclick="javascript:constructor.setMode(Crossing);">Crossing</a>
+        <li> <a id="coupler" href="#" onclick="javascript:constructer.setMode(Coupler);">Coupler</a> 
+        <a id="phaseshifter" href="#" onclick="javascript:constructer.setMode(Phaseshifter);">PhaseShifter</a> 
+        <a id="crossing" href="#" onclick="javascript:constructer.setMode(Crossing);">Crossing</a>
 
-        <li><a id="source" href="#" onclick="javascript:constructor.setMode(SPS);">Source</a> 
-            <a id="bellpair" href="#" onclick="javascript:constructor.setMode(BellPair);">Bell Pair</a> 
-            <a id="detector" href="#" onclick="javascript:constructor.setMode(Detector);">Detector</a> 
+        <li><a id="source" href="#" onclick="javascript:constructer.setMode(SPS);">Source</a> 
+            <a id="bellpair" href="#" onclick="javascript:constructer.setMode(BellPair);">Bell Pair</a> 
+            <a id="detector" href="#" onclick="javascript:constructer.setMode(Detector);">Detector</a> 
     </div>
 
 
