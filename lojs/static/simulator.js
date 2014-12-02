@@ -47,7 +47,7 @@ function Simulator(myCircuit) {
         self.outputField.innerHTML="";
         self.ready=true;
         if (response.warning){
-            self.outputField.innerHTML = "[no output]";
+            self.outputField.innerHTML = response.warning;
             return;
         }
         var probabilities=response.probabilities;
@@ -58,7 +58,7 @@ function Simulator(myCircuit) {
             lines += "<li class=state_term ";
             lines += "style=\"color:"+c+"\" ";
             lines +="onmouseover = \"javascript:simulator.highlight(["+p[0]+"])\"> ";
-            lines +="|"+ p[0] + "&gt; -  " + p[1].toFixed(4) + "\n";
+            lines +="|"+ p[0] + "&gt; -  " + p[1].toFixed(6) + "\n";
             var magnitude=(100*p[1]/response.maximum).toFixed(0);
             lines += "<hr width="+magnitude+"% />\n";
         }

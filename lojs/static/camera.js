@@ -58,8 +58,8 @@ function Camera()
             self.pos.y+=(temp2.y-temp1.y)*self.z;
             renderer.needFrame();
         } else {
+            if (self.zooming){renderer.needFrame()};
             self.zooming=false;
-            renderer.needFrame();
         }
     }
 }

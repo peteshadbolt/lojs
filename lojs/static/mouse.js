@@ -54,6 +54,7 @@ function Mouse() {
         self.update(evt);
         self.wasClick=true;
         self.pressed=true;
+        hideExport();
     }
 
     self.onUp = function (evt) {
