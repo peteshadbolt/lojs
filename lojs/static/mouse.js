@@ -54,7 +54,7 @@ function Mouse() {
         self.update(evt);
         self.wasClick=true;
         self.pressed=true;
-        hideExport();
+        instructionBox.setAttribute('style', 'display:none');
     }
 
     self.onUp = function (evt) {

@@ -5,7 +5,6 @@
 
 var gc, gd;
 var camera, renderer, grid, circuit, mouse, adjuster, constructer, editor;
-var exportBox;
 var instructionBox;
 
 // Run on startup
@@ -84,22 +83,26 @@ function bindKeys() {
     }, true);
 }
 
-function exportCircuit() {
-    exportBox.innerHTML=JSON.stringify(circuit.toJSON());;
-    exportBox.setAttribute("style", "");
+function recievedFile(evt) {
+    var text = evt.target.result;
+    var j = JSON.parse(text);
+    circuit.fromJSON(j);
 }
 
-function hideExport() {
-    exportBox.innerHTML="";
-    exportBox.setAttribute("style", "display:none");
+function handleFileSelect(evt) {
+    var file = evt.target.files[0];
+    var fr = new FileReader();
+    fr.onload = recievedFile;
+    fr.readAsText(file);
 }
 
 
 function main() {
     // Set up the drawing environment an-d fit to window
     gc=document.getElementById('canvas');
-    exportBox = document.getElementById('export');
     instructionBox = document.getElementById('instructions');
+    document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
+
     gd=gc.getContext('2d');
 
     // Create a grid, camera, and mouse
