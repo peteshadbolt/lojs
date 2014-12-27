@@ -62,8 +62,7 @@ function Circuit() {
         self.components=[];
         self.connectors=[];
         self.decorate();
-        self.topLeft=undefined;
-        self.bottomRight=undefined;
+        self.measure();
         renderer.needFrame();
     }
 
@@ -76,11 +75,14 @@ function Circuit() {
             if (ctl.x<tl.x) { tl.x=ctl.x; } if (ctl.y<tl.y) { tl.y=ctl.y; }
             if (cbr.x>br.x) { br.x=cbr.x; } if (cbr.y>br.y) { br.y=cbr.y; }
         }
-        self.pos = self.components.length>0 ? tl.copy() : undefined;
-        self.dimensions = self.pos ? br.sub(tl) : undefined;
+        self.pos = self.components.length>0 ? tl.copy() : new Vector(0,0);
+        self.dimensions = self.components.length>0 ? br.sub(tl) : new Vector(0,0);
         self.nmodes = self.dimensions.y;
         self.topLeft = self.pos.copy();
         self.bottomRight = self.pos.addVec(self.dimensions);
+
+        var data=JSON.stringify(self.toJSON());
+        document.getElementById("download").href="data:text/plain,"+data;
     }
 
     // Add horizontal lines to make clear the connections between components Also work out the input and output ports

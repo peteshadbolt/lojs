@@ -20,3 +20,12 @@ hr {color:orange; padding:0px; margin-bottom:5px; margin:0px; border: 1px solid 
 .state_term:hover {font-weight:bold; cursor:default}
 
 #spinner {float:right}
+
+#input { font-family:"courier new";}
+
+.custom-file-upload { color: #ccccff; text-decoration:underline; cursor:pointer; }
+
+input[type="file"] {
+    display: none;
+}
+
