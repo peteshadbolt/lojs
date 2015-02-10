@@ -101,6 +101,7 @@ function main() {
     // Set up the drawing environment an-d fit to window
     gc=document.getElementById('canvas');
     instructionBox = document.getElementById('instructions');
+    instructionBox.setAttribute('style', 'display:none');
     document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
 
     gd=gc.getContext('2d');
@@ -112,6 +113,7 @@ function main() {
     renderer=new Renderer(gd, gc);
     mouse.bind(gd);
     bindKeys();
+    makeNumberCache();
 
     // Create the circuit, simulator, and constructer
     circuit = new Circuit();

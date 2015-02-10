@@ -165,10 +165,12 @@ function Circuit() {
            console.log(c);
            if (c.type=="source"){self.components.push(new SPS(c.pos.x, c.pos.y));}
            if (c.type=="bellpair"){self.components.push(new BellPair(c.pos.x, c.pos.y));}
+           if (c.type=="fockstate"){self.components.push(new FockState(c.pos.x, c.pos.y));}
            if (c.type=="coupler"){self.components.push(new Coupler(c.pos.x, c.pos.y, c.ratio));}
            if (c.type=="phaseshifter"){self.components.push(new Phaseshifter(c.pos.x, c.pos.y, c.phase));}
            if (c.type=="crossing"){self.components.push(new Crossing(c.pos.x, c.pos.y));}
            if (c.type=="detector"){self.components.push(new Detector(c.pos.x, c.pos.y));}
+           if (c.type=="herald"){self.components.push(new Herald(c.pos.x, c.pos.y));}
         }       
         self.decorate();
         return json;
@@ -237,8 +239,23 @@ function BellPair(x, y) {
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
 }
 
+function FockState(x, y) {
+    Component.call(this, "fockstate", x, y, 1, 0, drawFockState);
+    this.n = 2;
+    this.adjust = function (angle) {
+       this.n = Math.floor(5 * angle/(2*Math.PI))+1;
+       return "n = " + this.n;
+    }
+    this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
+}
+
 function Detector(x, y) {
     Component.call(this, "detector", x, y, 1, 0, drawDetector);
+    this.enforceRules = function () { if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;} }
+}
+
+function Herald(x, y) {
+    Component.call(this, "herald", x, y, 1, 0, drawHerald);
     this.enforceRules = function () { if (this.pos.x<circuit.bottomRight.x-1){this.pos.x=circuit.bottomRight.x-1;} }
 }
 

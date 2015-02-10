@@ -67,6 +67,29 @@ function drawSPS(ctx, thepos, color) {
     stopDrawing(ctx);
 }
 
+function drawFockState(ctx, thepos, color) {
+    if (thepos==undefined)(thepos=this.pos);
+    if (color==undefined){color="blue";}
+    startDrawing(ctx, thepos);
+    // Photon
+    for (var i=0; i < this.n; ++i) {
+        ctx.beginPath();
+        ctx.arc(-i*.3, 0, .1, 0, 2*Math.PI, false);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+
+    // Arrow
+    ctx.strokeStyle=color; ctx.lineWidth=.05;
+    ctx.beginPath();
+    ctx.moveTo(0, 0); ctx.lineTo(1, 0); 
+    ctx.moveTo(.7, -.1);
+    ctx.lineTo(1, 0); ctx.lineTo(.7, .1);
+    ctx.stroke();
+    stopDrawing(ctx);
+}
+
+
 
 function drawDeleter(ctx) {
     for (var i=0; i < this.collisions.length; ++i) {
@@ -118,6 +141,33 @@ function drawPhaseShifter(ctx) {
     stopDrawing(ctx);
 }
 
+function drawHerald(ctx) {
+    startDrawing(ctx, this.pos);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(1,0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(1, 0, .2, 3*Math.PI/2, Math.PI/2, false);
+    ctx.fillStyle = "green";
+    ctx.fill();
+    
+    // TODO: this is a hack
+    if (circuit.topLeft){
+        if (simulator.highlightedPattern.indexOf(this.relPos().y)!=-1){
+            ctx.beginPath();
+            ctx.fillStyle = "red";
+            ctx.strokeStyle = "white";
+            ctx.arc(1.2, 0, .08, 0, 2*Math.PI, false);
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+
+    stopDrawing(ctx);
+}
+
+
 function drawDetector(ctx) {
     startDrawing(ctx, this.pos);
     ctx.beginPath();
@@ -130,19 +180,24 @@ function drawDetector(ctx) {
     ctx.fill();
     
     //TODO: this is a hack
-    if (simulator.highlightedPattern.indexOf(this.relPos().y)!=-1){
+    var ox = 0;
+    for (var i=0; i < simulator.highlightedPattern.length; ++i) {
+       if (simulator.highlightedPattern[i]==this.relPos().y) {
         ctx.beginPath();
         ctx.fillStyle = "red";
         ctx.strokeStyle = "white";
-        ctx.arc(1.2, 0, .08, 0, 2*Math.PI, false);
+        ctx.arc(1.2+ox, 0, .08, 0, 2*Math.PI, false);
+        ox+=0.2
         ctx.fill();
         ctx.stroke();
+       }
     }
 
     stopDrawing(ctx);
 }
 
 function drawLabel(ctx, thing, yoff) {
+    return;
     // TODO: this is a hack, we should render these to an off screen canvas when the object is created
     if (thing.index==undefined || mouse.pressed || camera.zooming){ return; }
     if (editor.moving!=undefined){return;}

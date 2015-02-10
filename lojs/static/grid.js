@@ -31,19 +31,18 @@ function Grid() {
             ctx.stroke();
         }
 
-        // Always draw the origin
-        //ctx.strokeStyle= '#ffcccc';
-        //ctx.lineWidth=2/camera.z;
-        //ctx.beginPath();
-        //if (topLeft.x<0 && bottomRight.x<<0) {
-            //ctx.moveTo(0, topLeft.y); 
-            //ctx.lineTo(0, bottomRight.y); 
-        //}
-        //if (topLeft.y<0 && bottomRight.y<<0) {
-            //ctx.moveTo(topLeft.x, 0); 
-            //ctx.lineTo(bottomRight.x, 0); 
-        //}
-        //ctx.stroke();
+        // Number the modes
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = 'black';
+        ctx.font=(.15)+'pt sans';
+        if (circuit.topLeft){
+            for (var i=0; i <= circuit.nmodes; ++i) {
+                ctx.textAlign = 'right';
+                ctx.fillText(i, circuit.topLeft.x-1, circuit.topLeft.y+i+.3);
+                ctx.textAlign = 'left';
+                ctx.fillText(i, circuit.bottomRight.x+1, circuit.topLeft.y+i+.3);
+            }
+        }
     }
 
 

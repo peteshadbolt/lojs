@@ -5,11 +5,12 @@ function Constructer(targetCircuit)
     self.mode = Coupler;
     self.label = "constructer";
     self.cursor = new Coupler(0, 0, .5);
-    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair, 68:Detector};
+    self.keyMap = {88: Crossing, 80: Phaseshifter, 67: Coupler, 83:SPS, 66:BellPair, 68:Detector, 70:FockState, 72:Herald};
 
     // Change mode by pressing keys
     self.bindKeys = function () {
         window.addEventListener('keydown', function (evt) {
+            //console.log(evt.keyCode);
             if (self.keyMap.hasOwnProperty(evt.keyCode)) {
                 construct();
                 self.setMode(self.keyMap[evt.keyCode]);
@@ -26,7 +27,9 @@ function Constructer(targetCircuit)
         document.getElementById("crossing").className="nothing";
         document.getElementById("source").className="nothing";
         document.getElementById("bellpair").className="nothing";
+        document.getElementById("fockstate").className="nothing";
         document.getElementById("detector").className="nothing";
+        document.getElementById("herald").className="nothing";
         document.getElementById(temp.type).className="hi";
         renderer.needFrame();
     }
