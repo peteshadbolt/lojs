@@ -11,18 +11,19 @@
     <script type="text/javascript" src="/static/editor.js"></script>
     <script type="text/javascript" src="/static/drawing.js"></script>
     <script type="text/javascript" src="/static/simulator.js"></script>
+    <script type="text/javascript" src="/static/numbers.js"></script>
     <script type="text/javascript" src="/static/main.js"></script>
 
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <!--<script>-->
+      <!--(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){-->
+      <!--(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),-->
+      <!--m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)-->
+      <!--})(window,document,'script','//www.google-analytics.com/analytics.js','ga');-->
 
-      ga('create', 'UA-43836477-2', 'auto');
-      ga('send', 'pageview');
+      <!--ga('create', 'UA-43836477-2', 'auto');-->
+      <!--ga('send', 'pageview');-->
 
-    </script>
+    <!--</script>-->
 </head>
 
 <body> 
@@ -75,7 +76,9 @@
 
         <li><a id="source" href="#" onclick="javascript:constructer.setMode(SPS);">Source</a> 
             <a id="bellpair" href="#" onclick="javascript:constructer.setMode(BellPair);">Bell Pair</a> 
+            <a id="fockstate" href="#" onclick="javascript:constructer.setMode(FockState);">Fock State</a> 
             <a id="detector" href="#" onclick="javascript:constructer.setMode(Detector);">Detector</a> 
+            <a id="herald" href="#" onclick="javascript:constructer.setMode(Herald);">Herald</a> 
     </div>
 
 

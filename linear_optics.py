@@ -15,7 +15,9 @@ spec = {"coupler":      { "size":2,  "unitary": lambda p: directional_coupler(p[
         "crossing":     { "size":2,  "unitary": lambda p: np.array([[0,1],[1,0]]) },
         "source":       { "size":1,  "state": lambda p: {(p["y"],): 1} },
         "bellpair":     { "size":4,  "state": lambda p: bell_state(p["y"]) },
-        "detector":     { "size":1 , "pattern": lambda p: p["y"] } }
+        "fockstate":    { "size":1,  "state": lambda p: fock_state(p["y"]) },
+        "detector":     { "size":1 , "pattern": lambda p: p["y"] },
+        "herald":       { "size":1 , "herald": lambda p: p["y"] } }
 
 prototype = {"bottom": lambda p: p["y"]+p["size"], 
              "x": lambda p: p["x"], "y":lambda p: p["y"]}
@@ -23,6 +25,7 @@ prototype = {"bottom": lambda p: p["y"]+p["size"],
 def directional_coupler(ratio): r = 1j*np.sqrt(ratio); t = np.sqrt(1-ratio); return np.array([[t, r], [r, t]])
 def phase_shifter(phase): return np.array([[np.exp(1j*phase)]])
 def bell_state(y): return {(y, y+2):ir2, (y+1, y+3):ir2}
+def fock_state(y): return {(y, y, y, y):1}
 
 def choose(n, k): return 0 if n<k else int(np.prod([(i+k)/i for i in range(1, n-k+1)]) + .5)
 
@@ -83,9 +86,13 @@ def compile(json):
     nphotons = 0 if len(input_state) == 0 else len(input_state.keys()[0])
 
     # Choose the list of patterns
-    p = [c["pattern"] for c in components if "pattern" in c]
-    if p==[]: p = range(nmodes)
-    patterns = tuple(it.combinations_with_replacement(p, nphotons))
+    fixed_patterns = [c["herald"] for c in components if "herald" in c]
+    free_patterns = [c["pattern"] for c in components if "pattern" in c]
+
+    free_photons = nphotons - len(fixed_patterns)
+    patterns = tuple(it.combinations_with_replacement(free_patterns, free_photons))
+    patterns = tuple([list(x) + list(fixed_patterns) for x in patterns])
+    patterns = tuple([tuple(sorted(x)) for x in patterns])
 
     # Return a compiled representation of the state
     return {"input_state": input_state, "unitary":unitary, "patterns":patterns, "nmodes":nmodes, "nphotons":nphotons}
