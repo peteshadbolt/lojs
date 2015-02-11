@@ -163,7 +163,6 @@ function Circuit() {
         for (var i=0; i <json.length; ++i) {
            var c = json[i];
            console.log(c);
-           if (c.type=="source"){self.components.push(new SPS(c.pos.x, c.pos.y));}
            if (c.type=="bellpair"){self.components.push(new BellPair(c.pos.x, c.pos.y));}
            if (c.type=="fockstate"){self.components.push(new FockState(c.pos.x, c.pos.y));}
            if (c.type=="coupler"){self.components.push(new Coupler(c.pos.x, c.pos.y, c.ratio));}
@@ -229,11 +228,6 @@ function Crossing(x, y) { Component.call(this, "crossing", x, y, 1, 1, drawCross
 
 function Connector(x, y) { Component.call(this, "connector", x, y, 1, 0, drawConnector); }
 
-function SPS(x, y) {
-    Component.call(this, "source", x, y, 1, 0, drawSPS);
-    this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
-}
-
 function BellPair(x, y) {
     Component.call(this, "bellpair", x, y, 1, 3, drawBellPair);
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
@@ -241,12 +235,13 @@ function BellPair(x, y) {
 
 function FockState(x, y) {
     Component.call(this, "fockstate", x, y, 1, 0, drawFockState);
-    this.n = 2;
+    this.n = 1;
     this.adjust = function (angle) {
        this.n = Math.floor(5 * angle/(2*Math.PI))+1;
-       return "n = " + this.n;
+       return "Fock state, n = " + this.n;
     }
     this.enforceRules = function () { if (this.pos.x>circuit.topLeft.x){this.pos.x=circuit.topLeft.x;} }
+    this.json = function(){return {"type":this.type, "x":this.relPos().x, "y":this.relPos().y, "n":this.n}}
 }
 
 function Detector(x, y) {

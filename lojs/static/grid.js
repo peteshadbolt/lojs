@@ -32,15 +32,10 @@ function Grid() {
         }
 
         // Number the modes
-        ctx.textBaseline = 'bottom';
-        ctx.fillStyle = 'black';
-        ctx.font=(.15)+'pt sans';
         if (circuit.topLeft){
             for (var i=0; i <= circuit.nmodes; ++i) {
-                ctx.textAlign = 'right';
-                ctx.fillText(i, circuit.topLeft.x-1, circuit.topLeft.y+i+.3);
-                ctx.textAlign = 'left';
-                ctx.fillText(i, circuit.bottomRight.x+1, circuit.topLeft.y+i+.3);
+                fastNumber(ctx, i, circuit.topLeft.x-1, circuit.topLeft.y+i);
+                fastNumber(ctx, i, circuit.bottomRight.x+1, circuit.topLeft.y+i);
             }
         }
     }

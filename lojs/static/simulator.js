@@ -16,6 +16,7 @@ function Simulator(myCircuit) {
     self.update = function() {
         if(!self.ready){return;}
         self.ready=false;
+        self.highlightedPattern = [];
 
         // Prepare the post data
         var request={};
