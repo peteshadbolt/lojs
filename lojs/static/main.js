@@ -101,7 +101,7 @@ function main() {
     // Set up the drawing environment an-d fit to window
     gc=document.getElementById('canvas');
     instructionBox = document.getElementById('instructions');
-    instructionBox.setAttribute('style', 'display:none');
+    //instructionBox.setAttribute('style', 'display:none');
     document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
 
     gd=gc.getContext('2d');
