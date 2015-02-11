@@ -1,5 +1,5 @@
 html, body { margin: 0; padding: 0px; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
-h3 { font-size:11pt; padding:0; margin:0;}
+h3 { padding:0; margin:0;}
 canvas { display:block }
 #menu { position: absolute; top:5px; right:5px;}
 .menuchunk {background:  black; color:white; padding: 5px; margin:5px; width:250px}
@@ -9,7 +9,7 @@ canvas { display:block }
 .modest {font-size: 8pt; color:lightgray;}
 .menuchunk .hi{color:yellow}
 
-#infoholder { position: absolute; top:5px; left:5px; font-family:sans; text-align: left; }
+#infoholder { position: absolute; top:5px; left:5px; font-family:sans; text-align: left; font-size:10pt }
 #export {overflow: auto; max-height:300px; font-size:8pt;}
 .close {float:right}
 
@@ -17,7 +17,7 @@ hr {color:orange; padding:0px; margin-bottom:5px; margin:0px; border: 1px solid 
 
 #debug { height:200px; width:300px; position: absolute; top:5px; left:5px; background: rgba(0,0,0,.5); color:#ddffdd; padding: 5px; border-radius:3px; margin:5px; text-align:justify; overflow:auto}
 
-#instructions{ padding:20px; color:#eeeeee;}
+#instructions{ padding:20px;}
 
 .state_term:hover {font-weight:bold; cursor:default}
 
