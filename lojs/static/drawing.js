@@ -69,12 +69,12 @@ function drawSPS(ctx, thepos, color) {
 
 function drawFockState(ctx, thepos, color) {
     if (thepos==undefined)(thepos=this.pos);
-    if (color==undefined){color="blue";}
+    if (color==undefined){color="red";}
     startDrawing(ctx, thepos);
     // Photon
     for (var i=0; i < this.n; ++i) {
         ctx.beginPath();
-        ctx.arc(-i*.3, 0, .1, 0, 2*Math.PI, false);
+        ctx.arc(-i*.2, 0, .1, 0, 2*Math.PI, false);
         ctx.fillStyle = color;
         ctx.fill();
     }
@@ -137,7 +137,7 @@ function drawPhaseShifter(ctx) {
     ctx.lineTo(.5+x*.8+y*.1, y*.8-x*.1);
 
     ctx.stroke();
-    drawLabel(ctx, this, -0.2);
+    drawLabel(ctx, this, -0.5);
     stopDrawing(ctx);
 }
 
@@ -197,15 +197,9 @@ function drawDetector(ctx) {
 }
 
 function drawLabel(ctx, thing, yoff) {
-    return;
-    // TODO: this is a hack, we should render these to an off screen canvas when the object is created
-    if (thing.index==undefined || mouse.pressed || camera.zooming){ return; }
-    if (editor.moving!=undefined){return;}
-    ctx.textBaseline = 'bottom';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = 'black';
-    ctx.font=(.15)+'pt sans';
-    ctx.fillText(thing.index, 0.55, yoff);
+    //if (thing.index==undefined || mouse.pressed || camera.zooming){ return; }
+    //if (editor.moving!=undefined){return;}
+    fastNumber(ctx, thing.index, 0.5, yoff);
 }
 
 
