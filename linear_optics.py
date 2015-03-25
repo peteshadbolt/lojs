@@ -5,6 +5,7 @@ import itertools as it
 from collections import defaultdict
 from operator import add
 from permanent import permanent
+import fock_rules
 
 ir2=1/np.sqrt(2)
 factorial = (1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800)
@@ -44,6 +45,7 @@ def modes_to_index(modes, p, m):
 def dtens(*terms):
     """ The tensor product, defined for states represented as dicts """
     output = defaultdict(complex)
+    if len(terms)==0: return {}
     for q in it.product(*(t.items() for t in terms)):
         keys, amps = zip(*q)
         newkey = tuple(sorted(reduce(add, keys)))
@@ -64,7 +66,7 @@ def fill_gaps(component):
         c[key] = value(c) if callable(value) else value
     return c
 
-def compile(json):
+def compile(json, rules):
     """ Compiles a JSON description of a circuit to a state, unitary and a bunch of detection patterns """
     components = map(fill_gaps, json)
     components.sort(key=lambda c: c["x"])
@@ -84,17 +86,9 @@ def compile(json):
     input_state = dtens(*s)
     nphotons = 0 if len(input_state) == 0 else len(input_state.keys()[0])
 
-    # Choose the list of patterns
-    fixed_patterns = [c["herald"] for c in components if "herald" in c]
-    free_patterns = [c["pattern"] for c in components if "pattern" in c]
-
-    free_photons = nphotons - len(fixed_patterns)
-    patterns = tuple(it.combinations_with_replacement(free_patterns, free_photons))
-    patterns = tuple([list(x) + list(fixed_patterns) for x in patterns])
-    patterns = tuple([tuple(sorted(x)) for x in patterns])
-
-    if len(patterns)==0:
-        patterns = tuple([tuple(sorted(x)) for x in it.combinations_with_replacement(range(nmodes), nphotons)])
+    # Parse the rule string
+    rules = fock_rules.parse_rules(rules)
+    patterns = list(fock_rules.generate_terms(rules, nmodes, nphotons))
 
     # Return a compiled representation of the state
     return {"input_state": input_state, "unitary":unitary, "patterns":patterns, "nmodes":nmodes, "nphotons":nphotons}

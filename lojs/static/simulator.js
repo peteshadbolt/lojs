@@ -16,11 +16,12 @@ function Simulator(myCircuit) {
     self.update = function() {
         if(!self.ready){return;}
         self.ready=false;
-        self.highlightedPattern = [];
 
         // Prepare the post data
         var request={};
         request.circuit=self.circuit.toJSON();
+        request.rules=$('#filter_input').val();
+        request.output_mode="probability";
 
         // Prepare the request
         var xhr = new XMLHttpRequest();
@@ -63,6 +64,9 @@ function Simulator(myCircuit) {
             var magnitude=(100*p[1]/response.maximum).toFixed(0);
             lines += "<hr width="+magnitude+"% />\n";
         }
+
+        self.highlightedPattern = probabilities[0][0];
+
         self.outputField.innerHTML += lines;
     }
 }

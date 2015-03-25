@@ -17,6 +17,9 @@ function Circuit() {
             self.components[i].draw(ctx); }
         for (var i=0; i<self.connectors.length; i++) {
             self.connectors[i].draw(ctx); }
+
+        drawHighlightedPattern(ctx);
+
     }
 
     // Do these two components touch? We are lenient about the x-axis!
@@ -162,7 +165,6 @@ function Circuit() {
         self.clear();
         for (var i=0; i <json.length; ++i) {
            var c = json[i];
-           console.log(c);
            if (c.type=="bellpair"){self.components.push(new BellPair(c.x, c.y));}
            if (c.type=="fockstate"){self.components.push(new FockState(c.x, c.y));}
            if (c.type=="coupler"){self.components.push(new Coupler(c.x, c.y, c.ratio));}

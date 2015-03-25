@@ -38,6 +38,7 @@ function Grid() {
                 fastNumber(ctx, i, circuit.bottomRight.x+1, circuit.topLeft.y+i);
             }
         }
+
     }
 
 

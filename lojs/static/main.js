@@ -43,6 +43,8 @@ function Renderer(ctx, canv) {
 
         // Back to screen-space
         self.ctx.restore();
+
+        //self.ctx.drawImage(gCouplerCache, 0, 0);
     }
 
     self.needFrame=function () {
@@ -104,6 +106,7 @@ function main() {
     //instructionBox.setAttribute('style', 'display:none');
     document.getElementById('fileinput').addEventListener('change', handleFileSelect, false);
 
+
     gd=gc.getContext('2d');
 
     // Create a grid, camera, and mouse
@@ -114,6 +117,7 @@ function main() {
     mouse.bind(gd);
     bindKeys();
     makeNumberCache();
+    //makeCouplerCache();
 
     // Create the circuit, simulator, and constructer
     circuit = new Circuit();
@@ -122,10 +126,15 @@ function main() {
     adjuster = new Adjuster(circuit);
     construct();
 
+
+    // Update when the filter changes
+    $('#filter_input').on("input",simulator.update);
+
     // Away we go
     window.onresize=resize;
     resize();
     camera.center(gc);
     camera.loop();
     renderer.loop();
+    simulator.update();
 }

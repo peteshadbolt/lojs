@@ -1,4 +1,5 @@
-var gNumberCache = [];
+var gNumberCache = undefined;
+var gCouplerCache = undefined;
 var ndx = 20;
 var ndy = 15;
 
@@ -7,10 +8,6 @@ function makeNumberCache() {
     gNumberCache.width = 600;
     gNumberCache.height = ndy;
     ctx = gNumberCache.getContext('2d');
-
-    //ctx.fillStyle = "#ff0000";
-    //ctx.fillRect(0,0,600,ndy);
-
     ctx.textBaseline = 'top';
     ctx.textAlign = 'center';
     ctx.fillStyle = 'black';
@@ -20,11 +17,24 @@ function makeNumberCache() {
     }
 }
 
+
 function fastNumber(ctx, number, x, y) {
-    if(camera.z<35){return}
     var ox = .5*ndx/camera.z;
     var oy = .5*ndy/camera.z;
     ctx.drawImage(gNumberCache, ndx*number, 0, ndx, ndy, x-ox, y-oy, ndx/camera.z, ndy/camera.z);
 }
 
+
+//function makeCouplerCache() {
+    //gCouplerCache = document.createElement('canvas');
+    //gCouplerCache.width = camera.z;
+    //gCouplerCache.height = camera.z;
+    //ctx = gCouplerCache.getContext('2d');
+    //ctx.scale(camera.z, camera.z);
+    //ctx.lineWidth=1/camera.z;
+    //ctx.strokeStyle="black";
+    //c=new Coupler(0,0,.5);
+    //c.draw(ctx);
+    //ctx.restore();
+//}
 
