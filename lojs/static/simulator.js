@@ -68,6 +68,8 @@ function Simulator(myCircuit) {
         self.highlightedPattern = probabilities[0][0];
 
         self.outputField.innerHTML += lines;
+        renderer.needFrame();
+
     }
 }
 
