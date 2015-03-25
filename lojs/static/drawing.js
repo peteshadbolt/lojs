@@ -196,9 +196,26 @@ function drawDetector(ctx) {
     stopDrawing(ctx);
 }
 
+function drawHighlightedPattern(ctx){
+    startDrawing(ctx, circuit.topLeft);
+    for (var mode=0; mode < circuit.nmodes+1; mode++) {
+        var ox = 0;
+        for (var i=0; i < simulator.highlightedPattern.length; ++i) {
+            if (mode == simulator.highlightedPattern[i]){
+                ctx.beginPath();
+                ctx.fillStyle = "red";
+                ctx.strokeStyle = "white";
+                ctx.arc(circuit.dimensions.x+ox, mode, .12, 0, 2*Math.PI, false);
+                ox+=0.2
+                ctx.fill();
+                ctx.stroke();
+            }
+       }
+    }
+    stopDrawing(ctx);
+}
+
 function drawLabel(ctx, thing, yoff) {
-    //if (thing.index==undefined || mouse.pressed || camera.zooming){ return; }
-    //if (editor.moving!=undefined){return;}
     fastNumber(ctx, thing.index, 0.5, yoff);
 }
 
@@ -206,7 +223,6 @@ function drawLabel(ctx, thing, yoff) {
 function drawCoupler(ctx) {
     var gap=0.1*(1-this.ratio);
     var couplingLength=this.ratio/2;
-
     startDrawing(ctx, this.pos);
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -215,7 +231,6 @@ function drawCoupler(ctx) {
     ctx.lineTo(.6, .5-gap); 
     ctx.bezierCurveTo(.75, .5-gap, .75, 0, .9,   0); 
     ctx.lineTo(1, 0);
-
     ctx.moveTo(0, 1);
     ctx.lineTo(0.1, 1);
     ctx.bezierCurveTo(.25, 1, .25, .5+gap, .4,  .5+gap); 
@@ -223,9 +238,7 @@ function drawCoupler(ctx) {
     ctx.bezierCurveTo(.75, .5+gap, .75, 1, .9,   1); 
     ctx.lineTo(1, 1);
     ctx.stroke();
-
     drawLabel(ctx, this, 0.25);
-
     stopDrawing(ctx);
 }
 

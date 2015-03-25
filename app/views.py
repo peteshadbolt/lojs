@@ -12,32 +12,33 @@ class SizeError(Exception):
 def index(request):
     return render(request, "index.html", {})
 
+def warning(text):
+    return HttpResponse(json.dumps({"warning":text}), content_type="application/json")
+
 @csrf_exempt
 def simulate(request):
     request = json.loads(request.body)
+
     circuit = request["circuit"]
+    if len(circuit)==0: return warning("Empty circuit")
+    rules = request["rules"]
+    output_mode = request["output_mode"]
 
     # Build a python object describing the circuit, state, patterns of interest
-    # TODO: if the request specifies state or patterns, then we just override here
-    try:
-        circuit = lo.compile(circuit)
-        nterms = len(circuit["patterns"])
-        if nterms > 10000: raise SizeError()
-        data = lo.simulate(**circuit).items()
-        print "Number of terms:", nterms
-        sys.stdout.flush()
-        data.sort(key=lambda x: -x[1])
-        maximum = max([x[1] for x in data])
-        output={"probabilities":data, "maximum":1 if maximum==0 else maximum}
-    except ValueError:
-        output={"warning": "No output"}
-    except IndexError:
-        output={"warning": "No output"}
-    except SizeError:
-        message="Problem is too hard for web interface (%d terms).<br>" % nterms
-        message+="Try using fewer detectors."
-        output={"warning": message}
+    circuit = lo.compile(circuit, rules)
+    nterms = len(circuit["patterns"])
 
+    if nterms > 10000: return warning("Too many terms")
+    if nterms == 0: return warning("No terms match filter")
+
+    data = lo.simulate(circuit["input_state"], circuit["unitary"], circuit["patterns"], output_mode)
+    data = data.items()
+    data.sort(key=lambda x: -x[1])
+
+    if len(data) == 0: return warning("No nonzero terms")
+
+    maximum = max([x[1] for x in data])
+    output={"probabilities":data, "maximum":1 if maximum==0 else maximum}
 
     response=json.dumps(output)
     return HttpResponse(response, content_type="application/json")

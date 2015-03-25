@@ -31,3 +31,12 @@ input[type="file"] {
     display: none;
 }
 
+input[type=text] {
+    width:95%; padding:0.2em; font-size:1em; font-family:"courier new";
+    border: 1px solid white; 
+    padding: 2px;
+    background: #222;
+    color:white;
+    margin: 3px 0px;
+}
+

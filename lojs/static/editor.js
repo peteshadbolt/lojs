@@ -27,8 +27,6 @@ function Constructer(targetCircuit)
         document.getElementById("crossing").className="nothing";
         document.getElementById("bellpair").className="nothing";
         document.getElementById("fockstate").className="nothing";
-        document.getElementById("detector").className="nothing";
-        document.getElementById("herald").className="nothing";
         document.getElementById(temp.type).className="hi";
         renderer.needFrame();
     }
