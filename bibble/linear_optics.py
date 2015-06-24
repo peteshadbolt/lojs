@@ -93,7 +93,7 @@ def compile(json, rules):
     # Return a compiled representation of the state
     return {"input_state": input_state, "unitary":unitary, "patterns":patterns, "nmodes":nmodes, "nphotons":nphotons}
 
-def simulate(input_state, unitary, patterns, mode="probability", **kwargs): 
+def simulate(input_state, unitary, patterns, **kwargs): 
     """ Simulates a given circuit, for a given input state, looking at certain terms in the output state """
     output_state=defaultdict(complex)
     for cols, amplitude in input_state.items():
@@ -104,8 +104,5 @@ def simulate(input_state, unitary, patterns, mode="probability", **kwargs):
             perm = permanent(unitary[list(rows)][:,cols])
             value = amplitude*perm/np.sqrt(n1*n2)
             if np.abs(value)>precision: output_state[rows] += value
-    if mode=="probability":
-        for key, value in output_state.items():
-            output_state[key] = np.abs(value)**2
 
     return output_state

@@ -11,6 +11,7 @@ function Simulator(myCircuit) {
     self.outputField = document.getElementById('simulator_output');
     self.spinner = document.getElementById('spinner');
     self.ready=true;
+    self.outputMode = "probability";
 
     // The circuit changed, we need to ask for new data
     self.update = function() {
@@ -21,7 +22,7 @@ function Simulator(myCircuit) {
         var request={};
         request.circuit=self.circuit.toJSON();
         request.rules=$('#filter_input').val();
-        request.output_mode="probability";
+        request.output_mode=self.outputMode;
 
         // Prepare the request
         var xhr = new XMLHttpRequest();
@@ -35,6 +36,14 @@ function Simulator(myCircuit) {
         xhr.open("POST","/simulate",true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.send(JSON.stringify(request));
+    }
+
+    self.setMode = function(newmode) {
+        self.outputMode = newmode;
+        document.getElementById("probability").className="nothing";
+        document.getElementById("amplitude").className="nothing";
+        document.getElementById(newmode).className="hi";
+        self.update();
     }
 
     // Higlight a particular pattern
