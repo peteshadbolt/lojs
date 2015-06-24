@@ -11,16 +11,25 @@ class APITestCase(TestCase):
     def test_index(self):
         """ See that we can load the index """
         request = {}
-        print views.index(request)
+        index = views.index(request)
+        assert(len(index.content)>0)
 
     def test_mzi(self):
         """ See that we can simulate an MZI"""
-        circuit = [{"type":"fockstate","x":-7,"y":0,"n":1},
-                {"type":"coupler","x":-6,"y":0,"ratio":0.5},
-                {"type" :"phaseshifter","x":-5,"y":1,"phase":0},
-                {"type":"coupler","x":-4,"y":0,"ratio":0.5}]
-        request = {"body": json.dumps({"circuit": circuit,"rules":"","output_mode" :"probability"})}
-        output = views.simulate(request)
-        self.assertEqual(output["probabilities"][(0, 1)], 1)
+
+        circuit = [ { "type" : "fockstate","x" : 0,"y" : 0,"n" : 1},
+                    { "type" : "coupler","x" : 1,"y" : 0,"ratio" : 0.5},
+                    { "type" : "phaseshifter","x" : 2,"y" : 0,"phase" : 0},
+                    { "type" : "coupler","x" : 3,"y" : 0,"ratio" : 0.5}]
+
+        postdata = {"circuit" : circuit,
+                    "rules" : "",
+                    "output_mode" : "probability"}
+
+        request = {"body": json.dumps(postdata)}
+        output = json.loads(views.simulate(request).content)
+        
+        #TODO: This sucks
+        self.assertEqual(output["values"][0][1]["real"], 0.0)
 
 

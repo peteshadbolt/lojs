@@ -38,8 +38,9 @@ def simulate(request):
     if len(data) == 0: return warning("No nonzero terms")
 
     maximum = max([np.abs(x[1])**2 for x in data])
-    data = map(lambda x: (x[0], x[1]), data)
-    output={"amplitudes":data, "maximum":1 if maximum==0 else maximum}
+    serialize = lambda (label, value): (label, {"real": value.real, "imag": value.imag})
+    data = map(serialize, data)
+    output={"values": data, "maximum": 1 if maximum==0 else maximum}
 
     response=json.dumps(output)
     return HttpResponse(response, content_type="application/json")
