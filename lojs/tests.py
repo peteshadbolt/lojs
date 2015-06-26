@@ -1,5 +1,5 @@
 from django.test import TestCase
-from bibble import views
+from lojs import views
 from django.http import HttpRequest
 import json
 

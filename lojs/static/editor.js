@@ -119,6 +119,7 @@ function Adjuster(targetCircuit)
             stopDrawing(ctx);
         }
 
+        //circuit.components.forEach(
         for (var i=0; i < circuit.components.length; ++i) {
             var c = circuit.components[i];
             if (c.adjust != undefined){

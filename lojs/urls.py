@@ -3,17 +3,17 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework import routers
-import bibble.views
+import lojs.views
 
 router = routers.DefaultRouter()
-router.register(r"users", bibble.views.UserViewSet)
-router.register(r"groups", bibble.views.GroupViewSet)
+router.register(r"users", lojs.views.UserViewSet)
+router.register(r"groups", lojs.views.GroupViewSet)
 
 urlpatterns = patterns('',
-    url(r'^$', bibble.views.index, name='index'),
-    url(r'^simulate', bibble.views.simulate, name='simulate'),
     url(r'^api', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^$', lojs.views.index, name='index'),
+    url(r'^simulate', lojs.views.simulate, name='simulate')
 )
 
 urlpatterns += staticfiles_urlpatterns()
