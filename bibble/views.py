@@ -11,6 +11,14 @@ class SizeError(Exception):
     pass
 
 
+class ComplexEncoder(json.JSONEncoder):
+    """ Extends the json library to write complex numbers """
+    def default(self, obj):
+        if isinstance(obj, complex):
+            return {"real": obj.real, "imag": obj.imag}
+        return json.JSONEncoder.default(self, obj)
+
+
 def index(request):
     """ Just return the main page """
     return render(request, "index.html", {})
@@ -18,13 +26,13 @@ def index(request):
 
 def serialize_to_dict(data):
     """ Serialize data to JSON """
-    skey = lambda x: str(x)
-    sim = lambda x: {"real": x.real, "imag": x.imag}
-    return {skey(key): sim(value) for key, value in data.items()}
+    return {str(key): value for key, value in data.items()}
 
 def serialize_to_table(data):
     """ Serialize data to a table """
-    return [(key, value.real, value.imag) for key, value in data.items()]
+    probability = lambda (key, value): np.abs(value) ** 2
+    table = sorted(data.items(), key=probability, reverse=True)
+    return [(key, value) for key, value in table]
 
 
 @csrf_exempt
@@ -46,7 +54,11 @@ def simulate(request):
         return HttpResponse("No matching terms", status=400)
 
     # Do the actual simulation
-    data = lo.simulate(**circuit)
+    if request.get("mode", "probability")=="probability":
+        data = lo.get_probabilities(circuit["input_state"], circuit["unitary"], circuit["patterns"])
+    else:
+        data = lo.get_amplitudes(circuit["input_state"], circuit["unitary"], circuit["patterns"])
+
     if len(data) == 0:
         return HttpResponse("No nonzero terms", status=400)
 
@@ -55,7 +67,6 @@ def simulate(request):
         data = serialize_to_table(data)
     elif format == "dict":
         data = serialize_to_dict(data)
-    response = json.dumps(data)
 
+    response = ComplexEncoder().encode(data)
     return HttpResponse(response, content_type="application/json")
-
