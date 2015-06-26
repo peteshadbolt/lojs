@@ -3,10 +3,15 @@ from bibble import views
 from django.http import HttpRequest
 import json
 
-MZI =  [ { "type" : "fockstate","x" : 0,"y" : 0,"n" : 1},
-         { "type" : "coupler","x" : 1,"y" : 0,"ratio" : 0.5},
-         { "type" : "phaseshifter","x" : 2,"y" : 0,"phase" : 0},
-         { "type" : "coupler","x" : 3,"y" : 0,"ratio" : 0.5}]
+MZI =  [ { "type" : "fockstate", "x" : 0, "y" : 0, "n" : 1}, 
+         { "type" : "coupler", "x" : 1, "y" : 0, "ratio" : 0.5}, 
+         { "type" : "phaseshifter", "x" : 2, "y" : 0, "phase" : 0}, 
+         { "type" : "coupler", "x" : 3, "y" : 0, "ratio" : 0.5}]
+
+TWO_COUPLERS =  [ 
+         { "type" : "fockstate", "x" : 0, "y" : 0,  "n" : 1}, 
+         { "type" : "coupler", "x" : 1, "y" : 0,  "ratio" : 0.5}, 
+         { "type" : "coupler", "x" : 2, "y" : 1,  "ratio" : 0.5}]
 
 class IndexTestCase(TestCase):
     def setUp(self):
@@ -32,10 +37,15 @@ class APITestCase(TestCase):
 
     def test_mzi(self):
         """ See that we can simulate an MZI"""
-        postdata = {"circuit" : MZI, "format":"dict"}
-        request = {"body": json.dumps(postdata), "format":"dict"}
+        postdata = {"circuit" : MZI, "format":"dict", "mode":"amplitude"}
+        request = {"body": json.dumps(postdata)}
         output = json.loads(views.simulate(request).content)
         self.assertAlmostEqual(output["(1,)"]["imag"], 1)
-        
 
+    def test_ordering(self):
+        """ See that we can simulate an MZI"""
+        postdata = {"circuit" : TWO_COUPLERS, "format":"table", "mode":"probability"}
+        request = {"body": json.dumps(postdata)}
+        output = json.loads(views.simulate(request).content)
+        assert all(output[i][1]>=output[i+1][1] for i in range(len(output)-1))
 
