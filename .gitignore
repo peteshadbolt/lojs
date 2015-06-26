@@ -1,5 +1,6 @@
 venv/
 run.sh
+*.sqlite3
 
 /**.gif*/
 /**.png*/
