@@ -70,7 +70,7 @@ def compile(json, rules):
     """ Compiles a JSON description of a circuit to a state, unitary and a bunch of detection patterns """
     components = map(fill_gaps, json)
     components.sort(key=lambda c: c["x"])
-    nmodes = max([c["bottom"] for c in components])
+    nmodes = max([c["bottom"] for c in components]) if len(components) > 0 else 0
 
     # Compute the linear-optical unitary matrix
     unitary = np.eye(nmodes, dtype = complex)
