@@ -13,7 +13,6 @@ class SizeError(Exception):
     pass
 
 
-
 class ComplexEncoder(json.JSONEncoder):
     """ Extends the json library to write complex numbers """
     def default(self, obj):

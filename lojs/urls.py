@@ -6,8 +6,6 @@ from rest_framework import routers
 import lojs.views
 
 router = routers.DefaultRouter()
-router.register(r"users", lojs.views.UserViewSet)
-router.register(r"groups", lojs.views.GroupViewSet)
 
 urlpatterns = patterns('',
     url(r'^api', include(router.urls)),
