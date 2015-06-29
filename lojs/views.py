@@ -30,6 +30,7 @@ def serialize_to_dict(data):
     """ Serialize data to JSON """
     return {str(key): value for key, value in data.items()}
 
+
 def serialize_to_table(data):
     """ Serialize data to a table """
     probability = lambda (key, value): np.abs(value) ** 2

@@ -5,9 +5,7 @@ from django.conf import settings
 from rest_framework import routers
 import lojs.views
 
-router = routers.DefaultRouter()
-
-urlpatterns = patterns('',
+router = routers.DefaultRouter() urlpatterns = patterns('',
     url(r'^api', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^$', lojs.views.index, name='index'),
